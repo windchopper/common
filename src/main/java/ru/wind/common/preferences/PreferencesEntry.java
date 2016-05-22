@@ -1,6 +1,8 @@
 package ru.wind.common.preferences;
 
 import ru.wind.common.util.Buffered;
+import ru.wind.common.util.ConsumerWithException;
+import ru.wind.common.util.SupplierWithException;
 
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -9,7 +11,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 
-public abstract class PreferencesEntry<S, T> {
+public abstract class PreferencesEntry<S, T> implements SupplierWithException<T, PreferencesException>, ConsumerWithException<T, PreferencesException> {
 
     private static final long DEFAULT__BUFFER_LIFETIME = 1L;
     private static final TimeUnit DEFAULT__BUFFER_LIFETIME_UNIT = TimeUnit.MINUTES;
@@ -37,7 +39,7 @@ public abstract class PreferencesEntry<S, T> {
     protected abstract S loadRaw(Preferences node, String key) throws PreferencesException;
     protected abstract void saveRaw(Preferences node, String key, S value) throws PreferencesException;
 
-    public T supply() throws PreferencesException {
+    @Override public T supply() throws PreferencesException {
         return bufferedValue.value();
     }
 
@@ -51,7 +53,7 @@ public abstract class PreferencesEntry<S, T> {
         return value != null ? value : defaultValueSupplier.get();
     }
 
-    public void accept(T newValue) throws PreferencesException {
+    @Override public void accept(T newValue) throws PreferencesException {
         bufferedValue.invalidate(newValue);
     }
 
