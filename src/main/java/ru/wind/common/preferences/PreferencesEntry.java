@@ -42,24 +42,8 @@ public abstract class PreferencesEntry<S, T> implements Supplier<T, PreferencesE
         return bufferedValue.value();
     }
 
-    public T supply(T defaultValue) throws PreferencesException {
-        T value = bufferedValue.value();
-        return value != null ? value : defaultValue;
-    }
-
-    public T supply(java.util.function.Supplier defaultValueSupplier) throws PreferencesException {
-        T value = bufferedValue.value();
-        return value != null ? value : defaultValueSupplier.get();
-    }
-
     @Override public void accept(T newValue) throws PreferencesException {
         bufferedValue.invalidate(newValue);
-    }
-
-    public void accept(java.util.function.Supplier newValueSupplier) throws PreferencesException {
-        bufferedValue.invalidate(
-            newValueSupplier.get()
-        );
     }
 
 }
