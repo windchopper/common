@@ -1,12 +1,12 @@
 package ru.wind.common.util;
 
-import ru.wind.common.util.function.Consumer;
-import ru.wind.common.util.function.Supplier;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public final class WithSupport {
 
-    public static <T, E extends Exception> void with(Supplier<T, E> objectSupplier, Consumer<T, E> consumer) throws E {
-        consumer.accept(objectSupplier.supply());
+    public static <T> void with(Supplier<T> objectSupplier, Consumer<T> consumer) {
+        consumer.accept(objectSupplier.get());
     }
 
 }

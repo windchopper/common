@@ -1,50 +1,49 @@
 package ru.wind.common.util;
 
-import ru.wind.common.util.function.Consumer;
-import ru.wind.common.util.function.Supplier;
-
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-public class Buffered<T, E extends Exception> {
+public class Buffered<T> implements Supplier<T> {
 
     private static final ResourceBundle bundle = ResourceBundle.getBundle("common.i18n.messages");
 
     private final long lifeTime;
     private final TimeUnit timeUnit;
-    private final Supplier<T, E> valueSupplier;
-    private final Consumer<T, E> valueConsumer;
+    private final Supplier<T> valueSupplier;
+    private final Consumer<T> valueConsumer;
 
     private long previousSupplyTime;
     private T suppliedValue;
 
-    public Buffered(Supplier<T, E> valueSupplier) {
+    public Buffered(Supplier<T> valueSupplier) {
         this(Long.MAX_VALUE, TimeUnit.MILLISECONDS, valueSupplier, value -> {});
     }
 
-    public Buffered(long lifeTime, TimeUnit timeUnit, Supplier<T, E> valueSupplier) {
+    public Buffered(long lifeTime, TimeUnit timeUnit, Supplier<T> valueSupplier) {
         this(lifeTime, timeUnit, valueSupplier, value -> {});
     }
 
-    public Buffered(Supplier<T, E> valueSupplier, Consumer<T, E> valueConsumer) {
+    public Buffered(Supplier<T> valueSupplier, Consumer<T> valueConsumer) {
         this(Long.MAX_VALUE, TimeUnit.MILLISECONDS, valueSupplier, valueConsumer);
     }
 
-    public Buffered(long lifeTime, TimeUnit timeUnit, Supplier<T, E> valueSupplier, Consumer<T, E> valueConsumer) {
+    public Buffered(long lifeTime, TimeUnit timeUnit, Supplier<T> valueSupplier, Consumer<T> valueConsumer) {
         this.lifeTime = lifeTime;
         this.timeUnit = Objects.requireNonNull(timeUnit, () -> bundle.getString("common.util.Buffered.nullParameter.timeUnit"));
         this.valueSupplier = Objects.requireNonNull(valueSupplier, () -> bundle.getString("common.util.Buffered.nullParameter.valueSupplier"));
         this.valueConsumer = Objects.requireNonNull(valueConsumer, () -> bundle.getString("common.util.Buffered.nullParameter.valueConsumer"));
     }
 
-    public void invalidate(T value) throws E {
+    public void invalidate(T value) {
         valueConsumer.accept(value);
         suppliedValue = null;
         previousSupplyTime = 0L;
     }
 
-    public T value() throws E {
+    @Override public T get() {
         long time = System.currentTimeMillis();
 
         if (time - previousSupplyTime > timeUnit.toMillis(lifeTime)) {
@@ -53,7 +52,7 @@ public class Buffered<T, E extends Exception> {
         }
 
         if (suppliedValue == null) {
-            suppliedValue = valueSupplier.supply();
+            suppliedValue = valueSupplier.get();
         }
 
         return suppliedValue;
