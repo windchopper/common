@@ -6,43 +6,50 @@ import java.util.concurrent.TimeUnit;
 
 public class Buffered<T, E extends Exception> {
 
-    @FunctionalInterface public interface ValueFactory<T, E extends Exception> {
-        T value() throws E;
+    @FunctionalInterface public interface ValueSupplier<T, E extends Exception> {
+        T supply() throws E;
+    }
+
+    @FunctionalInterface public interface ValueConsumer<T, E extends Exception> {
+        void accept(T value) throws E;
     }
 
     private static final ResourceBundle bundle = ResourceBundle.getBundle("common.i18n.messages");
 
-    private final long lifetime;
+    private final long lifeTime;
     private final TimeUnit timeUnit;
-    private final ValueFactory<T, E> valueSupplier;
+    private final ValueSupplier<T, E> valueSupplier;
+    private final ValueConsumer<T, E> valueConsumer;
 
-    private long previousTimestamp;
-    private T value;
+    private long previousSupplyTime;
+    private T suppliedValue;
 
-    public Buffered(long lifetime, TimeUnit timeUnit, ValueFactory<T, E> valueSupplier) {
-        this.lifetime = lifetime;
+    public Buffered(long lifeTime, TimeUnit timeUnit, ValueSupplier<T, E> valueSupplier, ValueConsumer<T, E> valueConsumer) {
+        this.lifeTime = lifeTime;
         this.timeUnit = Objects.requireNonNull(timeUnit, () -> bundle.getString("common.util.Buffered.nullParameter.timeUnit"));
         this.valueSupplier = Objects.requireNonNull(valueSupplier, () -> bundle.getString("common.util.Buffered.nullParameter.valueSupplier"));
+        this.valueConsumer = Objects.requireNonNull(valueConsumer, () -> bundle.getString("common.util.Buffered.nullParameter.valueConsumer"));
     }
 
-    public void invalidate() {
-        value = null;
-        previousTimestamp = 0;
+    public void invalidate(T value) throws E {
+        valueConsumer.accept(value);
+        suppliedValue = null;
+        previousSupplyTime = 0L;
     }
 
     public T value() throws E {
-        long timestamp = System.currentTimeMillis();
+        long time = System.currentTimeMillis();
 
-        if (timestamp - previousTimestamp > timeUnit.toMillis(lifetime)) {
-            value = null;
-            previousTimestamp = timestamp;
+        if (time - previousSupplyTime > timeUnit.toMillis(lifeTime)) {
+            suppliedValue = null;
+            previousSupplyTime = time;
         }
 
-        if (value == null) {
-            value = valueSupplier.value();
+        if (suppliedValue == null) {
+            suppliedValue = valueSupplier.supply();
         }
 
-        return value;
+        return suppliedValue;
     }
 
 }
