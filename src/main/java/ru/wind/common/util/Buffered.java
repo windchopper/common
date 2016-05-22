@@ -1,5 +1,8 @@
 package ru.wind.common.util;
 
+import ru.wind.common.util.function.Consumer;
+import ru.wind.common.util.function.Supplier;
+
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
@@ -10,25 +13,25 @@ public class Buffered<T, E extends Exception> {
 
     private final long lifeTime;
     private final TimeUnit timeUnit;
-    private final SupplierWithException<T, E> valueSupplier;
-    private final ConsumerWithException<T, E> valueConsumer;
+    private final Supplier<T, E> valueSupplier;
+    private final Consumer<T, E> valueConsumer;
 
     private long previousSupplyTime;
     private T suppliedValue;
 
-    public Buffered(SupplierWithException<T, E> valueSupplier) {
+    public Buffered(Supplier<T, E> valueSupplier) {
         this(Long.MAX_VALUE, TimeUnit.MILLISECONDS, valueSupplier, value -> {});
     }
 
-    public Buffered(long lifeTime, TimeUnit timeUnit, SupplierWithException<T, E> valueSupplier) {
+    public Buffered(long lifeTime, TimeUnit timeUnit, Supplier<T, E> valueSupplier) {
         this(lifeTime, timeUnit, valueSupplier, value -> {});
     }
 
-    public Buffered(SupplierWithException<T, E> valueSupplier, ConsumerWithException<T, E> valueConsumer) {
+    public Buffered(Supplier<T, E> valueSupplier, Consumer<T, E> valueConsumer) {
         this(Long.MAX_VALUE, TimeUnit.MILLISECONDS, valueSupplier, valueConsumer);
     }
 
-    public Buffered(long lifeTime, TimeUnit timeUnit, SupplierWithException<T, E> valueSupplier, ConsumerWithException<T, E> valueConsumer) {
+    public Buffered(long lifeTime, TimeUnit timeUnit, Supplier<T, E> valueSupplier, Consumer<T, E> valueConsumer) {
         this.lifeTime = lifeTime;
         this.timeUnit = Objects.requireNonNull(timeUnit, () -> bundle.getString("common.util.Buffered.nullParameter.timeUnit"));
         this.valueSupplier = Objects.requireNonNull(valueSupplier, () -> bundle.getString("common.util.Buffered.nullParameter.valueSupplier"));
