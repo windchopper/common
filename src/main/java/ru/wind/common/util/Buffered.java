@@ -24,6 +24,18 @@ public class Buffered<T, E extends Exception> {
     private long previousSupplyTime;
     private T suppliedValue;
 
+    public Buffered(ValueSupplier<T, E> valueSupplier) {
+        this(Long.MAX_VALUE, TimeUnit.MILLISECONDS, valueSupplier, value -> {});
+    }
+
+    public Buffered(long lifeTime, TimeUnit timeUnit, ValueSupplier<T, E> valueSupplier) {
+        this(lifeTime, timeUnit, valueSupplier, value -> {});
+    }
+
+    public Buffered(ValueSupplier<T, E> valueSupplier, ValueConsumer<T, E> valueConsumer) {
+        this(Long.MAX_VALUE, TimeUnit.MILLISECONDS, valueSupplier, valueConsumer);
+    }
+
     public Buffered(long lifeTime, TimeUnit timeUnit, ValueSupplier<T, E> valueSupplier, ValueConsumer<T, E> valueConsumer) {
         this.lifeTime = lifeTime;
         this.timeUnit = Objects.requireNonNull(timeUnit, () -> bundle.getString("common.util.Buffered.nullParameter.timeUnit"));
