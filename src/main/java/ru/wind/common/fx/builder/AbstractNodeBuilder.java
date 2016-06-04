@@ -25,9 +25,14 @@ public abstract class AbstractNodeBuilder<T extends Node, B extends AbstractNode
         super(targetSupplier);
     }
 
-    @SuppressWarnings("unchecked") public B applyBehavior(Behavior<? super T> behavior) {
+    public B identifier(String identifier) {
+        target.setId(identifier);
+        return self();
+    }
+
+    public B applyBehavior(Behavior<? super T> behavior) {
         behavior.apply(target);
-        return (B) this;
+        return self();
     }
 
     @SuppressWarnings("unchecked") public B disable(boolean disable) {
