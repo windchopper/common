@@ -35,117 +35,117 @@ public abstract class AbstractNodeBuilder<T extends Node, B extends AbstractNode
         return self();
     }
 
-    @SuppressWarnings("unchecked") public B disable(boolean disable) {
+    public B disable(boolean disable) {
         target.setDisable(disable);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B bindDisableProperty(ObservableValue<? extends Boolean> observable) {
+    public B bindDisableProperty(ObservableValue<? extends Boolean> observable) {
         target.disableProperty().bind(observable);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B bindVisibleProperty(ObservableValue<? extends Boolean> observable) {
-        target.visibleProperty().bind(observable);
-        return (B) this;
-    }
-
-    @SuppressWarnings("unchecked") public B visible(boolean visible) {
+    public B visible(boolean visible) {
         target.setVisible(visible);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B style(String style) {
+    public B bindVisibleProperty(ObservableValue<? extends Boolean> observable) {
+        target.visibleProperty().bind(observable);
+        return self();
+    }
+
+    public B style(String style) {
         target.setStyle(style);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B addStyleClasses(String... styleClasses) {
+    public B addStyleClasses(String... styleClasses) {
         target.getStyleClass().addAll(styleClasses);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B effect(Effect effect) {
+    public B effect(Effect effect) {
         target.setEffect(effect);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B effect(Supplier<Effect> effectSupplier) {
+    public B effect(Supplier<Effect> effectSupplier) {
         target.setEffect(effectSupplier.get());
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B pickOnBounds(boolean pickOnBounds) {
+    public B pickOnBounds(boolean pickOnBounds) {
         target.setPickOnBounds(pickOnBounds);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B hboxHorizontalGrow(Priority priority) {
+    public B hboxHorizontalGrow(Priority priority) {
         HBox.setHgrow(target, priority);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B hboxMargin(Insets margin) {
+    public B hboxMargin(Insets margin) {
         HBox.setMargin(target, margin);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B hboxMargin(double top, double right, double bottom, double left) {
+    public B hboxMargin(double top, double right, double bottom, double left) {
         HBox.setMargin(target, new Insets(top, right, bottom, left));
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B hboxMargin(double horizontalMargin, double verticalMargin) {
+    public B hboxMargin(double horizontalMargin, double verticalMargin) {
         HBox.setMargin(target, new Insets(verticalMargin, horizontalMargin, verticalMargin, horizontalMargin));
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B hboxMargin(double margin) {
+    public B hboxMargin(double margin) {
         HBox.setMargin(target, new Insets(margin));
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B vboxMargin(Insets margin) {
+    public B vboxMargin(Insets margin) {
         VBox.setMargin(target, margin);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B vboxMargin(double top, double right, double bottom, double left) {
+    public B vboxMargin(double top, double right, double bottom, double left) {
         VBox.setMargin(target, new Insets(top, right, bottom, left));
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B vboxMargin(double horizontal, double vertical) {
+    public B vboxMargin(double horizontal, double vertical) {
         VBox.setMargin(target, new Insets(vertical, horizontal, vertical, horizontal));
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B vboxMargin(double margin) {
+    public B vboxMargin(double margin) {
         VBox.setMargin(target, new Insets(margin));
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B mouseTransparent(boolean mouseTransparent) {
+    public B mouseTransparent(boolean mouseTransparent) {
         target.setMouseTransparent(mouseTransparent);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public <E extends Event> B eventHandler(EventType<E> type, EventHandler<E> handler) {
+    public <E extends Event> B eventHandler(EventType<E> type, EventHandler<E> handler) {
         target.addEventHandler(type, handler);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public <E extends Event> B eventFilter(EventType<E> type, EventHandler<E> filter) {
+    public <E extends Event> B eventFilter(EventType<E> type, EventHandler<E> filter) {
         target.addEventFilter(type, filter);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B keyPressedHandler(EventHandler<KeyEvent> handler) {
+    public B keyPressedHandler(EventHandler<KeyEvent> handler) {
         target.setOnKeyPressed(handler);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B keyPressedHandler(KeyCode keyCode, EventHandler<KeyEvent> handler) {
+    public B keyPressedHandler(KeyCode keyCode, EventHandler<KeyEvent> handler) {
         target.setOnKeyPressed(
             event -> {
                 if (event.getCode() == keyCode) {
@@ -154,47 +154,47 @@ public abstract class AbstractNodeBuilder<T extends Node, B extends AbstractNode
             }
         );
 
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B mouseClickedHandler(EventHandler<MouseEvent> handler) {
+    public B mouseClickedHandler(EventHandler<MouseEvent> handler) {
         target.setOnMouseClicked(handler);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B mouseEnteredHandler(EventHandler<MouseEvent> handler) {
+    public B mouseEnteredHandler(EventHandler<MouseEvent> handler) {
         target.setOnMouseEntered(handler);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B mouseExitedHandler(EventHandler<MouseEvent> handler) {
+    public B mouseExitedHandler(EventHandler<MouseEvent> handler) {
         target.setOnMouseExited(handler);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B mousePressedHandler(EventHandler<MouseEvent> handler) {
+    public B mousePressedHandler(EventHandler<MouseEvent> handler) {
         target.setOnMousePressed(handler);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B mouseDraggedHandler(EventHandler<MouseEvent> handler) {
+    public B mouseDraggedHandler(EventHandler<MouseEvent> handler) {
         target.setOnMouseDragged(handler);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B contextMenuRequestedHandler(EventHandler<ContextMenuEvent> handler) {
+    public B contextMenuRequestedHandler(EventHandler<ContextMenuEvent> handler) {
         target.setOnContextMenuRequested(handler);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B cursor(Cursor cursor) {
+    public B cursor(Cursor cursor) {
         target.setCursor(cursor);
-        return (B) this;
+        return self();
     }
 
-    @SuppressWarnings("unchecked") public B defaultCursor() {
+    public B defaultCursor() {
         target.setCursor(Cursor.DEFAULT);
-        return (B) this;
+        return self();
     }
 
 }
