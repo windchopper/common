@@ -4,9 +4,10 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class SimpleMapPreferencesEntry<T, M extends Map<String, T>> extends MapPreferencesEntry<String, T, M> {
+public class StringMapPreferencesEntry<T, M extends Map<String, T>> extends StructuredPreferencesEntry<M> {
 
-    public SimpleMapPreferencesEntry(Class<?> invoker, String name, Supplier<M> mapSupplier, Function<String, T> transformer, Function<T, String> reverseTransformer) {
+    public StringMapPreferencesEntry(Class<?> invoker, String name, Supplier<M> mapSupplier,
+                                     Function<String, T> transformer, Function<T, String> reverseTransformer) {
         super(
             invoker,
             name,

@@ -4,9 +4,10 @@ import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class SimpleCollectionPreferencesEntry<T, C extends Collection<T>> extends CollectionPreferencesEntry<T, C> {
+public class StringCollectionPreferencesEntry<T, C extends Collection<T>> extends StructuredPreferencesEntry<C> {
 
-    public SimpleCollectionPreferencesEntry(Class<?> invoker, String name, Supplier<C> collectionSupplier, Function<String, T> transformer, Function<T, String> reverseTransformer) {
+    public StringCollectionPreferencesEntry(Class<?> invoker, String name, Supplier<C> collectionSupplier,
+                                            Function<String, T> transformer, Function<T, String> reverseTransformer) {
         super(
             invoker,
             name,
