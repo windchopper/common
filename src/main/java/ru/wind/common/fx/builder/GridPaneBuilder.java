@@ -37,7 +37,6 @@ public class GridPaneBuilder extends AbstractPaneBuilder<GridPane, GridPaneBuild
 
     public GridPaneBuilder rowConstraints(int rowIndex, double preferredHeight) {
         RowConstraints constraints = constraintsAt(target::getRowConstraints, RowConstraints::new, rowIndex);
-
         constraints.setPrefHeight(preferredHeight);
 
         return this;
@@ -45,9 +44,13 @@ public class GridPaneBuilder extends AbstractPaneBuilder<GridPane, GridPaneBuild
 
     public GridPaneBuilder columnConstraints(int columnIndex, double preferredWidth) {
         ColumnConstraints constraints = constraintsAt(target::getColumnConstraints, ColumnConstraints::new, columnIndex);
-
         constraints.setPrefWidth(preferredWidth);
 
+        return this;
+    }
+
+    public GridPaneBuilder columnConstraints(int columnIndex, Supplier<ColumnConstraints> columnConstraintsSupplier) {
+        ColumnConstraints constraints = constraintsAt(target::getColumnConstraints, columnConstraintsSupplier, columnIndex);
         return this;
     }
 
@@ -85,6 +88,20 @@ public class GridPaneBuilder extends AbstractPaneBuilder<GridPane, GridPaneBuild
         return this;
     }
 
+    public GridPaneBuilder add(Node node, int columnIndex, int rowIndex, int columnSpan, int rowSpan, Alignment alignment, Fill fill, Insets insets) {
+        target.add(node, columnIndex, rowIndex);
+
+        GridPane.setColumnSpan(node, columnSpan);
+        GridPane.setRowSpan(node, rowSpan);
+
+        alignment.accept(node);
+        fill.accept(node);
+
+        GridPane.setMargin(node, insets);
+
+        return this;
+    }
+
     public GridPaneBuilder add(Node node, int columnIndex, int rowIndex, Alignment alignment, Fill fill, Inset... insets) {
         return add(
             node,
@@ -98,6 +115,11 @@ public class GridPaneBuilder extends AbstractPaneBuilder<GridPane, GridPaneBuild
 
     public GridPaneBuilder alignment(Pos alignment) {
         target.setAlignment(alignment);
+        return this;
+    }
+
+    public GridPaneBuilder gridLinesVisible(boolean gridLinesVisible) {
+        target.setGridLinesVisible(gridLinesVisible);
         return this;
     }
 

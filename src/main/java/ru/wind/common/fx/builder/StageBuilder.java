@@ -2,7 +2,9 @@ package ru.wind.common.fx.builder;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.util.function.Supplier;
 
@@ -31,6 +33,16 @@ public class StageBuilder extends AbstractWindowBuilder<Stage, StageBuilder> {
         Scene scene = new Scene(sceneRoot);
         target.setScene(scene);
 
+        return this;
+    }
+
+    public StageBuilder modality(Modality modality) {
+        target.initModality(modality);
+        return this;
+    }
+
+    public StageBuilder owner(Window owner) {
+        target.initOwner(owner);
         return this;
     }
 
