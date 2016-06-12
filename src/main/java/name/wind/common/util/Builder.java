@@ -3,6 +3,7 @@ package name.wind.common.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -21,6 +22,10 @@ public abstract class Builder<T> implements Supplier<T> {
      */
 
     public static <T> Builder<T> direct(Supplier<T> supplier) {
+        return new DirectBuilder<>(supplier);
+    }
+
+    public static <K, V> Builder<Map<K, V>> directMapBuilder(Supplier<Map<K, V>> supplier) {
         return new DirectBuilder<>(supplier);
     }
 

@@ -6,9 +6,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-import java.util.function.Consumer;
-
-public enum Fill implements Consumer<Node> {
+public enum Fill {
 
     NONE(false, false),
     HORIZONTAL(true, false),
@@ -23,7 +21,7 @@ public enum Fill implements Consumer<Node> {
         this.vertical = vertical;
     }
 
-    @Override public void accept(Node node) {
+    public void apply(Node node) {
         Priority hgrow = horizontal ? Priority.ALWAYS : Priority.NEVER;
         Priority vgrow = vertical ? Priority.ALWAYS : Priority.NEVER;
 

@@ -5,9 +5,7 @@ import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 
-import java.util.function.Consumer;
-
-public enum Alignment implements Consumer<Node> {
+public enum Alignment {
 
     LEFT_BASELINE(HPos.LEFT, VPos.BASELINE),
     CENTER_BASELINE(HPos.CENTER, VPos.BASELINE),
@@ -33,7 +31,7 @@ public enum Alignment implements Consumer<Node> {
         this.vpos = vpos;
     }
 
-    @Override public void accept(Node node) {
+    public void apply(Node node) {
         GridPane.setHalignment(node, hpos);
         GridPane.setValignment(node, vpos);
     }
