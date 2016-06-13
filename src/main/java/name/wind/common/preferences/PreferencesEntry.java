@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -64,6 +65,10 @@ public abstract class PreferencesEntry<S, T> implements Supplier<T>, Consumer<T>
 
     @Override public void accept(T newValue) {
         bufferedValue.invalidate(newValue);
+    }
+
+    public void accept(UnaryOperator<T> operator) {
+        bufferedValue.invalidate(operator.apply(bufferedValue.get()));
     }
 
 }
