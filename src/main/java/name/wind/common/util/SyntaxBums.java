@@ -5,16 +5,10 @@ import java.util.function.Supplier;
 
 public final class SyntaxBums {
 
-    public static <T> void with(Supplier<T> supplier, Consumer<T> consumer) {
-        consumer.accept(supplier.get());
-    }
-
-    @FunctionalInterface public interface ReturningConsumer<T> {
-        T acceptAndReturn(T value);
-    }
-
-    public static <T> T with(Supplier<T> supplier, ReturningConsumer<T> returningConsumer) {
-        return returningConsumer.acceptAndReturn(supplier.get());
+    public static <T> T with(Supplier<T> supplier, Consumer<T> consumer) {
+        T value = supplier.get();
+        consumer.accept(value);
+        return value;
     }
 
 }

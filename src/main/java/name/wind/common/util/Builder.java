@@ -101,10 +101,7 @@ public abstract class Builder<T> implements Supplier<T> {
         }
 
         @Override public T get() {
-            return with(supplier, value -> {
-                consumers.forEach(consumer -> consumer.accept(value));
-                return value;
-            });
+            return with(supplier, value -> consumers.forEach(consumer -> consumer.accept(value)));
         }
 
     }
