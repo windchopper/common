@@ -35,9 +35,9 @@ public class StructuredPreferencesEntry<T> extends PreferencesEntry<StructuredPr
 
         private StructuredValue save(Preferences preferences) throws BackingStoreException {
             Preferences node = preferences.node(name);
-            for (String key : node.keys()) preferences.remove(key);
+            for (String key : node.keys()) node.remove(key);
             entrySet().stream().filter(entry -> entry.getValue() != null).forEach(entry -> node.put(entry.getKey(), entry.getValue()));
-            for (StructuredValue structuredValue : children) structuredValue.save(preferences);
+            for (StructuredValue structuredValue : children) structuredValue.save(node);
             return this;
         }
 
