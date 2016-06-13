@@ -28,16 +28,38 @@ public class StructuredPreferencesEntry<T> extends PreferencesEntry<StructuredPr
         }
 
         private StructuredValue load(Preferences preferences) throws BackingStoreException {
-            for (String key : preferences.keys()) put(key, preferences.get(key, null));
-            for (String childName : preferences.childrenNames()) children.add(new StructuredValue(childName).load(preferences.node(childName)));
+            for (String key : preferences.keys()) {
+                put(key, preferences.get(key, null));
+            }
+
+            for (String childName : preferences.childrenNames()) {
+                children.add(new StructuredValue(childName).load(preferences.node(childName)));
+            }
+
             return this;
         }
 
-        private StructuredValue save(Preferences preferences) throws BackingStoreException {
+        @SuppressWarnings("Convert2streamapi") private StructuredValue save(Preferences preferences) throws BackingStoreException {
             Preferences node = preferences.node(name);
-            for (String key : node.keys()) node.remove(key);
-            entrySet().stream().filter(entry -> entry.getValue() != null).forEach(entry -> node.put(entry.getKey(), entry.getValue()));
-            for (StructuredValue structuredValue : children) structuredValue.save(node);
+
+            for (String key : node.keys()) {
+                node.remove(key);
+            }
+
+            for (String childName : node.childrenNames()) {
+                node.node(childName).removeNode();
+            }
+
+            for (Map.Entry<String, String> entry : entrySet()) {
+                if (entry.getValue() != null) {
+                    node.put(entry.getKey(), entry.getValue());
+                }
+            }
+
+            for (StructuredValue child : children) {
+                child.save(node);
+            }
+
             return this;
         }
 
