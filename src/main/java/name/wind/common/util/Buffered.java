@@ -48,11 +48,11 @@ public class Buffered<T> implements Supplier<T> {
 
         if (time - previousSupplyTime > timeUnit.toMillis(lifeTime)) {
             suppliedValue = null;
-            previousSupplyTime = time;
         }
 
         if (suppliedValue == null) {
             suppliedValue = valueSupplier.get();
+            previousSupplyTime = time;
         }
 
         return suppliedValue;
