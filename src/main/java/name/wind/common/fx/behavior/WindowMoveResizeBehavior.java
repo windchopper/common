@@ -5,7 +5,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
-public class StageMoveResizeBehavior implements Behavior<Region> {
+public class WindowMoveResizeBehavior implements Behavior<Region> {
 
     private enum DragMode {
 
@@ -19,9 +19,9 @@ public class StageMoveResizeBehavior implements Behavior<Region> {
         RESIZE_SOUTH_WEST(Cursor.SW_RESIZE),
         RESIZE_WEST(Cursor.W_RESIZE);
 
-        final Cursor cursor;
+        private final Cursor cursor;
 
-        private DragMode(Cursor cursor) {
+        DragMode(Cursor cursor) {
             this.cursor = cursor;
         }
 
@@ -75,15 +75,15 @@ public class StageMoveResizeBehavior implements Behavior<Region> {
     private final double borderSize;
     private final Stage stage;
 
-    public StageMoveResizeBehavior(double borderSize, Stage stage) {
+    public WindowMoveResizeBehavior(double borderSize, Stage stage) {
         this.borderSize = borderSize;
         this.stage = stage;
     }
 
-    @Override public void apply(Region target) {
-        target.setOnMousePressed(this::mousePressed);
-        target.setOnMouseMoved(this::mouseMoved);
-        target.setOnMouseDragged(this::mouseDragged);
+    @Override public void apply(Region region) {
+        region.setOnMousePressed(this::mousePressed);
+        region.setOnMouseMoved(this::mouseMoved);
+        region.setOnMouseDragged(this::mouseDragged);
     }
 
     private void mousePressed(MouseEvent event) {
