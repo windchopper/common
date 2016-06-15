@@ -74,6 +74,8 @@ public abstract class Builder<T> implements Supplier<T> {
         private final Supplier<T> supplier;
         private final List<Consumer<T>> consumers = new ArrayList<>();
 
+        private T value;
+
         LazyBuilder(Supplier<T> supplier) {
             this.supplier = supplier;
         }
@@ -99,9 +101,16 @@ public abstract class Builder<T> implements Supplier<T> {
         }
 
         @Override public T get() {
-            return Optional.of(supplier.get())
-                .ifPresent(value -> consumers.forEach(consumer -> consumer.accept(value)))
-                .orElseThrow(NullPointerException::new);
+            return Optional
+                .of(
+                    Optional
+                        .of(value)
+                        .orElseGet(supplier))
+                .ifPresent(
+                    value -> consumers.forEach(
+                        consumer -> consumer.accept(value)))
+                .orElseThrow(
+                    NullPointerException::new);
         }
 
     }
