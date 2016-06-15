@@ -8,8 +8,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static name.wind.common.util.SyntaxBums.with;
-
 public abstract class Builder<T> implements Supplier<T> {
 
     public abstract <V> Builder<T> set(Function<T, Consumer<V>> valueConsumerFunction, V value);
@@ -101,7 +99,9 @@ public abstract class Builder<T> implements Supplier<T> {
         }
 
         @Override public T get() {
-            return with(supplier, value -> consumers.forEach(consumer -> consumer.accept(value)));
+            return Optional.of(supplier.get())
+                .ifPresent(value -> consumers.forEach(consumer -> consumer.accept(value)))
+                .orElseThrow(NullPointerException::new);
         }
 
     }
