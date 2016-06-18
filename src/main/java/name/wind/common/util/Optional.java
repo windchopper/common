@@ -8,15 +8,13 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class Optional<T> {
+public class Optional<T> extends Value<T> {
 
     private static final ResourceBundle bundle = ResourceBundle.getBundle("common.i18n.messages");
     private static final Optional<?> empty = new Optional<>(null);
 
-    private final T value;
-
     private Optional(T value) {
-        this.value = value;
+        super(value);
     }
 
     @SuppressWarnings("unchecked") public static <T> Optional<T> empty() {
