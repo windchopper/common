@@ -27,11 +27,11 @@ public class Optional<T> implements Supplier<T> {
         return new Optional<>(value);
     }
 
-    public static <T> Optional<T> supplied(Supplier<T> valueSupplier) {
+    public static <T> Optional<T> of(Supplier<T> valueSupplier) {
         return new Optional<>(valueSupplier.get());
     }
 
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType") public static <T> Optional<T> converted(java.util.Optional<T> optional) {
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType") public static <T> Optional<T> of(java.util.Optional<T> optional) {
         return new Optional<>(optional.orElse(null));
     }
 
