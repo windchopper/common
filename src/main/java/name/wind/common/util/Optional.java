@@ -8,7 +8,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class Optional<T> {
+public class Optional<T> implements Supplier<T> {
 
     private static final ResourceBundle bundle = ResourceBundle.getBundle("common.i18n.messages");
     private static final Optional<?> empty = new Optional<>(null);
@@ -27,7 +27,11 @@ public class Optional<T> {
         return new Optional<>(value);
     }
 
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType") public static <T> Optional<T> convert(java.util.Optional<T> optional) {
+    public static <T> Optional<T> supplied(Supplier<T> valueSupplier) {
+        return new Optional<>(valueSupplier.get());
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType") public static <T> Optional<T> converted(java.util.Optional<T> optional) {
         return new Optional<>(optional.orElse(null));
     }
 
@@ -39,7 +43,7 @@ public class Optional<T> {
         return value == null;
     }
 
-    public T get() {
+    @Override public T get() {
         if (value == null) {
             throw new NoSuchElementException(bundle.getString("common.util.Optional.nullValue"));
         }
