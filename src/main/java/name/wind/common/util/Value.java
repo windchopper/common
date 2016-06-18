@@ -3,7 +3,7 @@ package name.wind.common.util;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class Value<T> {
+public class Value<T> implements Supplier<T> {
 
     private final T value;
 
@@ -17,6 +17,10 @@ public class Value<T> {
 
     public static <T> Value<T> of(Supplier<T> valueSupplier) {
         return new Value<>(valueSupplier.get());
+    }
+
+    @Override public T get() {
+        return value;
     }
 
     public Value<T> with(Consumer<? super T> consumer) {
