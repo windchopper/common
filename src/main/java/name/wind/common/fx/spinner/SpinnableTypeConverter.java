@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 public class SpinnableTypeConverter<T> extends StringConverter<T> {
 
-    private static final Logger logger = Logger.getLogger(SpinnableTypeConverter.class.getName());
+    private static final Logger logger = Logger.getLogger("name.wind.common.fx.spinner");
 
     private final SpinnableType<T> spinnableType;
 

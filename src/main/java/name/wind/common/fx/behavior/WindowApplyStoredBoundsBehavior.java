@@ -2,26 +2,31 @@ package name.wind.common.fx.behavior;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
-import javafx.geometry.Dimension2D;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
-import name.wind.common.fx.CommonProperties;
+import name.wind.common.fx.ExtraProperties;
 import name.wind.common.fx.preferences.RectanglePreferencesEntry;
 
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
 
     private static final ResourceBundle bundle = ResourceBundle.getBundle("common.i18n.messages");
-    private static final Logger logger = Logger.getLogger(WindowApplyStoredBoundsBehavior.class.getName());
+    private static final Logger logger = Logger.getLogger("name.wind.common.fx.behavior");
+
+    private final Consumer<Window> noStoredBoundsHandler;
+
+    public WindowApplyStoredBoundsBehavior(Consumer<Window> noStoredBoundsHandler) {
+        this.noStoredBoundsHandler = noStoredBoundsHandler;
+    }
 
     @Override public void apply(Window window) {
         window.sceneProperty().addListener((sceneProperty, oldScene, newScene) -> Platform.runLater(() -> {
-            String identifier = (String) window.getProperties().get(CommonProperties.PROPERTY__IDENTIFIER);
-            Dimension2D preferredSize = (Dimension2D) window.getProperties().get(CommonProperties.PROPERTY__PREFERRED_SIZE);
+            String identifier = (String) window.getProperties().get(ExtraProperties.PROPERTY__WINDOW_IDENTIFIER);
             Rectangle2D bounds = null;
 
             if (identifier == null) {
@@ -65,22 +70,13 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
                 });
             }
 
-            if (bounds != null) {
+            if (bounds == null) {
+                noStoredBoundsHandler.accept(window);
+            } else {
                 window.setX(bounds.getMinX());
                 window.setY(bounds.getMinY());
                 window.setWidth(bounds.getWidth());
                 window.setHeight(bounds.getHeight());
-            } else if (preferredSize != null) {
-                window.setWidth(preferredSize.getWidth());
-                window.setHeight(preferredSize.getHeight());
-            }
-
-            if (bounds == null && preferredSize == null) {
-                window.sizeToScene();
-            }
-
-            if (bounds == null) {
-                window.centerOnScreen();
             }
         }));
     }

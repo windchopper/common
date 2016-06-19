@@ -19,8 +19,7 @@ public abstract class PreferencesEntry<S, T> implements Supplier<T>, Consumer<T>
     private static final TimeUnit DEFAULT__BUFFER_LIFETIME_UNIT = TimeUnit.MINUTES;
 
     private static final ResourceBundle bundle = ResourceBundle.getBundle("common.i18n.messages");
-    private static final Logger logger = Logger.getLogger(
-        PreferencesEntry.class.getName());
+    private static final Logger logger = Logger.getLogger("name.wind.common.preferences");
 
     private final Buffered<T> bufferedValue;
 
