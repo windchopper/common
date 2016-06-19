@@ -1,6 +1,5 @@
 package name.wind.common.fx.behavior;
 
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Window;
@@ -25,7 +24,7 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
     }
 
     @Override public void apply(Window window) {
-        window.sceneProperty().addListener((sceneProperty, oldScene, newScene) -> Platform.runLater(() -> {
+        window.sceneProperty().addListener((sceneProperty, oldScene, newScene) -> {
             String identifier = (String) window.getProperties().get(ExtraProperties.PROPERTY__WINDOW_IDENTIFIER);
             Rectangle2D bounds = null;
 
@@ -35,9 +34,9 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
                 RectanglePreferencesEntry preferencesEntry = new RectanglePreferencesEntry(WindowApplyStoredBoundsBehavior.class, identifier + "Bounds");
                 bounds = preferencesEntry.get();
 
-                window.addEventHandler(WindowEvent.WINDOW_SHOWN, new EventHandler<WindowEvent>() {
+                window.addEventHandler(WindowEvent.WINDOW_SHOWING, new EventHandler<WindowEvent>() {
                     @Override public void handle(WindowEvent event) {
-                        window.removeEventHandler(WindowEvent.WINDOW_SHOWN, this);
+                        window.removeEventHandler(WindowEvent.WINDOW_SHOWING, this);
 
                         window.xProperty().addListener((property, oldX, newX) -> preferencesEntry.accept(
                             new Rectangle2D(
@@ -78,7 +77,7 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
                 window.setWidth(bounds.getWidth());
                 window.setHeight(bounds.getHeight());
             }
-        }));
+        });
     }
 
 }
