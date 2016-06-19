@@ -101,9 +101,9 @@ public abstract class Builder<T> implements Supplier<T> {
         }
 
         @Override public T get() {
-            return Optional
+            return Value
                 .of(
-                    Optional
+                    Value
                         .of(value)
                         .orElseGet(supplier))
                 .ifPresent(
