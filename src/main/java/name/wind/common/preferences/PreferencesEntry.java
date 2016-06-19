@@ -42,9 +42,9 @@ public abstract class PreferencesEntry<S, T> implements Supplier<T>, Consumer<T>
             loaded = transformer.apply(loadRaw(node, name));
         } catch (Exception thrown) {
             if (logger.isLoggable(Level.FINE)) {
-                logger.log(Level.FINE, bundle.getString("common.preferences.PreferencesEntry.fail.load"), thrown);
+                logger.log(Level.FINE, String.format(bundle.getString("common.preferences.PreferencesEntry.fail.load"), name), thrown);
             } else if (logger.isLoggable(Level.WARNING)) {
-                logger.log(Level.WARNING, bundle.getString("common.preferences.PreferencesEntry.fail.load"));
+                logger.log(Level.WARNING, String.format(bundle.getString("common.preferences.PreferencesEntry.fail.load"), name));
             }
         }
 
@@ -56,9 +56,9 @@ public abstract class PreferencesEntry<S, T> implements Supplier<T>, Consumer<T>
             saveRaw(node, name, reverseTransformer.apply(value));
         } catch (Exception thrown) {
             if (logger.isLoggable(Level.FINE)) {
-                logger.log(Level.FINE, bundle.getString("common.preferences.PreferencesEntry.fail.save"), thrown);
+                logger.log(Level.FINE, String.format(bundle.getString("common.preferences.PreferencesEntry.fail.save"), name), thrown);
             } else if (logger.isLoggable(Level.WARNING)) {
-                logger.log(Level.WARNING, bundle.getString("common.preferences.PreferencesEntry.fail.save"));
+                logger.log(Level.WARNING, String.format(bundle.getString("common.preferences.PreferencesEntry.fail.save"), name));
             }
         }
     }
