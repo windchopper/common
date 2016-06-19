@@ -11,15 +11,17 @@ public class RectanglePreferencesEntry extends StructuredPreferencesEntry<Rectan
     private static final String KEY__WIDTH = "width";
     private static final String KEY__HEIGHT = "height";
 
+    private static final String DEF_ANY = "0.0";
+
     public RectanglePreferencesEntry(Class<?> invoker, String name) {
         super(
             invoker,
             name,
             structuredValue -> new Rectangle2D(
-                Double.parseDouble(structuredValue.get(KEY__X)),
-                Double.parseDouble(structuredValue.get(KEY__Y)),
-                Double.parseDouble(structuredValue.get(KEY__WIDTH)),
-                Double.parseDouble(structuredValue.get(KEY__HEIGHT))),
+                Double.parseDouble(structuredValue.getOrDefault(KEY__X, DEF_ANY)),
+                Double.parseDouble(structuredValue.getOrDefault(KEY__Y, DEF_ANY)),
+                Double.parseDouble(structuredValue.getOrDefault(KEY__WIDTH, DEF_ANY)),
+                Double.parseDouble(structuredValue.getOrDefault(KEY__HEIGHT, DEF_ANY))),
             rectangle -> Builder.direct(() -> new StructuredValue(name))
                 .set(target -> value -> target.put(KEY__X, value), String.valueOf(rectangle.getMinX()))
                 .set(target -> value -> target.put(KEY__Y, value), String.valueOf(rectangle.getMinY()))
