@@ -41,7 +41,11 @@ public abstract class PreferencesEntry<S, T> implements Supplier<T>, Consumer<T>
         try {
             loaded = transformer.apply(loadRaw(node, name));
         } catch (Exception thrown) {
-            logger.log(Level.WARNING, thrown, () -> bundle.getString("common.preferences.PreferencesEntry.fail.load"));
+            if (logger.isLoggable(Level.FINE)) {
+                logger.log(Level.FINE, bundle.getString("common.preferences.PreferencesEntry.fail.load"), thrown);
+            } else if (logger.isLoggable(Level.WARNING)) {
+                logger.log(Level.WARNING, bundle.getString("common.preferences.PreferencesEntry.fail.load"));
+            }
         }
 
         return loaded;
@@ -51,7 +55,11 @@ public abstract class PreferencesEntry<S, T> implements Supplier<T>, Consumer<T>
         try {
             saveRaw(node, name, reverseTransformer.apply(value));
         } catch (Exception thrown) {
-            logger.log(Level.WARNING, thrown, () -> bundle.getString("common.preferences.PreferencesEntry.fail.save"));
+            if (logger.isLoggable(Level.FINE)) {
+                logger.log(Level.FINE, bundle.getString("common.preferences.PreferencesEntry.fail.save"), thrown);
+            } else if (logger.isLoggable(Level.WARNING)) {
+                logger.log(Level.WARNING, bundle.getString("common.preferences.PreferencesEntry.fail.save"));
+            }
         }
     }
 
