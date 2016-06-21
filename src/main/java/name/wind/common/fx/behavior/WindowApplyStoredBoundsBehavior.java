@@ -10,6 +10,8 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
+import static java.lang.Double.isNaN;
+
 public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
 
     private static final ResourceBundle bundle = ResourceBundle.getBundle("common.i18n.messages");
@@ -21,6 +23,22 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
     public WindowApplyStoredBoundsBehavior(String preferencesEntryName, Consumer<Window> initialBounder) {
         this.preferencesEntryName = preferencesEntryName;
         this.initialBounder = initialBounder;
+    }
+
+    private double max(double value1st, double value2nd) {
+        if (isNaN(value1st) && isNaN(value2nd)) {
+            return Double.NaN;
+        }
+
+        if (isNaN(value1st)) {
+            value1st = 0.;
+        }
+
+        if (isNaN(value2nd)) {
+            value2nd = 0.;
+        }
+
+        return Math.max(value1st, value2nd);
     }
 
     @Override public void apply(Window window) {
@@ -39,8 +57,8 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
                 if (scene != null) {
                     window.sizeToScene();
 
-                    size = new Dimension2D(Math.max(window.getWidth(), size.getWidth()),
-                        Math.max(window.getHeight(), size.getHeight()));
+                    size = new Dimension2D(max(window.getWidth(), size.getWidth()),
+                        max(window.getHeight(), size.getHeight()));
                 }
 
                 window.setWidth(size.getWidth());
