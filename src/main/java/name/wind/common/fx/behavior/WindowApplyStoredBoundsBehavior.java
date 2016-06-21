@@ -1,6 +1,7 @@
 package name.wind.common.fx.behavior;
 
 import javafx.event.EventHandler;
+import javafx.geometry.Dimension2D;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
@@ -72,10 +73,19 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
             if (bounds == null) {
                 noStoredBoundsHandler.accept(window);
             } else {
+                Dimension2D size;
+
+                if (newScene != null) {
+                    window.sizeToScene();
+                    size = new Dimension2D(window.getWidth(), window.getHeight());
+                } else {
+                    size = new Dimension2D(bounds.getWidth(), bounds.getHeight());
+                }
+
                 window.setX(bounds.getMinX());
                 window.setY(bounds.getMinY());
-                window.setWidth(bounds.getWidth());
-                window.setHeight(bounds.getHeight());
+                window.setWidth(size.getWidth());
+                window.setHeight(size.getHeight());
             }
         });
     }

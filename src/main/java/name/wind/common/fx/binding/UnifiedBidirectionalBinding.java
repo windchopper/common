@@ -11,19 +11,27 @@ public class UnifiedBidirectionalBinding<Type1st, Type2nd> {
     private final WeakReference<Property<Type1st>> reference1st;
     private final WeakReference<Property<Type2nd>> reference2nd;
 
-    private final Function<Type1st, Type2nd> directTransformer;
-    private final Function<Type2nd, Type1st> returnTransformer;
+    private final Function<Type1st, Type2nd> transformer;
+    private final Function<Type2nd, Type1st> reverseTransformer;
 
     private boolean updateInProgress;
 
-    private UnifiedBidirectionalBinding(Property<Type1st> property1st,
-                                        Property<Type2nd> property2nd,
-                                        Function<Type1st, Type2nd> directTransformer,
-                                        Function<Type2nd, Type1st> returnTransformer) {
+    public UnifiedBidirectionalBinding(Property<Type1st> property1st,
+                                       Property<Type2nd> property2nd,
+                                       Function<Type1st, Type2nd> transformer,
+                                       Function<Type2nd, Type1st> reverseTransformer) {
         reference1st = new WeakReference<>(property1st);
         reference2nd = new WeakReference<>(property2nd);
-        this.directTransformer = directTransformer;
-        this.returnTransformer = returnTransformer;
+
+        this.transformer = transformer;
+        this.reverseTransformer = reverseTransformer;
+
+        property1st.setValue(
+            reverseTransformer.apply(
+                property2nd.getValue()));
+
+        property1st.addListener(this::changed1st);
+        property2nd.addListener(this::changed2nd);
     }
 
     private <T> void updateProperty(Property<T> property, T value) {
@@ -42,7 +50,7 @@ public class UnifiedBidirectionalBinding<Type1st, Type2nd> {
         try {
             updateProperty(
                 reference2nd.get(),
-                directTransformer.apply(newValue));
+                transformer.apply(newValue));
         } finally {
             updateInProgress = false;
         }
@@ -58,29 +66,10 @@ public class UnifiedBidirectionalBinding<Type1st, Type2nd> {
         try {
             updateProperty(
                 reference1st.get(),
-                returnTransformer.apply(newValue));
+                reverseTransformer.apply(newValue));
         } finally {
             updateInProgress = false;
         }
-    }
-
-    /*
-     *
-     */
-
-    public static <Type1st, Type2nd> UnifiedBidirectionalBinding<Type1st, Type2nd> bindBidirectional(Property<Type1st> property1st,
-                                                                                                     Property<Type2nd> property2nd,
-                                                                                                     Function<Type1st, Type2nd> directTransformer,
-                                                                                                     Function<Type2nd, Type1st> returnTransformer) {
-        UnifiedBidirectionalBinding<Type1st, Type2nd> binding = new UnifiedBidirectionalBinding<>(
-            property1st, property2nd, directTransformer, returnTransformer);
-
-        property1st.setValue(returnTransformer.apply(property2nd.getValue()));
-
-        property1st.addListener(binding::changed1st);
-        property2nd.addListener(binding::changed2nd);
-
-        return binding;
     }
 
 }
