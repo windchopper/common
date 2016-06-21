@@ -73,13 +73,12 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
             if (bounds == null) {
                 noStoredBoundsHandler.accept(window);
             } else {
-                Dimension2D size;
+                Dimension2D size = new Dimension2D(bounds.getWidth(), bounds.getHeight());
 
                 if (newScene != null) {
                     window.sizeToScene();
-                    size = new Dimension2D(window.getWidth(), window.getHeight());
-                } else {
-                    size = new Dimension2D(bounds.getWidth(), bounds.getHeight());
+                    size = new Dimension2D(Math.max(window.getWidth(), size.getWidth()),
+                        Math.max(window.getHeight(), size.getHeight()));
                 }
 
                 window.setX(bounds.getMinX());
