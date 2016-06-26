@@ -21,26 +21,23 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
         this.boundsInitializer = boundsInitializer;
     }
 
-    private void correctBounds(Window window) {
+    private void adjustBounds(Window window) {
         Scene scene = window.getScene();
 
         double sceneWidth = scene.getWidth();
         double sceneHeight = scene.getHeight();
 
-        double deltaWidth = window.getWidth() - sceneWidth;
-        double deltaHeight = window.getHeight() - sceneHeight;
-
         Parent sceneRoot = scene.getRoot();
 
-        double preferredWidth = sceneRoot.prefWidth(sceneHeight);
+        double preferredWidth = sceneRoot.prefWidth(-1);
         double preferredHeight = sceneRoot.prefHeight(preferredWidth);
 
         if (preferredWidth > sceneWidth) {
-            window.setWidth(preferredWidth + deltaWidth);
+            window.setWidth(preferredWidth + window.getWidth() - sceneWidth);
         }
 
         if (preferredHeight > sceneHeight) {
-            window.setHeight(preferredHeight + deltaHeight);
+            window.setHeight(preferredHeight + window.getHeight() - sceneHeight);
         }
     }
 
@@ -57,7 +54,7 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
             window.setHeight(bounds.getHeight());
         }
 
-        window.addEventHandler(WINDOW_SHOWN, event -> correctBounds(window));
+        window.addEventHandler(WINDOW_SHOWN, event -> adjustBounds(window));
         window.addEventHandler(WINDOW_SHOWING, event -> {
             window.xProperty().addListener((property, oldX, newX) -> preferencesEntry.accept(
                 new Rectangle2D(
