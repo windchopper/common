@@ -1,106 +1,91 @@
 package name.wind.common.fx.behavior;
 
-import javafx.geometry.Dimension2D;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Window;
-import javafx.stage.WindowEvent;
 import name.wind.common.fx.preferences.RectanglePreferencesEntry;
 
-import java.util.ResourceBundle;
 import java.util.function.Consumer;
-import java.util.logging.Logger;
 
-import static java.lang.Double.isNaN;
+import static javafx.stage.WindowEvent.WINDOW_SHOWING;
+import static javafx.stage.WindowEvent.WINDOW_SHOWN;
 
 public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
 
-    private static final ResourceBundle bundle = ResourceBundle.getBundle("common.i18n.messages");
-    private static final Logger logger = Logger.getLogger("name.wind.common.fx.behavior");
-
     private final String preferencesEntryName;
-    private final Consumer<Window> initialBounder;
+    private final Consumer<Window> boundsInitializer;
 
-    public WindowApplyStoredBoundsBehavior(String preferencesEntryName, Consumer<Window> initialBounder) {
+    public WindowApplyStoredBoundsBehavior(String preferencesEntryName, Consumer<Window> boundsInitializer) {
         this.preferencesEntryName = preferencesEntryName;
-        this.initialBounder = initialBounder;
+        this.boundsInitializer = boundsInitializer;
     }
 
-    private double max(double value1st, double value2nd) {
-        if (isNaN(value1st) && isNaN(value2nd)) {
-            return Double.NaN;
+    private void correctBounds(Window window) {
+        Scene scene = window.getScene();
+
+        double sceneWidth = scene.getWidth();
+        double sceneHeight = scene.getHeight();
+
+        double deltaWidth = window.getWidth() - sceneWidth;
+        double deltaHeight = window.getHeight() - sceneHeight;
+
+        Parent sceneRoot = scene.getRoot();
+
+        double preferredWidth = sceneRoot.prefWidth(sceneHeight);
+        double preferredHeight = sceneRoot.prefHeight(preferredWidth);
+
+        if (preferredWidth > sceneWidth) {
+            window.setWidth(preferredWidth + deltaWidth);
         }
 
-        if (isNaN(value1st)) {
-            value1st = 0.;
+        if (preferredHeight > sceneHeight) {
+            window.setHeight(preferredHeight + deltaHeight);
         }
-
-        if (isNaN(value2nd)) {
-            value2nd = 0.;
-        }
-
-        return Math.max(value1st, value2nd);
     }
 
     @Override public void apply(Window window) {
-        window.sceneProperty().addListener((sceneProperty, previousScene, scene) -> {
-            RectanglePreferencesEntry preferencesEntry = new RectanglePreferencesEntry(WindowApplyStoredBoundsBehavior.class, preferencesEntryName);
-            Rectangle2D bounds = preferencesEntry.get();
+        RectanglePreferencesEntry preferencesEntry = new RectanglePreferencesEntry(WindowApplyStoredBoundsBehavior.class, preferencesEntryName);
+        Rectangle2D bounds = preferencesEntry.get();
 
-            if (bounds == null) {
-                initialBounder.accept(window);
-            } else {
-                window.setX(bounds.getMinX());
-                window.setY(bounds.getMinY());
+        if (bounds == null) {
+            boundsInitializer.accept(window);
+        } else {
+            window.setX(bounds.getMinX());
+            window.setY(bounds.getMinY());
+            window.setWidth(bounds.getWidth());
+            window.setHeight(bounds.getHeight());
+        }
 
-                Dimension2D size = new Dimension2D(bounds.getWidth(), bounds.getHeight());
+        window.addEventHandler(WINDOW_SHOWN, event -> correctBounds(window));
+        window.addEventHandler(WINDOW_SHOWING, event -> {
+            window.xProperty().addListener((property, oldX, newX) -> preferencesEntry.accept(
+                new Rectangle2D(
+                    newX.doubleValue(),
+                    window.getY(),
+                    window.getWidth(),
+                    window.getHeight())));
 
-                if (scene != null) {
-                    window.sizeToScene();
+            window.yProperty().addListener((property, oldY, newY) -> preferencesEntry.accept(
+                new Rectangle2D(
+                    window.getX(),
+                    newY.doubleValue(),
+                    window.getWidth(),
+                    window.getHeight())));
 
-                    size = new Dimension2D(max(window.getWidth(), size.getWidth()),
-                        max(window.getHeight(), size.getHeight()));
-                }
+            window.widthProperty().addListener((property, oldWidth, newWidth) -> preferencesEntry.accept(
+                new Rectangle2D(
+                    window.getX(),
+                    window.getY(),
+                    newWidth.doubleValue(),
+                    window.getHeight())));
 
-                window.setWidth(size.getWidth());
-                window.setHeight(size.getHeight());
-            }
-
-            preferencesEntry.accept(
+            window.heightProperty().addListener((property, oldHeight, newHeight) -> preferencesEntry.accept(
                 new Rectangle2D(
                     window.getX(),
                     window.getY(),
                     window.getWidth(),
-                    window.getHeight()));
-
-            window.addEventHandler(WindowEvent.WINDOW_SHOWING, event -> {
-                window.xProperty().addListener((property, oldX, newX) -> preferencesEntry.accept(
-                    new Rectangle2D(
-                        newX.doubleValue(),
-                        window.getY(),
-                        window.getWidth(),
-                        window.getHeight())));
-
-                window.yProperty().addListener((property, oldY, newY) -> preferencesEntry.accept(
-                    new Rectangle2D(
-                        window.getX(),
-                        newY.doubleValue(),
-                        window.getWidth(),
-                        window.getHeight())));
-
-                window.widthProperty().addListener((property, oldWidth, newWidth) -> preferencesEntry.accept(
-                    new Rectangle2D(
-                        window.getX(),
-                        window.getY(),
-                        newWidth.doubleValue(),
-                        window.getHeight())));
-
-                window.heightProperty().addListener((property, oldHeight, newHeight) -> preferencesEntry.accept(
-                    new Rectangle2D(
-                        window.getX(),
-                        window.getY(),
-                        window.getWidth(),
-                        newHeight.doubleValue())));
-            });
+                    newHeight.doubleValue())));
         });
     }
 
