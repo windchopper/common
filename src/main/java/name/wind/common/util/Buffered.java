@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 public class Buffered<T> implements Supplier<T> {
 
-    private static final ResourceBundle bundle = ResourceBundle.getBundle("common.i18n.messages");
+    private static final ResourceBundle bundle = ResourceBundle.getBundle("name.wind.common.i18n.messages");
 
     private final long lifeTime;
     private final TimeUnit timeUnit;
@@ -32,9 +32,9 @@ public class Buffered<T> implements Supplier<T> {
 
     public Buffered(long lifeTime, TimeUnit timeUnit, Supplier<T> valueSupplier, Consumer<T> valueConsumer) {
         this.lifeTime = lifeTime;
-        this.timeUnit = Objects.requireNonNull(timeUnit, () -> bundle.getString("common.util.Buffered.nullParameter.timeUnit"));
-        this.valueSupplier = Objects.requireNonNull(valueSupplier, () -> bundle.getString("common.util.Buffered.nullParameter.valueSupplier"));
-        this.valueConsumer = Objects.requireNonNull(valueConsumer, () -> bundle.getString("common.util.Buffered.nullParameter.valueConsumer"));
+        this.timeUnit = Objects.requireNonNull(timeUnit, () -> bundle.getString("name.wind.common.util.Buffered.nullParameter.timeUnit"));
+        this.valueSupplier = Objects.requireNonNull(valueSupplier, () -> bundle.getString("name.wind.common.util.Buffered.nullParameter.valueSupplier"));
+        this.valueConsumer = Objects.requireNonNull(valueConsumer, () -> bundle.getString("name.wind.common.util.Buffered.nullParameter.valueConsumer"));
     }
 
     public void invalidate(T value) {

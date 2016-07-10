@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 
 public class Value<T> implements Supplier<T> {
 
-    private static final ResourceBundle bundle = ResourceBundle.getBundle("common.i18n.messages");
+    private static final ResourceBundle bundle = ResourceBundle.getBundle("name.wind.common.i18n.messages");
     private static final Value<?> empty = new Value<>(null);
 
     private final T value;
@@ -45,7 +45,7 @@ public class Value<T> implements Supplier<T> {
 
     @Override public T get() {
         if (value == null) {
-            throw new NoSuchElementException(bundle.getString("common.util.Optional.nullValue"));
+            throw new NoSuchElementException(bundle.getString("name.wind.common.util.Value.nullValue"));
         }
 
         return value;
