@@ -1,23 +1,20 @@
 package name.wind.common.search;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class Search<T> {
+public class Search {
 
-    private final Map<Predicate<T>, Function<T, Collection<? extends T>>> exposers = new HashMap<>();
+    private final Function<Object, Collection<?>> exposer;
 
-    public Search<T> addInteriorExposer(Predicate<T> matcher, Function<T, Collection<? extends T>> exposer) {
-        exposers.put(matcher, exposer);
-        return this;
+    public Search(Function<Object, Collection<?>> exposer) {
+        this.exposer = exposer;
     }
 
-    public <C> void search(SearchContinuation<T, C> continuation, Predicate<T> predicate, T where) {
+    public <C> void search(SearchContinuation<C> continuation, Predicate<Object> matcher, Object where) {
         try {
-            search(continuation, predicate, continuation.newContext(), where);
+            search(continuation, matcher, continuation.newContext(), where);
         } catch (SearchStoppedException ignored) {
         }
     }
@@ -26,22 +23,17 @@ public class Search<T> {
      *
      */
 
-    private <C> void search(SearchContinuation<T, C> continuation, Predicate<T> predicate, C context, T where) throws SearchStoppedException {
+    private <C> void search(SearchContinuation<C> continuation, Predicate<Object> matcher, C context, Object where) throws SearchStoppedException {
         if (where == null) {
             return;
         }
 
-        if (predicate.test(where)) {
+        if (matcher.test(where)) {
             continuation.found(context, where);
         }
 
         C derivedContext = continuation.deriveContext(context, where);
-
-        exposers.entrySet().stream()
-            .filter(entry -> entry.getKey().test(where))
-            .map(entry -> entry.getValue().apply(where))
-            .flatMap(Collection::stream)
-            .forEach(item -> search(continuation, predicate, derivedContext, item));
+        exposer.apply(where).forEach(item -> search(continuation, matcher, derivedContext, item));
     }
 
 }

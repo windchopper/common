@@ -1,10 +1,10 @@
 package name.wind.common.search;
 
-public interface SearchContinuation<T, C> {
+public interface SearchContinuation<C> {
 
     C newContext();
-    C deriveContext(C context, T tail);
+    C deriveContext(C context, Object tail);
 
-    void found(C context, T found) throws SearchStoppedException;
+    void found(C context, Object found) throws SearchStoppedException;
 
 }
