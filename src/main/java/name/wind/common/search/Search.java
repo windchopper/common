@@ -1,15 +1,16 @@
 package name.wind.common.search;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class Search {
 
-    private final Function<Object, Collection<?>> exposer;
+    private final List<Function<Object, Collection<?>>> exposers;
 
-    public Search(Function<Object, Collection<?>> exposer) {
-        this.exposer = exposer;
+    public Search(List<Function<Object, Collection<?>>> exposers) {
+        this.exposers = exposers;
     }
 
     public <C> void search(SearchContinuation<C> continuation, Predicate<Object> matcher, Object where) {
@@ -24,16 +25,17 @@ public class Search {
      */
 
     private <C> void search(SearchContinuation<C> continuation, Predicate<Object> matcher, C context, Object where) throws SearchStoppedException {
-        if (where == null) {
-            return;
-        }
+        if (where != null) {
+            if (matcher.test(where)) {
+                continuation.found(context, where);
+            }
 
-        if (matcher.test(where)) {
-            continuation.found(context, where);
-        }
+            C derivedContext = continuation.deriveContext(context, where);
 
-        C derivedContext = continuation.deriveContext(context, where);
-        exposer.apply(where).forEach(item -> search(continuation, matcher, derivedContext, item));
+            exposers.stream()
+                .flatMap(exposer -> exposer.apply(where).stream())
+                .forEach(item -> search(continuation, matcher, derivedContext, item));
+        }
     }
 
 }
