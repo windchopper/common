@@ -1,4 +1,4 @@
 package name.wind.common.search;
 
-public class SearchStoppedException extends Exception {
+public class SearchStoppedException extends RuntimeException {
 }

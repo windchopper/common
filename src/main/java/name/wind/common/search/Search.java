@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static java.util.stream.Collectors.toList;
-
 public class Search<T> {
 
     private final Map<Predicate<T>, Function<T, Collection<? extends T>>> exposers = new HashMap<>();
@@ -37,22 +35,13 @@ public class Search<T> {
             continuation.found(context, where);
         }
 
-        search(
-            continuation,
-            predicate,
-            continuation.deriveContext(context, where),
-            exposers.entrySet().stream()
-                .filter(entry -> entry.getKey().test(where))
-                .map(entry -> entry.getValue().apply(where))
-                .flatMap(Collection::stream)
-                .collect(
-                    toList()));
-    }
+        C derivedContext = continuation.deriveContext(context, where);
 
-    private <C> void search(SearchContinuation<T, C> continuation, Predicate<T> predicate, C context, Collection<? extends T> where) throws SearchStoppedException {
-        for (T item : where) {
-            search(continuation, predicate, context, item);
-        }
+        exposers.entrySet().stream()
+            .filter(entry -> entry.getKey().test(where))
+            .map(entry -> entry.getValue().apply(where))
+            .flatMap(Collection::stream)
+            .forEach(item -> search(continuation, predicate, derivedContext, item));
     }
 
 }
