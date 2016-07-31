@@ -32,14 +32,4 @@ public class SystemProperty<T> {
         }
     }
 
-    public T value(String defaultStringValue) {
-        T value = bufferedValue.get();
-
-        if (value == null) {
-            return transformer.apply(defaultStringValue);
-        } else {
-            return value;
-        }
-    }
-
 }
