@@ -18,8 +18,7 @@ public class WildCardMultiPhraseMatcher {
 
     public WildCardMultiPhraseMatcher(String searchPhrase) {
         Map<String, String> quotedPhrases = new HashMap<>();
-        Set<String> phrases = new HashSet<>();
-        Set<String> expressions = new HashSet<>();
+        Set<String> phrases = new HashSet<>(), expressions = new HashSet<>();
 
         while (true) {
             Matcher matcher = quotedPhrasePattern.matcher(searchPhrase);
