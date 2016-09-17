@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import java.util.function.Predicate;
 
-public class WildcardMultiphraseMattcherTest {
+public class WildcardMultiphraseMatcherTest {
 
     @Test public void testSearch() {
         String searchPhrase = "abc1 de* \"ghi\"* j??4 \"3 j\"";
