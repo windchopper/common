@@ -75,9 +75,9 @@ public class Value<T> implements Supplier<T> {
         return this;
     }
 
-    public Value<T> ifNotPresentSupply(Supplier<T> valueSupplier) {
+    public Value<T> ifNotPresentSupply(Supplier<? extends T> valueSupplier) {
         if (value == null) {
-            return Value.of(valueSupplier);
+            return Value.of(valueSupplier::get);
         }
 
         return this;
