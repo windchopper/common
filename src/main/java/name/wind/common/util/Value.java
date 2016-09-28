@@ -75,6 +75,14 @@ public class Value<T> implements Supplier<T> {
         return this;
     }
 
+    public Value<T> ifNotPresentSupply(Supplier<T> valueSupplier) {
+        if (value == null) {
+            return Value.of(valueSupplier);
+        }
+
+        return this;
+    }
+
     public <U> Value<U> flatMap(Function<? super T, Value<U>> mapper) {
         if (value != null) {
             return Objects.requireNonNull(mapper.apply(value));
