@@ -10,27 +10,20 @@ public class Search {
         this.model = model;
     }
 
-    public <C> void search(SearchContinuation<C> continuation, Predicate<Object> matcher, Object where) {
+    public <ContextType> void search(SearchContinuation<ContextType> continuation, Predicate<Object> matcher, ContextType context, Object object) {
         try {
-            search(continuation, matcher, continuation.newContext(), where);
+            if (matcher.test(object))
+                continuation.found(context, object);
+
+            ContextType newContext = continuation.deriveContext(context, object);
+
+            model.partsOf(object).forEach(
+                part -> search(
+                    continuation,
+                    matcher,
+                    newContext,
+                    part));
         } catch (SearchStoppedException ignored) {
-        }
-    }
-
-    /*
-     *
-     */
-
-    private <C> void search(SearchContinuation<C> continuation, Predicate<Object> matcher, C context, Object where) throws SearchStoppedException {
-        if (where != null) {
-            if (matcher.test(where)) {
-                continuation.found(context, where);
-            }
-
-            C newContext = continuation.newContext(context, where);
-
-            model.partsOf(where).forEach(
-                part -> search(continuation, matcher, newContext, part));
         }
     }
 

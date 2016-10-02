@@ -1,10 +1,21 @@
 package name.wind.common.search;
 
-public interface SearchContinuation<ContextType> {
+import java.util.ArrayList;
+import java.util.List;
 
-    ContextType newContext();
-    ContextType newContext(ContextType previousContext, Object lastFound);
+public abstract class SearchContinuation<ContextType> {
 
-    void found(ContextType context, Object found) throws SearchStoppedException;
+    private final List<SearchResult<ContextType>> searchResults = new ArrayList<>();
+
+    public abstract ContextType deriveContext(ContextType context, Object found);
+
+    public List<SearchResult<ContextType>> searchResults() {
+        return searchResults;
+    }
+
+    public void found(ContextType context, Object found) throws SearchStoppedException {
+        searchResults.add(
+            new SearchResult<>(context, found));
+    }
 
 }
