@@ -12,7 +12,7 @@ public class Search<ContextType> {
 
     public SearchResult<ContextType> searchNext(SearchContextBuilder<ContextType> contextBuilder,
                                                 ContextType context,
-                                                Predicate<Object> matcher) throws SearchFinishedException {
+                                                Predicate<? super Object> matcher) throws SearchFinishedException {
         for (Object object : contextModel.expose(context)) {
             if (matcher.test(object)) {
                 return new SearchResult<>(context, object);
