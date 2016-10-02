@@ -1,6 +1,7 @@
 package name.wind.common.search;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class SearchContinuation<ContextType> {
@@ -9,8 +10,12 @@ public abstract class SearchContinuation<ContextType> {
 
     public abstract ContextType deriveContext(ContextType context, Object found);
 
+    public void clearSearchResults() {
+        searchResults.clear();
+    }
+
     public List<SearchResult<ContextType>> searchResults() {
-        return searchResults;
+        return Collections.unmodifiableList(searchResults);
     }
 
     public void found(ContextType context, Object found) throws SearchStoppedException {
