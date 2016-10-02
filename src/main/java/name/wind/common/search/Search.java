@@ -2,29 +2,26 @@ package name.wind.common.search;
 
 import java.util.function.Predicate;
 
-public class Search {
+public class Search<ContextType> {
 
-    private final SearchModel model;
+    private final SearchContextModel<ContextType> contextModel;
 
-    public Search(SearchModel model) {
-        this.model = model;
+    public Search(SearchContextModel<ContextType> contextModel) {
+        this.contextModel = contextModel;
     }
 
-    public <ContextType> void search(SearchContinuation<ContextType> continuation, Predicate<Object> matcher, ContextType context, Object object) {
-        try {
-            if (matcher.test(object))
-                continuation.found(context, object);
-
-            ContextType newContext = continuation.deriveContext(context, object);
-
-            model.partsOf(object).forEach(
-                part -> search(
-                    continuation,
-                    matcher,
-                    newContext,
-                    part));
-        } catch (SearchStoppedException ignored) {
+    public SearchResult<ContextType> searchNext(SearchContextBuilder<ContextType> contextBuilder,
+                                                ContextType context,
+                                                Predicate<Object> matcher) throws SearchFinishedException {
+        for (Object object : contextModel.iterate(context)) {
+            if (matcher.test(object)) {
+                return new SearchResult<>(context, object);
+            } else {
+                return searchNext(contextBuilder, contextBuilder.newContext(context, object), matcher);
+            }
         }
+
+        throw new SearchFinishedException();
     }
 
 }
