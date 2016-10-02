@@ -9,14 +9,14 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WildcardMultiphraseMatcher {
+public class WildcardMultiwordMatcher {
 
     private final Pattern quotedPhrasePattern = Pattern.compile("(?<all>[\"](?<text>.+?)[\"])");
     private final Pattern simplePhrasePattern = Pattern.compile("(?<text>[^\\p{Z}\"]+)");
 
     private final Pattern combinedPattern;
 
-    public WildcardMultiphraseMatcher(String searchPhrase) {
+    public WildcardMultiwordMatcher(String searchPhrase) {
         Map<String, String> quotedPhrases = new HashMap<>();
         Set<String> phrases = new HashSet<>(), expressions = new HashSet<>();
 

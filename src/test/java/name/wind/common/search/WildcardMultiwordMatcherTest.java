@@ -5,11 +5,11 @@ import org.junit.Test;
 
 import java.util.function.Predicate;
 
-public class WildcardMultiphraseMatcherTest {
+public class WildcardMultiwordMatcherTest {
 
     @Test public void testSearch() {
         String searchPhrase = "abc1 de* \"ghi\"* j??4 \"3 j\"";
-        WildcardMultiphraseMatcher matcher = new WildcardMultiphraseMatcher(searchPhrase);
+        WildcardMultiwordMatcher matcher = new WildcardMultiwordMatcher(searchPhrase);
         Predicate<Object> predicate = matcher.toPredicate(Object::toString);
 
         Assert.assertTrue(predicate.test("abc1"));

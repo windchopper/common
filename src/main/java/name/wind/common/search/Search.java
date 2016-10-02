@@ -1,16 +1,13 @@
 package name.wind.common.search;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class Search {
 
-    private final List<Function<Object, Collection<?>>> exposers;
+    private final SearchDataModel dataModel;
 
-    public Search(List<Function<Object, Collection<?>>> exposers) {
-        this.exposers = exposers;
+    public Search(SearchDataModel dataModel) {
+        this.dataModel = dataModel;
     }
 
     public <C> void search(SearchContinuation<C> continuation, Predicate<Object> matcher, Object where) {
@@ -30,11 +27,10 @@ public class Search {
                 continuation.found(context, where);
             }
 
-            C derivedContext = continuation.deriveContext(context, where);
+            C newContext = continuation.newContext(context, where);
 
-            exposers.stream()
-                .flatMap(exposer -> exposer.apply(where).stream())
-                .forEach(item -> search(continuation, matcher, derivedContext, item));
+            dataModel.partsOf(where).forEach(
+                part -> search(continuation, matcher, newContext, part));
         }
     }
 
