@@ -4,10 +4,10 @@ import java.util.function.Predicate;
 
 public class Search {
 
-    private final SearchDataModel dataModel;
+    private final SearchModel model;
 
-    public Search(SearchDataModel dataModel) {
-        this.dataModel = dataModel;
+    public Search(SearchModel model) {
+        this.model = model;
     }
 
     public <C> void search(SearchContinuation<C> continuation, Predicate<Object> matcher, Object where) {
@@ -29,7 +29,7 @@ public class Search {
 
             C newContext = continuation.newContext(context, where);
 
-            dataModel.partsOf(where).forEach(
+            model.partsOf(where).forEach(
                 part -> search(continuation, matcher, newContext, part));
         }
     }
