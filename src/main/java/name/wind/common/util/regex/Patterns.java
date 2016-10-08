@@ -1,24 +1,27 @@
-package name.wind.common.search;
+package name.wind.common.util.regex;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WildcardMultiwordMatcher {
+public class Patterns {
 
-    private final Pattern quotedPhrasePattern = Pattern.compile("(?<all>[\"](?<text>.+?)[\"])");
-    private final Pattern simplePhrasePattern = Pattern.compile("(?<text>[^\\p{Z}\"]+)");
+    private static final Pattern quotedPhrasePattern = Pattern.compile("(?<all>[\"](?<text>.+?)[\"])");
+    private static final Pattern simplePhrasePattern = Pattern.compile("(?<text>[^\\p{Z}\"]+)");
 
-    private final Pattern combinedPattern;
+    private Patterns() {
+        // prevent instantiation
+    }
 
-    public WildcardMultiwordMatcher(String searchPhrase) {
+    /*
+     *
+     */
+
+    public static Pattern wildcardMultiwordPattern(String searchPhrase) {
         Map<String, String> quotedPhrases = new HashMap<>();
-        Set<String> phrases = new HashSet<>(), expressions = new HashSet<>();
 
         while (true) {
             Matcher matcher = quotedPhrasePattern.matcher(searchPhrase);
@@ -31,6 +34,9 @@ public class WildcardMultiwordMatcher {
                 break;
             }
         }
+
+        Set<String> phrases = new HashSet<>();
+        Set<String> expressions = new HashSet<>();
 
         Matcher matcher = simplePhrasePattern.matcher(searchPhrase);
 
@@ -49,13 +55,8 @@ public class WildcardMultiwordMatcher {
                 "(" + phrase.replace("*", ".*").replace("?", ".") + ")");
         }
 
-        combinedPattern = Pattern.compile(
+        return Pattern.compile(
             String.join("|", expressions), Pattern.CASE_INSENSITIVE);
-    }
-
-    public <T> Predicate<T> toPredicate(Function<T, String> stringifier) {
-        return object -> combinedPattern.matcher(
-            stringifier.apply(object)).find();
     }
 
 }
