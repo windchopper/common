@@ -1,6 +1,5 @@
-package name.wind.common.search;
+package name.wind.common.util.regex;
 
-import name.wind.common.util.regex.Patterns;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,7 +16,8 @@ public class PatternsTest {
             "abc1\n" +
             "def2\n" +
             "ghi3\n" +
-            "jkl4\n");
+            "jkl4\n" +
+            "abc1 def2 ghi3 jkl4");
 
         Assert.assertTrue(matcher.find());
         Assert.assertEquals("abc1", matcher.group());
@@ -27,6 +27,13 @@ public class PatternsTest {
         Assert.assertEquals("ghi3", matcher.group());
         Assert.assertTrue(matcher.find());
         Assert.assertEquals("jkl4", matcher.group());
+
+        Assert.assertTrue(matcher.find());
+        Assert.assertEquals("abc1", matcher.group());
+        Assert.assertTrue(matcher.find());
+        Assert.assertEquals("def2 ghi3 jkl4", matcher.group());
+
+        Assert.assertFalse(matcher.find());
     }
 
 }
