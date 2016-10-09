@@ -11,7 +11,7 @@ public class PatternsTest {
     @Test public void testWildcardMultiwordPattern() {
         String searchPhrase = "abc1 de* \"ghi\"* j??4 \"3 j\"";
 
-        Pattern pattern = Patterns.wildcardMultiwordPattern(searchPhrase);
+        Pattern pattern = Patterns.wildcardMultiwordPattern(searchPhrase, 0);
         Matcher matcher = pattern.matcher(
             "abc1\n" +
             "def2\n" +
