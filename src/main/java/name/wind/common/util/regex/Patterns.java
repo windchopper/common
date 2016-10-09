@@ -20,7 +20,7 @@ public class Patterns {
      *
      */
 
-    public static Pattern wildcardMultiwordPattern(String searchPhrase) {
+    public static Pattern wildcardMultiwordPattern(String searchPhrase, int flags) {
         Map<String, String> quotedPhrases = new HashMap<>();
 
         while (true) {
@@ -56,7 +56,7 @@ public class Patterns {
         }
 
         return Pattern.compile(
-            String.join("|", expressions), Pattern.CASE_INSENSITIVE);
+            String.join("|", expressions), flags);
     }
 
 }
