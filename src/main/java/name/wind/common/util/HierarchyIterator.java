@@ -6,23 +6,11 @@ import java.util.function.Function;
 
 public class HierarchyIterator<T> implements Iterator<T> {
 
-    class Result {
-
-        final Node node;
-        final T next;
-
-        public Result(Node node, T next) {
-            this.node = node;
-            this.next = next;
-        }
-
-    }
-
     private class Node {
 
         final Node parent;
         final T object;
-        final Iterator<T> iterator;
+        final Iterator<? extends T> iterator;
 
         Node(Node parent, T object) {
             this.parent = parent;
@@ -48,11 +36,11 @@ public class HierarchyIterator<T> implements Iterator<T> {
     }
 
     private final T root;
-    private final Function<T, Iterable<T>> exposer;
+    private final Function<T, Iterable<? extends T>> exposer;
 
     private Node node;
 
-    public HierarchyIterator(T root, Function<T, Iterable<T>> exposer) {
+    public HierarchyIterator(T root, Function<T, Iterable<? extends T>> exposer) {
         this.root = root;
         this.exposer = exposer;
     }
