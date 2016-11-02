@@ -48,11 +48,16 @@ public class NumeralGenerator {
             ScaleUnit currentScaleUnit = scaleUnits.get(width);
 
             if (currentScaleUnit != null) {
-                BigInteger quotient = value.divide(SCALE_STEP);
-                BigInteger quotinentRemainder = quotient.remainder(RADIX);
-                if (quotinentRemainder.compareTo(BigInteger.ZERO) > 0) {
-                    words.addFirst(units.get(quotinentRemainder).form().scaleUnitName(currentScaleUnit));
+                BigInteger scaleUnitValue = value.divide(SCALE_STEP);
+
+                if (scaleUnitValue.compareTo(SCALE_STEP) > 0) {
+                    scaleUnitValue = scaleUnitValue.remainder(RADIX);
                 }
+
+                if (scaleUnitValue.compareTo(BigInteger.ZERO) > 0) {
+                    words.addFirst(units.get(scaleUnitValue).form().scaleUnitName(currentScaleUnit));
+                }
+
                 value = value.divide(SCALE_STEP);
                 gender = currentScaleUnit.gender();
             }

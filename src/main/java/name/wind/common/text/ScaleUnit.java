@@ -80,7 +80,7 @@ public class ScaleUnit {
         if (lineMatcher.matches()) {
             width = CapturingGroup.WIDTH.extract(lineMatcher, Integer::new);
             nominative = CapturingGroup.NOMINATIVE.extract(lineMatcher, String::new);
-            genitive = CapturingGroup.GENDER.extract(lineMatcher, String::new);
+            genitive = CapturingGroup.GENITIVE.extract(lineMatcher, String::new);
             plural = CapturingGroup.PLURAL.extract(lineMatcher, String::new);
             gender = CapturingGroup.GENDER.extract(lineMatcher, Gender::valueOf);
         } else

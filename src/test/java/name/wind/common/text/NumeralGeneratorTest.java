@@ -24,6 +24,9 @@ public class NumeralGeneratorTest {
         testValue(generator, new BigInteger("11"), Gender.MASCULINE, "одиннадцать");
         testValue(generator, new BigInteger("7865"), Gender.MASCULINE, "семь тысяч восемьсот шестьдесят пять");
         testValue(generator, new BigInteger("90872435"), Gender.MASCULINE, "девяносто миллионов восемьсот семьдесят две тысячи четыреста тридцать пять");
+        testValue(generator, new BigInteger("4684354"), Gender.MASCULINE, "четыре миллиона шестьсот восемьдесят четыре тысячи триста пятьдесят четыре");
+        testValue(generator, new BigInteger("1638435789"), Gender.MASCULINE, "один миллиард шестьсот тридцать восемь миллионов четыреста тридцать пять тысяч семьсот восемьдесят девять");
+        testValue(generator, new BigInteger("6843578"), Gender.MASCULINE, "шесть миллионов восемьсот сорок три тысячи пятьсот семьдесят восемь");
     }
 
     @Test public void testEnglish() throws IOException {
