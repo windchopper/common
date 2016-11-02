@@ -7,11 +7,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class Unit {
+public class Unit implements Comparable<Unit> {
 
     private enum CapturingGroup {
 
-        DIVIDER,
+        LIMIT,
         VALUE,
         MASCULINE,
         FORM,
@@ -27,8 +27,8 @@ public class Unit {
 
     private enum Expression {
 
-        DIVIDER(CapturingGroup.DIVIDER, "\\d+", false),
-        VALUE(CapturingGroup.VALUE, "\\d+", false),
+        LIMIT(CapturingGroup.LIMIT, "[-+]?\\d+", false),
+        VALUE(CapturingGroup.VALUE, "[-+]?\\d+", false),
         MASCULINE(CapturingGroup.MASCULINE, ".+?", true),
         FORM(CapturingGroup.FORM, "\\w+", false),
         FEMININE(CapturingGroup.FEMININE, ".+?", true);
@@ -69,27 +69,27 @@ public class Unit {
     private static final Pattern linePattern = Pattern.compile(
         EnumSet.allOf(Expression.class).stream().map(Expression::expression).collect(Collectors.joining("[,\\s]+", "^", "$")));
 
-    private final BigInteger divider;
+    private final BigInteger limit;
     private final BigInteger value;
     private final String masculine;
-    private final WordForm form;
+    private final UnitCase form;
     private final String feminine;
 
     public Unit(String line) {
         Matcher lineMatcher = linePattern.matcher(line);
 
         if (lineMatcher.matches()) {
-            divider = CapturingGroup.DIVIDER.extract(lineMatcher, BigInteger::new);
+            limit = CapturingGroup.LIMIT.extract(lineMatcher, BigInteger::new);
             value = CapturingGroup.VALUE.extract(lineMatcher, BigInteger::new);
             masculine = CapturingGroup.MASCULINE.extract(lineMatcher, String::new);
-            form = CapturingGroup.FORM.extract(lineMatcher, WordForm::valueOf);
+            form = CapturingGroup.FORM.extract(lineMatcher, UnitCase::valueOf);
             feminine = CapturingGroup.FEMININE.extract(lineMatcher, String::new);
         } else
             throw new IllegalArgumentException(line);
     }
 
-    public BigInteger divider() {
-        return divider;
+    public BigInteger limit() {
+        return limit;
     }
 
     public BigInteger value() {
@@ -100,12 +100,20 @@ public class Unit {
         return masculine;
     }
 
-    public WordForm form() {
+    public UnitCase form() {
         return form;
     }
 
     public String feminine() {
         return feminine;
+    }
+
+    @Override public int compareTo(Unit anotherUnit) {
+        return value.compareTo(anotherUnit.value);
+    }
+
+    @Override public String toString() {
+        return value.toString();
     }
 
 }

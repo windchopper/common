@@ -2,7 +2,7 @@ package name.wind.common.text;
 
 import java.util.function.Function;
 
-public enum WordForm {
+public enum UnitCase {
 
     NOMINATIVE(ScaleUnit::nominative),
     GENITIVE(ScaleUnit::genitive),
@@ -10,7 +10,7 @@ public enum WordForm {
 
     private final Function<ScaleUnit, String> extractor;
 
-    WordForm(Function<ScaleUnit, String> extractor) {
+    UnitCase(Function<ScaleUnit, String> extractor) {
         this.extractor = extractor;
     }
 

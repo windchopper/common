@@ -1,16 +1,17 @@
 package name.wind.common.text;
 
+import java.math.BigInteger;
 import java.util.EnumSet;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class ScaleUnit {
+public class ScaleUnit implements Comparable<ScaleUnit> {
 
     private enum CapturingGroup {
 
-        WIDTH,
+        POWER,
         NOMINATIVE,
         GENITIVE,
         PLURAL,
@@ -26,7 +27,7 @@ public class ScaleUnit {
 
     private enum Expression {
 
-        WIDTH(CapturingGroup.WIDTH, "\\d+", false),
+        WIDTH(CapturingGroup.POWER, "[-+]?\\d+", false),
         NOMINATIVE(CapturingGroup.NOMINATIVE, ".+?", true),
         GENITIVE(CapturingGroup.GENITIVE, ".+?", true),
         PLURAL(CapturingGroup.PLURAL, ".+?", true),
@@ -68,27 +69,27 @@ public class ScaleUnit {
     private static final Pattern linePattern = Pattern.compile(
         EnumSet.allOf(Expression.class).stream().map(Expression::expression).collect(Collectors.joining("[,\\s]+", "^", "$")));
 
-    private final Integer width;
+    private final BigInteger power;
     private final String nominative;
     private final String genitive;
     private final String plural;
-    private final Gender gender;
+    private final ScaleUnitGender gender;
 
     public ScaleUnit(String line) throws IllegalArgumentException {
         Matcher lineMatcher = linePattern.matcher(line);
 
         if (lineMatcher.matches()) {
-            width = CapturingGroup.WIDTH.extract(lineMatcher, Integer::new);
+            power = CapturingGroup.POWER.extract(lineMatcher, BigInteger::new);
             nominative = CapturingGroup.NOMINATIVE.extract(lineMatcher, String::new);
             genitive = CapturingGroup.GENITIVE.extract(lineMatcher, String::new);
             plural = CapturingGroup.PLURAL.extract(lineMatcher, String::new);
-            gender = CapturingGroup.GENDER.extract(lineMatcher, Gender::valueOf);
+            gender = CapturingGroup.GENDER.extract(lineMatcher, ScaleUnitGender::valueOf);
         } else
             throw new IllegalArgumentException(line);
     }
 
-    public Integer width() {
-        return width;
+    public BigInteger power() {
+        return power;
     }
 
     public String nominative() {
@@ -103,8 +104,12 @@ public class ScaleUnit {
         return plural;
     }
 
-    public Gender gender() {
+    public ScaleUnitGender gender() {
         return gender;
+    }
+
+    @Override public int compareTo(ScaleUnit anotherScaleUnit) {
+        return power.compareTo(anotherScaleUnit.power);
     }
 
 }
