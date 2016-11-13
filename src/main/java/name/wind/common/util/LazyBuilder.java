@@ -15,9 +15,21 @@ public class LazyBuilder<T> implements Builder<T> {
 
     private T built;
 
-    public LazyBuilder(Supplier<T> supplier) {
+    private LazyBuilder(Supplier<T> supplier) {
         this.supplier = supplier;
     }
+
+    /*
+     *
+     */
+
+    public static <V> Builder<V> of(Supplier<V> supplier) {
+        return new LazyBuilder<>(supplier);
+    }
+
+    /*
+     *
+     */
 
     @Override public <V> Builder<T> set(Function<T, Consumer<V>> consumerFunction, V value) {
         consumers.add(target -> consumerFunction.apply(target).accept(value));
@@ -39,12 +51,8 @@ public class LazyBuilder<T> implements Builder<T> {
         return this;
     }
 
-    @Override public T build() {
-        return built = Optional.of(built).orElseGet(() -> {
-            T suppliedValue = supplier.get();
-            consumers.forEach(consumer -> consumer.accept(suppliedValue));
-            return suppliedValue;
-        });
+    @Override public T get() {
+        return built = Optional.of(built).orElseGet(InstantBuilder.of(supplier).accept(target -> consumers.forEach(consumer -> consumer.accept(target))));
     }
 
 }

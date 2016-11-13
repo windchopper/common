@@ -9,9 +9,21 @@ public class InstantBuilder<T> implements Builder<T> {
 
     private final T built;
 
-    public InstantBuilder(Supplier<T> supplier) {
+    private InstantBuilder(Supplier<T> supplier) {
         built = supplier.get();
     }
+
+    /*
+     *
+     */
+
+    public static <V> Builder<V> of(Supplier<V> supplier) {
+        return new InstantBuilder<>(supplier);
+    }
+
+    /*
+     *
+     */
 
     @Override public <V> Builder<T> set(Function<T, Consumer<V>> consumerFunction, V value) {
         consumerFunction.apply(built).accept(value);
@@ -33,7 +45,7 @@ public class InstantBuilder<T> implements Builder<T> {
         return this;
     }
 
-    @Override public T build() {
+    @Override public T get() {
         return built;
     }
 
