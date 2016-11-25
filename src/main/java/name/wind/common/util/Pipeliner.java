@@ -44,4 +44,8 @@ public class Pipeliner<T> implements ReinforcedSupplier<T> {
         return value;
     }
 
+    public <O> Pipeliner<O> map(Function<? super T, ? extends O> mapper) {
+        return new Pipeliner<>(mapper.apply(value));
+    }
+
 }
