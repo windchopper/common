@@ -2,8 +2,9 @@ package name.wind.common.util;
 
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-public class SystemProperty<T> {
+public class SystemProperty<T> implements Supplier<Optional<T>> {
 
     private final String name;
     private final Function<String, T> transformer;
@@ -13,20 +14,9 @@ public class SystemProperty<T> {
         this.transformer = transformer;
     }
 
-    public String rawValue() {
-        return System.getProperty(name);
-    }
-
-    public String rawValue(String defaultValue) {
-        return System.getProperty(name, defaultValue);
-    }
-
-    public T transformedValue() {
-        return Optional.ofNullable(rawValue()).map(transformer).orElse(null);
-    }
-
-    public T transformedValue(T defaultValue) {
-        return Optional.ofNullable(rawValue()).map(transformer).orElse(defaultValue);
+    @Override public Optional<T> get() {
+        return Optional.ofNullable(System.getProperty(name))
+            .map(transformer);
     }
 
 }
