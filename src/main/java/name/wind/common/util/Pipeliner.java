@@ -23,17 +23,17 @@ public class Pipeliner<T> implements ReinforcedSupplier<T> {
         return new Pipeliner<>(supplier);
     }
 
-    @Override public <V> ReinforcedSupplier<T> set(Function<T, Consumer<V>> consumerFunction, V value) {
+    @Override public <V> Pipeliner<T> set(Function<T, Consumer<V>> consumerFunction, V value) {
         consumerFunction.apply(this.value).accept(value);
         return this;
     }
 
-    @Override public <V> ReinforcedSupplier<T> add(Function<T, Supplier<Collection<V>>> supplierFunction, Collection<V> values) {
+    @Override public <V> Pipeliner<T> add(Function<T, Supplier<Collection<V>>> supplierFunction, Collection<V> values) {
         supplierFunction.apply(value).get().addAll(values);
         return this;
     }
 
-    @Override public ReinforcedSupplier<T> accept(Consumer<T> consumer) {
+    @Override public Pipeliner<T> accept(Consumer<T> consumer) {
         consumer.accept(value);
         return this;
     }
