@@ -1,6 +1,7 @@
 package name.wind.common.util;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -9,12 +10,9 @@ public class Pipeliner<T> implements ReinforcedSupplier<T> {
 
     private final T value;
 
-    private Pipeliner(T value) {
-        this.value = value;
-    }
-
     private Pipeliner(Supplier<T> supplier) {
-        this.value = supplier.get();
+        value = Objects.requireNonNull(
+            supplier.get());
     }
 
     public static <V> Pipeliner<V> of(V value) {
@@ -45,7 +43,7 @@ public class Pipeliner<T> implements ReinforcedSupplier<T> {
     }
 
     public <O> Pipeliner<O> map(Function<? super T, ? extends O> mapper) {
-        return new Pipeliner<>(mapper.apply(value));
+        return new Pipeliner<>(() -> mapper.apply(value));
     }
 
 }
