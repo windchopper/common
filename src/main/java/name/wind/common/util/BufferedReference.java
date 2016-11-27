@@ -2,25 +2,26 @@ package name.wind.common.util;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.function.Supplier;
+
+import static java.util.Objects.requireNonNull;
 
 public class BufferedReference<T> implements Supplier<T> {
 
     private static final ResourceBundle bundle = ResourceBundle.getBundle("name.wind.common.i18n.messages");
 
+    private static final String BUNDLE_KEY__NULL_PARAMETER = "name.wind.common.nullParameter";
+
     private final Duration lifeTime;
     private final Supplier<T> valueSupplier;
 
-    private Instant previousSupplyTime;
+    private Instant previousSupplyTime = Instant.MIN;
     private T suppliedValue;
 
     public BufferedReference(Duration lifeTime, Supplier<T> valueSupplier) {
-        this.lifeTime = Objects.requireNonNull(lifeTime, () -> bundle.getString("name.wind.common.util.Buffered.nullParameter.lifeTime"));
-        this.valueSupplier = Objects.requireNonNull(valueSupplier, () -> bundle.getString("name.wind.common.util.Buffered.nullParameter.valueSupplier"));
-
-        invalidate();
+        this.lifeTime = requireNonNull(lifeTime, () -> String.format(bundle.getString(BUNDLE_KEY__NULL_PARAMETER), "lifeTime"));
+        this.valueSupplier = requireNonNull(valueSupplier, () -> String.format(bundle.getString(BUNDLE_KEY__NULL_PARAMETER), "valueSupplier"));
     }
 
     public void invalidate() {

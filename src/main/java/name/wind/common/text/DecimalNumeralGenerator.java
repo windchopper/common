@@ -12,6 +12,8 @@ public class DecimalNumeralGenerator {
 
     private static final ResourceBundle bundle = ResourceBundle.getBundle("name.wind.common.i18n.messages");
 
+    private static final String BUNDLE_KEY__DUPLICATE_UNIT = "name.wind.common.text.DecimalNumeralGenerator.duplicate";
+
     private static final BigInteger RADIX = BigInteger.valueOf(10);
     private static final BigInteger SCALE_STEP = BigInteger.valueOf(1000);
 
@@ -35,8 +37,7 @@ public class DecimalNumeralGenerator {
 
     private static Unit duplicateHandler(Unit unit1st, Unit unit2nd) {
         throw new IllegalStateException(
-            String.format(
-                bundle.getString("name.wind.common.text.duplicate"),
+            String.format(bundle.getString(BUNDLE_KEY__DUPLICATE_UNIT),
                 unit1st, unit2nd));
     }
 
