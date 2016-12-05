@@ -1,5 +1,6 @@
 package name.wind.common.text;
 
+import javax.annotation.Nonnull;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,6 +8,8 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
 
 public class DecimalNumeralGenerator {
 
@@ -104,9 +107,9 @@ public class DecimalNumeralGenerator {
      *
      */
 
-    public String generate(String delimiter, BigInteger value) {
-        return String.join(delimiter, generateWords(
-            value.abs(), new Stack<>(), new Stack<>(), new LinkedList<>()));
+    public @Nonnull String generate(@Nonnull String delimiter, @Nonnull BigInteger value) {
+        return String.join(requireNonNull(delimiter), generateWords(
+            requireNonNull(value).abs(), new Stack<>(), new Stack<>(), new LinkedList<>()));
     }
 
 }

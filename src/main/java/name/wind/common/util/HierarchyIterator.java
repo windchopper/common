@@ -1,8 +1,11 @@
 package name.wind.common.util;
 
+import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
+
+import static java.util.Objects.requireNonNull;
 
 public class HierarchyIterator<T> implements Iterator<T> {
 
@@ -40,18 +43,16 @@ public class HierarchyIterator<T> implements Iterator<T> {
 
     private Node node;
 
-    public HierarchyIterator(T root, Function<T, Iterable<? extends T>> exposer) {
-        this.root = root;
-        this.exposer = exposer;
+    public HierarchyIterator(@Nonnull T root, @Nonnull Function<T, Iterable<? extends T>> exposer) {
+        this.root = requireNonNull(root);
+        this.exposer = requireNonNull(exposer);
     }
 
-    @Override
-    public boolean hasNext() {
+    @Override public boolean hasNext() {
         return node == null || node.hasNext();
     }
 
-    @Override
-    public T next() {
+    @Override @Nonnull public T next() {
         T next;
 
         if (node == null) {

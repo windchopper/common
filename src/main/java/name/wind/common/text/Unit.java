@@ -1,5 +1,6 @@
 package name.wind.common.text;
 
+import javax.annotation.Nonnull;
 import java.math.BigInteger;
 import java.util.EnumSet;
 import java.util.function.Function;
@@ -75,7 +76,7 @@ public class Unit implements Comparable<Unit> {
     private final UnitCase form;
     private final String feminine;
 
-    public Unit(String line) {
+    public Unit(@Nonnull String line) {
         Matcher lineMatcher = linePattern.matcher(line);
 
         if (lineMatcher.matches()) {
@@ -108,7 +109,7 @@ public class Unit implements Comparable<Unit> {
         return feminine;
     }
 
-    @Override public int compareTo(Unit anotherUnit) {
+    @Override public int compareTo(@Nonnull Unit anotherUnit) {
         return value.compareTo(anotherUnit.value);
     }
 

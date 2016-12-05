@@ -1,5 +1,6 @@
 package name.wind.common.util;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
@@ -15,25 +16,25 @@ public class Builder<T> implements ReinforcedSupplier<T> {
 
     private T built;
 
-    private Builder(Supplier<T> supplier) {
+    private Builder(@Nonnull Supplier<T> supplier) {
         this.supplier = supplier;
     }
 
-    public static <V> Builder<V> of(Supplier<V> supplier) {
+    public static <V> Builder<V> of(@Nonnull Supplier<V> supplier) {
         return new Builder<>(supplier);
     }
 
-    @Override public <V> Builder<T> set(Function<T, Consumer<V>> consumerFunction, V value) {
+    @Override public <V> Builder<T> set(@Nonnull Function<T, Consumer<V>> consumerFunction, V value) {
         consumers.add(target -> consumerFunction.apply(target).accept(value));
         return this;
     }
 
-    @Override public <V> Builder<T> add(Function<T, Supplier<Collection<V>>> supplierFunction, Collection<V> values) {
+    @Override public <V> Builder<T> add(@Nonnull Function<T, Supplier<Collection<V>>> supplierFunction, Collection<V> values) {
         consumers.add(target -> supplierFunction.apply(target).get().addAll(values));
         return this;
     }
 
-    @Override public Builder<T> accept(Consumer<T> consumer) {
+    @Override public Builder<T> accept(@Nonnull Consumer<T> consumer) {
         consumers.add(consumer);
         return this;
     }

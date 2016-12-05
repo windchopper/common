@@ -1,5 +1,7 @@
 package name.wind.common.util;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ResourceBundle;
@@ -19,7 +21,7 @@ public class BufferedReference<T> implements Supplier<T> {
     private Instant previousSupplyTime = Instant.MIN;
     private T suppliedValue;
 
-    public BufferedReference(Duration lifeTime, Supplier<T> valueSupplier) {
+    public BufferedReference(@Nonnull Duration lifeTime, @Nonnull Supplier<T> valueSupplier) {
         this.lifeTime = requireNonNull(lifeTime, () -> String.format(bundle.getString(BUNDLE_KEY__NULL_PARAMETER), "lifeTime"));
         this.valueSupplier = requireNonNull(valueSupplier, () -> String.format(bundle.getString(BUNDLE_KEY__NULL_PARAMETER), "valueSupplier"));
     }
@@ -29,7 +31,7 @@ public class BufferedReference<T> implements Supplier<T> {
         suppliedValue = null;
     }
 
-    @Override public T get() {
+    @Override public @Nullable T get() {
         Instant now = Instant.now();
 
         if (Duration.between(previousSupplyTime, now).compareTo(lifeTime) > 0) {
