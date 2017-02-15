@@ -1,5 +1,6 @@
 package name.wind.common.util.stream;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
@@ -37,6 +38,10 @@ public class FailableFunctionResult<I, O> {
 
     public O revover(BiFunction<I, Throwable, O> recoverer) {
         return exception != null ? recoverer.apply(value, exception) : outcome;
+    }
+
+    public Optional<O> optional() {
+        return Optional.ofNullable(outcome);
     }
 
 }

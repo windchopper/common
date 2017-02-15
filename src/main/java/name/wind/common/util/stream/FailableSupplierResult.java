@@ -1,5 +1,6 @@
 package name.wind.common.util.stream;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -35,6 +36,10 @@ public class FailableSupplierResult<T> {
 
     public T recover(Function<Throwable, T> recoverer) {
         return exception != null ? recoverer.apply(exception) : value;
+    }
+
+    public Optional<T> optional() {
+        return Optional.ofNullable(value);
     }
 
 }
