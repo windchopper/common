@@ -36,7 +36,7 @@ public class FailableFunctionResult<I, O> {
         }
     }
 
-    public O revover(BiFunction<I, Throwable, O> recoverer) {
+    public O recover(BiFunction<I, Throwable, O> recoverer) {
         return exception != null ? recoverer.apply(value, exception) : outcome;
     }
 
