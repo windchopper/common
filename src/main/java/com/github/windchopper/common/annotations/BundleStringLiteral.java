@@ -21,6 +21,18 @@ public class BundleStringLiteral implements BundleString {
             bundleString.bundleLocation());
     }
 
+    public BundleStringLiteral merge(BundleString bundleString) {
+        if (bundleString.bundleKey().length() > 0) {
+            bundleKey = bundleKey();
+        }
+
+        if (bundleString.bundleLocation().length() > 0) {
+            bundleLocation = bundleString.bundleLocation();
+        }
+
+        return this;
+    }
+
     @Override
     public Class<? extends Annotation> annotationType() {
         return BundleString.class;
