@@ -1,6 +1,5 @@
 package com.github.windchopper.common.annotations;
 
-import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
 import java.util.Objects;
 
@@ -21,18 +20,6 @@ public class BundleStringLiteral implements BundleString {
             bundleString.bundleLocation());
     }
 
-    public BundleStringLiteral merge(BundleString bundleString) {
-        if (bundleString.bundleKey().length() > 0) {
-            bundleKey = bundleKey();
-        }
-
-        if (bundleString.bundleLocation().length() > 0) {
-            bundleLocation = bundleString.bundleLocation();
-        }
-
-        return this;
-    }
-
     @Override
     public Class<? extends Annotation> annotationType() {
         return BundleString.class;
@@ -43,10 +30,8 @@ public class BundleStringLiteral implements BundleString {
         return bundleKey;
     }
 
-    public String bundleKey(String newBundleKey) {
-        String oldBundleKey = bundleKey;
-        bundleKey = newBundleKey;
-        return oldBundleKey;
+    public void overrideBundleKey(String bundleKey) {
+        this.bundleKey = bundleKey;
     }
 
     @Override
@@ -54,10 +39,8 @@ public class BundleStringLiteral implements BundleString {
         return bundleLocation;
     }
 
-    public String bundleLocation(String newBundleLocation) {
-        String oldBundleLocation = bundleLocation;
-        bundleLocation = newBundleLocation;
-        return oldBundleLocation;
+    public void overrideBundleLocation(String bundleLocation) {
+        this.bundleLocation = bundleLocation;
     }
 
     @Override
@@ -65,15 +48,15 @@ public class BundleStringLiteral implements BundleString {
         return Objects.hash(bundleKey, bundleLocation);
     }
 
-    boolean equals(@Nonnull BundleStringLiteral that) {
-        return Objects.equals(that.bundleKey, bundleKey)
-            && Objects.equals(that.bundleLocation, bundleLocation);
-    }
-
     @Override
     public boolean equals(Object that) {
-        return that != null && that.getClass() == getClass() && (
-            that == this || equals((BundleStringLiteral) that));
+        if (that == this) return true;
+        if (that == null || getClass() != that.getClass()) return false;
+
+        BundleStringLiteral thatLiteral = (BundleStringLiteral) that;
+
+        return Objects.equals(bundleKey, thatLiteral.bundleKey)
+            && Objects.equals(bundleLocation, thatLiteral.bundleLocation);
     }
 
 }
