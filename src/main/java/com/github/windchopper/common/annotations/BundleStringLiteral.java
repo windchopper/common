@@ -2,6 +2,7 @@ package com.github.windchopper.common.annotations;
 
 import java.lang.annotation.Annotation;
 
+@SuppressWarnings("ClassExplicitlyAnnotation")
 public class BundleStringLiteral implements BundleString {
 
     private String bundleKey;
