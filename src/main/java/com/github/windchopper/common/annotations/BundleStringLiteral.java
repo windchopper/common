@@ -30,10 +30,8 @@ public class BundleStringLiteral implements BundleString {
         return bundleKey;
     }
 
-    public void overrideBundleKey(String bundleKey) {
-        if (bundleKey != null && bundleKey.length() != 0) {
-            this.bundleKey = bundleKey;
-        }
+    public void setBundleKey(String bundleKey) {
+        this.bundleKey = bundleKey;
     }
 
     @Override
@@ -41,10 +39,8 @@ public class BundleStringLiteral implements BundleString {
         return bundleLocation;
     }
 
-    public void overrideBundleLocation(String bundleLocation) {
-        if (bundleLocation != null && bundleLocation.length() != 0) {
-            this.bundleLocation = bundleLocation;
-        }
+    public void setBundleLocation(String bundleLocation) {
+        this.bundleLocation = bundleLocation;
     }
 
     @Override
