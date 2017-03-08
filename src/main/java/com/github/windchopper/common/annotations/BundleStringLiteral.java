@@ -25,6 +25,16 @@ public class BundleStringLiteral implements BundleString {
         return BundleString.class;
     }
 
+    public void merge(BundleString bundleString) {
+        if (bundleKey.length() == 0) {
+            bundleKey = bundleString.bundleKey();
+        }
+
+        if (bundleLocation.length() == 0) {
+            bundleLocation = bundleString.bundleLocation();
+        }
+    }
+
     @Override
     public String bundleKey() {
         return bundleKey;
