@@ -40,7 +40,7 @@ public class Builder<T> implements ReinforcedSupplier<T> {
     }
 
     @Override public T get() {
-        return built = Optional.of(built).orElseGet(Pipeliner.of(supplier).accept(target -> consumers.forEach(consumer -> consumer.accept(target))));
+        return built = Optional.ofNullable(built).orElseGet(Pipeliner.of(supplier).accept(target -> consumers.forEach(consumer -> consumer.accept(target))));
     }
 
 }
