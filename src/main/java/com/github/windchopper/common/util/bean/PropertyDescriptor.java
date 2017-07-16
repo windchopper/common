@@ -1,5 +1,7 @@
 package com.github.windchopper.common.util.bean;
 
+import java.util.Objects;
+
 public abstract class PropertyDescriptor<BeanType, PropertyType> {
 
     @FunctionalInterface public interface PropertyGetter<BeanType, PropertyType> {
@@ -19,19 +21,12 @@ public abstract class PropertyDescriptor<BeanType, PropertyType> {
         this.propertySetter = propertySetter;
     }
 
-    protected PropertyType get(BeanType bean) {
-        return propertyGetter.get(bean);
+    protected PropertyType getPropertyState(BeanType bean) {
+        return Objects.requireNonNull(propertyGetter, "Getter not defined").get(bean);
     }
 
-    protected void set(BeanType bean, PropertyType value) {
-        propertySetter.set(bean, value);
-    }
-
-    public <TargetBeanType, TargetPropertyType> void copy(BeanType sourceBean,
-                                                          TargetBeanType targetBean,
-                                                          PropertyDescriptor<TargetBeanType, TargetPropertyType> targetPropertyDescriptor,
-                                                          PropertyCopyStrategy<BeanType, PropertyType, TargetBeanType, TargetPropertyType>... copyStrategies) {
-
+    protected void setPropertyState(BeanType bean, PropertyType value) {
+        Objects.requireNonNull(propertySetter, "Setter not defined").set(bean, value);
     }
 
 }

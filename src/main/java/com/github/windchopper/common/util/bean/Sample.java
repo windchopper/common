@@ -1,6 +1,5 @@
 package com.github.windchopper.common.util.bean;
 
-import javax.swing.*;
 import java.math.BigDecimal;
 
 public class Sample {
@@ -21,40 +20,37 @@ public class Sample {
 
     static class TargetBean {
 
-        private BigDecimal numberAsBigDecimal;
+        private Double numberAsDouble;
 
-        public BigDecimal getNumberAsBigDecimal() {
-            return numberAsBigDecimal;
+        public Double getNumberAsDouble() {
+            return numberAsDouble;
         }
 
-        public void setNumberAsBigDecimal(BigDecimal numberAsBigDecimal) {
-            this.numberAsBigDecimal = numberAsBigDecimal;
+        public void setNumberAsDouble(Double numberAsDouble) {
+            this.numberAsDouble = numberAsDouble;
         }
 
     }
 
     public static void main(String... args) {
         SourceBean sourceBean = new SourceBean();
+        sourceBean.setNumberAsString("1");
         TargetBean targetBean = new TargetBean();
+        targetBean.setNumberAsDouble(2.0);
 
-        /*
-        PropertyCopier.of(sourceBean, targetBean)
-            .copying(AtomicSimplePropertyDescriptor.of(SourceBean::getNumberAsString), AtomicSimplePropertyDescriptor.of(TargetBean::setNumberAsBigDecimal))
-            .use(PropertyCopyStrategy.convert(BigDecimal::new))
-            .use(PropertyCopyStrategy.replace())
-            .perform();
-         */
+        PropertyHandler<SourceBean, String, TargetBean, Double, String, String> p1 = PropertyHandler.of(AtomicSimplePropertyDescriptor.of(SourceBean::getNumberAsString), AtomicSimplePropertyDescriptor.of(TargetBean::setNumberAsDouble));
+        PropertyHandler<SourceBean, String, TargetBean, Double, String, BigDecimal> p2 = p1.convert(BigDecimal::new);
+        PropertyHandler<SourceBean, String, TargetBean, Double, BigDecimal, Double> p3 = p2.convert(BigDecimal::doubleValue);
+        PropertyHandler<SourceBean, String, TargetBean, Double, Double, Double> replace = p3.replace();
 
-        /*
-        BeanCopier.of(xmlBean, entityBean)
-            .copy(
-                PropertyCopier.of(xmlRegistryStatusCode, entityRegistryStatus)
-                    .apply(stringToEnumConversion)
-                    .apply(replacing),
-                PropertyCopier.of(xmlRegistryCurrencyCode, entityRegistryCurrency)
-                    .apply(anotherStringToEnumConversion)
-                    .apply(replacing)));
-         */
+        BeanCopier.of(sourceBean, targetBean)
+            .copy(PropertyHandler.of(AtomicSimplePropertyDescriptor.of(SourceBean::getNumberAsString, SourceBean::setNumberAsString), AtomicSimplePropertyDescriptor.of(TargetBean::getNumberAsDouble, TargetBean::setNumberAsDouble))
+                .convert(BigDecimal::new)
+                .convert(BigDecimal::doubleValue)
+                .replace());
+        ;
+
+        System.out.println(targetBean.getNumberAsDouble());
     }
 
 }
