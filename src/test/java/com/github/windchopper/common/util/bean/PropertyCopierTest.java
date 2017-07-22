@@ -44,8 +44,9 @@ import java.math.BigDecimal;
         TargetBean targetBean = new TargetBean();
         targetBean.setNumberAsDouble(2.0);
 
-        PropertyCopier.copy(sourceBean, targetBean,
-            PropertyCopier.of(PropertyDescriptor.atomic(SourceBean::getNumberAsString), PropertyDescriptor.atomic(TargetBean::setNumberAsDouble))
+        PropertyCopier.copy(sourceBean, targetBean, PropertyCopier.of(
+            AtomicSimplePropertyDescriptor.of(SourceBean::getNumberAsString),
+            AtomicSimplePropertyDescriptor.of(TargetBean::setNumberAsDouble))
                 .convert(BigDecimal::new)
                 .convert(BigDecimal::doubleValue)
                 .replace());
