@@ -40,18 +40,17 @@ public class PropertyCopier<SourceBeanType, SourcePropertyType, TargetBeanType, 
 
     public static <SourceBeanType, SourcePropertyType, TargetBeanType, TargetPropertyType> void copy(SourceBeanType sourceBean, TargetBeanType targetBean, PropertyCopier<SourceBeanType, SourcePropertyType, TargetBeanType, TargetPropertyType, ?, TargetPropertyType> copier) {
         copier.targetPropertyDescriptor.setPropertyState(targetBean, copier.applyPreprocessor(
-            copier.sourcePropertyDescriptor.getPropertyState(sourceBean),
-            copier.targetPropertyDescriptor.getPropertyState(targetBean)));
+            copier.sourcePropertyDescriptor.getPropertyState(sourceBean), copier.targetPropertyDescriptor.getPropertyState(targetBean)));
     }
 
     public <N> PropertyCopier<SourceBeanType, SourcePropertyType, TargetBeanType, TargetPropertyType, NextProcessingType, N> convert(Function<NextProcessingType, N> converter) {
-        return new PropertyCopier<>(sourcePropertyDescriptor, targetPropertyDescriptor, this,
-            (sourceProperty, targetProperty, previousState) -> converter.apply(previousState));
+        return new PropertyCopier<>(sourcePropertyDescriptor, targetPropertyDescriptor,
+            this, (sourceProperty, targetProperty, previousState) -> converter.apply(previousState));
     }
 
     public PropertyCopier<SourceBeanType, SourcePropertyType, TargetBeanType, TargetPropertyType, NextProcessingType, NextProcessingType> replace() {
-        return new PropertyCopier<>(sourcePropertyDescriptor, targetPropertyDescriptor, this,
-            (sourceProperty, targetProperty, previousState) -> previousState);
+        return new PropertyCopier<>(sourcePropertyDescriptor, targetPropertyDescriptor,
+            this, (sourceProperty, targetProperty, previousState) -> previousState);
     }
 
 }
