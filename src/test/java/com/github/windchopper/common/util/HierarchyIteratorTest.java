@@ -2,13 +2,15 @@ package com.github.windchopper.common.util;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.*;
 import java.util.stream.IntStream;
 
 import static java.util.Collections.addAll;
 
-public class HierarchyIteratorTest {
+@RunWith(JUnit4.class) public class HierarchyIteratorTest {
 
     class Node {
 

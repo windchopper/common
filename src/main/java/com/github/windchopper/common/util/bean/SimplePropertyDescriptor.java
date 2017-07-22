@@ -1,9 +1,9 @@
 package com.github.windchopper.common.util.bean;
 
-public abstract class SimplePropertyDescriptor<BeanType, PropertyType> extends PropertyDescriptor<BeanType, PropertyType> {
+public class SimplePropertyDescriptor<BeanType, PropertyType> extends PropertyDescriptor<BeanType, PropertyType> {
 
-    protected SimplePropertyDescriptor(PropertyGetter<BeanType, PropertyType> propertyGetter, PropertySetter<BeanType, PropertyType> propertySetter) {
-        super(propertyGetter, propertySetter);
+    protected SimplePropertyDescriptor(Getter<BeanType, PropertyType> getter, Setter<BeanType, PropertyType> setter) {
+        super(getter, setter);
     }
 
 }

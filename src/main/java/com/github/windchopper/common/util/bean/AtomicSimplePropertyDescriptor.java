@@ -2,23 +2,23 @@ package com.github.windchopper.common.util.bean;
 
 public class AtomicSimplePropertyDescriptor<BeanType, PropertyType> extends PropertyDescriptor<BeanType, PropertyType> {
 
-    protected AtomicSimplePropertyDescriptor(PropertyGetter<BeanType, PropertyType> propertyGetter, PropertySetter<BeanType, PropertyType> propertySetter) {
-        super(propertyGetter, propertySetter);
+    protected AtomicSimplePropertyDescriptor(Getter<BeanType, PropertyType> getter, Setter<BeanType, PropertyType> setter) {
+        super(getter, setter);
     }
 
     public static <BeanType, PropertyType> AtomicSimplePropertyDescriptor<BeanType, PropertyType> of(
-            PropertyGetter<BeanType, PropertyType> propertyGetter, PropertySetter<BeanType, PropertyType> propertySetter) {
-        return new AtomicSimplePropertyDescriptor<>(propertyGetter, propertySetter);
+            Getter<BeanType, PropertyType> getter, Setter<BeanType, PropertyType> setter) {
+        return new AtomicSimplePropertyDescriptor<>(getter, setter);
     }
 
     public static <BeanType, PropertyType> AtomicSimplePropertyDescriptor<BeanType, PropertyType> of(
-            PropertyGetter<BeanType, PropertyType> propertyGetter) {
-        return of(propertyGetter, null);
+            Getter<BeanType, PropertyType> getter) {
+        return of(getter, null);
     }
 
     public static <BeanType, PropertyType> AtomicSimplePropertyDescriptor<BeanType, PropertyType> of(
-            PropertySetter<BeanType, PropertyType> propertySetter) {
-        return of(null, propertySetter);
+            Setter<BeanType, PropertyType> setter) {
+        return of(null, setter);
     }
 
 }
