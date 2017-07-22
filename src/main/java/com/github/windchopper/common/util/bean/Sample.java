@@ -38,17 +38,15 @@ public class Sample {
         TargetBean targetBean = new TargetBean();
         targetBean.setNumberAsDouble(2.0);
 
-        PropertyHandler<SourceBean, String, TargetBean, Double, String, String> p1 = PropertyHandler.of(AtomicSimplePropertyDescriptor.of(SourceBean::getNumberAsString), AtomicSimplePropertyDescriptor.of(TargetBean::setNumberAsDouble));
+        AtomicSimplePropertyDescriptor<SourceBean, String> sp = AtomicSimplePropertyDescriptor.of(SourceBean::getNumberAsString, SourceBean::setNumberAsString);
+        AtomicSimplePropertyDescriptor<TargetBean, Double> tp = AtomicSimplePropertyDescriptor.of(TargetBean::getNumberAsDouble, TargetBean::setNumberAsDouble);
+
+        PropertyHandler<SourceBean, String, TargetBean, Double, String, String> p1 = PropertyHandler.of(sp, tp);
         PropertyHandler<SourceBean, String, TargetBean, Double, String, BigDecimal> p2 = p1.convert(BigDecimal::new);
         PropertyHandler<SourceBean, String, TargetBean, Double, BigDecimal, Double> p3 = p2.convert(BigDecimal::doubleValue);
-        PropertyHandler<SourceBean, String, TargetBean, Double, Double, Double> replace = p3.replace();
+        PropertyHandler<SourceBean, String, TargetBean, Double, Double, Double> p4 = p3.replace();
 
-        BeanCopier.of(sourceBean, targetBean)
-            .copy(PropertyHandler.of(AtomicSimplePropertyDescriptor.of(SourceBean::getNumberAsString, SourceBean::setNumberAsString), AtomicSimplePropertyDescriptor.of(TargetBean::getNumberAsDouble, TargetBean::setNumberAsDouble))
-                .convert(BigDecimal::new)
-                .convert(BigDecimal::doubleValue)
-                .replace());
-        ;
+        tp.setPropertyState(targetBean, p4.apply(sourceBean, targetBean));
 
         System.out.println(targetBean.getNumberAsDouble());
     }
