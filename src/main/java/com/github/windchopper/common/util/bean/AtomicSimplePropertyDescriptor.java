@@ -1,6 +1,6 @@
 package com.github.windchopper.common.util.bean;
 
-public class AtomicSimplePropertyDescriptor<BeanType, PropertyType> extends PropertyDescriptor<BeanType, PropertyType> {
+public class AtomicSimplePropertyDescriptor<BeanType, PropertyType> extends SimplePropertyDescriptor<BeanType, PropertyType> {
 
     protected AtomicSimplePropertyDescriptor(Getter<BeanType, PropertyType> getter, Setter<BeanType, PropertyType> setter) {
         super(getter, setter);

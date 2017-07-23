@@ -43,7 +43,7 @@ public class PropertyCopier<SourceBeanType, SourcePropertyType, TargetBeanType, 
             copier.sourcePropertyDescriptor.getPropertyState(sourceBean), copier.targetPropertyDescriptor.getPropertyState(targetBean)));
     }
 
-    public <N> PropertyCopier<SourceBeanType, SourcePropertyType, TargetBeanType, TargetPropertyType, NextProcessingType, N> convert(Function<NextProcessingType, N> converter) {
+    public <ConversionResultType> PropertyCopier<SourceBeanType, SourcePropertyType, TargetBeanType, TargetPropertyType, NextProcessingType, ConversionResultType> convert(Function<NextProcessingType, ConversionResultType> converter) {
         return new PropertyCopier<>(sourcePropertyDescriptor, targetPropertyDescriptor,
             this, (sourceProperty, targetProperty, previousState) -> converter.apply(previousState));
     }
