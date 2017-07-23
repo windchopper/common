@@ -116,6 +116,8 @@ import java.util.List;
                 .convert(BigDecimal::doubleValue)
                 .replace());
 
+        a.setS("5");
+
         PropertyCopier.copy(a, b, PropertyCopier.of(
             AtomicSimplePropertyDescriptor.reflective(A.class, "s", String.class),
             AtomicSimplePropertyDescriptor.reflective(B.class, "d", double.class))
@@ -123,7 +125,7 @@ import java.util.List;
                 .convert(BigDecimal::doubleValue)
                 .replace());
 
-        Assert.assertEquals(1.0, b.getD(), 0.0);
+        Assert.assertEquals(5.0, b.getD(), 0.0);
     }
 
 }
