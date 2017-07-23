@@ -6,52 +6,124 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(JUnit4.class) public class PropertyCopierTest {
 
-    static class SourceBean {
+    static class A {
 
-        private String numberAsString;
+        private C c;
+        private List<B> b = new ArrayList<>();
+        private String s;
 
-        public String getNumberAsString() {
-            return numberAsString;
+        public A(String s) {
+            this.s = s;
         }
 
-        public void setNumberAsString(String numberAsString) {
-            this.numberAsString = numberAsString;
+        public C getC() {
+            return c;
+        }
+
+        public void setC(C c) {
+            this.c = c;
+        }
+
+        public List<B> getB() {
+            return b;
+        }
+
+        public void setB(List<B> b) {
+            this.b = b;
+        }
+
+        public String getS() {
+            return s;
+        }
+
+        public void setS(String s) {
+            this.s = s;
         }
 
     }
 
-    static class TargetBean {
+    static class B {
 
-        private Double numberAsDouble;
+        private C c;
+        private List<A> a = new ArrayList<>();
+        private double d;
 
-        public Double getNumberAsDouble() {
-            return numberAsDouble;
+        public B(double d) {
+            this.d = d;
         }
 
-        public void setNumberAsDouble(Double numberAsDouble) {
-            this.numberAsDouble = numberAsDouble;
+        public C getC() {
+            return c;
+        }
+
+        public void setC(C c) {
+            this.c = c;
+        }
+
+        public List<A> getA() {
+            return a;
+        }
+
+        public void setA(List<A> a) {
+            this.a = a;
+        }
+
+        public double getD() {
+            return d;
+        }
+
+        public void setD(double d) {
+            this.d = d;
         }
 
     }
 
-    @Test public void testAtomic() {
-        SourceBean sourceBean = new SourceBean();
-        sourceBean.setNumberAsString("1");
+    static class C {
 
-        TargetBean targetBean = new TargetBean();
-        targetBean.setNumberAsDouble(2.0);
+        private int i;
 
-        PropertyCopier.copy(sourceBean, targetBean, PropertyCopier.of(
-            AtomicSimplePropertyDescriptor.of(SourceBean::getNumberAsString),
-            AtomicSimplePropertyDescriptor.of(TargetBean::setNumberAsDouble))
+        public C(Integer i) {
+            this.i = i;
+        }
+
+        public int getI() {
+            return i;
+        }
+
+        public void setI(int i) {
+            this.i = i;
+        }
+
+    }
+
+    @Test public void testAtomic() throws ReflectiveOperationException {
+        A a = new A("1");
+        B b = new B(2.0);
+        a.getB().add(b);
+        a.setC(new C(3));
+        b.getA().add(a);
+        a.setC(new C(4));
+
+        PropertyCopier.copy(a, b, PropertyCopier.of(
+            AtomicSimplePropertyDescriptor.functional(A::getS),
+            AtomicSimplePropertyDescriptor.functional(B::setD))
                 .convert(BigDecimal::new)
                 .convert(BigDecimal::doubleValue)
                 .replace());
 
-        Assert.assertEquals(Double.valueOf(1.0), targetBean.getNumberAsDouble());
+        PropertyCopier.copy(a, b, PropertyCopier.of(
+            AtomicSimplePropertyDescriptor.reflective(A.class, "s", String.class),
+            AtomicSimplePropertyDescriptor.reflective(B.class, "d", double.class))
+                .convert(BigDecimal::new)
+                .convert(BigDecimal::doubleValue)
+                .replace());
+
+        Assert.assertEquals(1.0, b.getD(), 0.0);
     }
 
 }

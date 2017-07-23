@@ -8,19 +8,26 @@ public class CollectionPropertyDescriptor<BeanType, ElementType, CollectionType 
         super(getter, setter);
     }
 
-    public static <BeanType, ElementType, CollectionType extends Collection<ElementType>> CollectionPropertyDescriptor<BeanType, ElementType, CollectionType> of(
+    public static <BeanType, ElementType, CollectionType extends Collection<ElementType>> CollectionPropertyDescriptor<BeanType, ElementType, CollectionType> functional(
             Getter<BeanType, CollectionType> getter, Setter<BeanType, CollectionType> setter) {
         return new CollectionPropertyDescriptor<>(getter, setter);
     }
 
-    public static <BeanType, ElementType, CollectionType extends Collection<ElementType>> CollectionPropertyDescriptor<BeanType, ElementType, CollectionType> of(
+    public static <BeanType, ElementType, CollectionType extends Collection<ElementType>> CollectionPropertyDescriptor<BeanType, ElementType, CollectionType> functional(
             Getter<BeanType, CollectionType> getter) {
-        return of(getter, null);
+        return functional(getter, null);
     }
 
-    public static <BeanType, ElementType, CollectionType extends Collection<ElementType>> CollectionPropertyDescriptor<BeanType, ElementType, CollectionType> of(
+    public static <BeanType, ElementType, CollectionType extends Collection<ElementType>> CollectionPropertyDescriptor<BeanType, ElementType, CollectionType> functional(
             Setter<BeanType, CollectionType> setter) {
-        return of(null, setter);
+        return functional(null, setter);
+    }
+
+    public static <BeanType, ElementType, CollectionType extends Collection<ElementType>> CollectionPropertyDescriptor<BeanType, ElementType, CollectionType> reflective(
+            Class<BeanType> beanType, String propertyName, Class<CollectionType> propertyType) throws ReflectiveOperationException {
+        return new CollectionPropertyDescriptor<>(
+            new ReflectiveGetter<>(beanType, propertyName, propertyType),
+            new ReflectiveSetter<>(beanType, propertyName, propertyType));
     }
 
 }

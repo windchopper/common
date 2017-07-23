@@ -6,19 +6,26 @@ public class CompoundSimplePropertyDescriptor<BeanType, PropertyType> extends Pr
         super(getter, setter);
     }
 
-    public static <BeanType, PropertyType> CompoundSimplePropertyDescriptor<BeanType, PropertyType> of(
+    public static <BeanType, PropertyType> CompoundSimplePropertyDescriptor<BeanType, PropertyType> functional(
             Getter<BeanType, PropertyType> getter, Setter<BeanType, PropertyType> setter) {
         return new CompoundSimplePropertyDescriptor<>(getter, setter);
     }
 
-    public static <BeanType, PropertyType> CompoundSimplePropertyDescriptor<BeanType, PropertyType> of(
+    public static <BeanType, PropertyType> CompoundSimplePropertyDescriptor<BeanType, PropertyType> functional(
             Getter<BeanType, PropertyType> getter) {
-        return of(getter, null);
+        return functional(getter, null);
     }
 
-    public static <BeanType, PropertyType> CompoundSimplePropertyDescriptor<BeanType, PropertyType> of(
+    public static <BeanType, PropertyType> CompoundSimplePropertyDescriptor<BeanType, PropertyType> functional(
             Setter<BeanType, PropertyType> setter) {
-        return of(null, setter);
+        return functional(null, setter);
+    }
+
+    public static <BeanType, PropertyType> CompoundSimplePropertyDescriptor<BeanType, PropertyType> reflective(
+            Class<BeanType> beanType, String propertyName, Class<PropertyType> propertyType) throws ReflectiveOperationException {
+        return new CompoundSimplePropertyDescriptor<>(
+            new ReflectiveGetter<>(beanType, propertyName, propertyType),
+            new ReflectiveSetter<>(beanType, propertyName, propertyType));
     }
 
 }

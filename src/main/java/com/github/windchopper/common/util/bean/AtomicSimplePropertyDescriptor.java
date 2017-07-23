@@ -6,19 +6,26 @@ public class AtomicSimplePropertyDescriptor<BeanType, PropertyType> extends Prop
         super(getter, setter);
     }
 
-    public static <BeanType, PropertyType> AtomicSimplePropertyDescriptor<BeanType, PropertyType> of(
+    public static <BeanType, PropertyType> AtomicSimplePropertyDescriptor<BeanType, PropertyType> functional(
             Getter<BeanType, PropertyType> getter, Setter<BeanType, PropertyType> setter) {
         return new AtomicSimplePropertyDescriptor<>(getter, setter);
     }
 
-    public static <BeanType, PropertyType> AtomicSimplePropertyDescriptor<BeanType, PropertyType> of(
+    public static <BeanType, PropertyType> AtomicSimplePropertyDescriptor<BeanType, PropertyType> functional(
             Getter<BeanType, PropertyType> getter) {
-        return of(getter, null);
+        return functional(getter, null);
     }
 
-    public static <BeanType, PropertyType> AtomicSimplePropertyDescriptor<BeanType, PropertyType> of(
+    public static <BeanType, PropertyType> AtomicSimplePropertyDescriptor<BeanType, PropertyType> functional(
             Setter<BeanType, PropertyType> setter) {
-        return of(null, setter);
+        return functional(null, setter);
+    }
+
+    public static <BeanType, PropertyType> AtomicSimplePropertyDescriptor<BeanType, PropertyType> reflective(
+            Class<BeanType> beanType, String propertyName, Class<PropertyType> propertyType) throws ReflectiveOperationException {
+        return functional(
+            new ReflectiveGetter<>(beanType, propertyName, propertyType),
+            new ReflectiveSetter<>(beanType, propertyName, propertyType));
     }
 
 }
