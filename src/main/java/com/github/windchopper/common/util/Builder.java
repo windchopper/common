@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -36,6 +37,11 @@ public class Builder<T> implements ReinforcedSupplier<T> {
 
     @Override public Builder<T> accept(@Nonnull Consumer<T> consumer) {
         consumers.add(consumer);
+        return this;
+    }
+
+    @Override public <V> ReinforcedSupplier<T> accept(@Nonnull BiConsumer<T, V> consumer, V value) {
+        consumers.add(target -> consumer.accept(target, value));
         return this;
     }
 
