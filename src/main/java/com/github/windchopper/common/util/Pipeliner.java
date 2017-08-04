@@ -40,7 +40,7 @@ public class Pipeliner<T> implements ReinforcedSupplier<T> {
         return this;
     }
 
-    @Override public <V> ReinforcedSupplier<T> accept(@Nonnull BiConsumer<T, V> consumer, V argument) {
+    @Override public <V> Pipeliner<T> accept(@Nonnull BiConsumer<T, V> consumer, V argument) {
         consumer.accept(target, argument);
         return this;
     }

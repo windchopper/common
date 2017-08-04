@@ -40,7 +40,7 @@ public class Builder<T> implements ReinforcedSupplier<T> {
         return this;
     }
 
-    @Override public <V> ReinforcedSupplier<T> accept(@Nonnull BiConsumer<T, V> consumer, V value) {
+    @Override public <V> Builder<T> accept(@Nonnull BiConsumer<T, V> consumer, V value) {
         consumers.add(target -> consumer.accept(target, value));
         return this;
     }
