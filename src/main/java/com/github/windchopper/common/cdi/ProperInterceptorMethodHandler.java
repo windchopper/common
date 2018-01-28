@@ -10,7 +10,7 @@ import java.util.ResourceBundle;
 
 public class ProperInterceptorMethodHandler extends CombinedInterceptorAndDecoratorStackMethodHandler {
 
-    private static final ResourceBundle bundle = ResourceBundle.getBundle("name.wind.common.cdi.i18n.messages");
+    private static final ResourceBundle bundle = ResourceBundle.getBundle("com.github.windchopper.common.cdi.i18n.messages");
 
     private ProperInterceptorMethodHandler(CombinedInterceptorAndDecoratorStackMethodHandler replacedMethodHandler) {
         setInterceptorMethodHandler(replacedMethodHandler.getInterceptorMethodHandler());
@@ -26,12 +26,12 @@ public class ProperInterceptorMethodHandler extends CombinedInterceptorAndDecora
                         (CombinedInterceptorAndDecoratorStackMethodHandler) methodHandler));
             } else {
                 throw new IllegalArgumentException(String.format(
-                    bundle.getString("name.wind.common.cdi.ProperInterceptorMethodHandler.unexpectedHandler"),
+                    bundle.getString("com.github.windchopper.common.cdi.ProperInterceptorMethodHandler.unexpectedHandler"),
                     methodHandler));
             }
         } else {
             throw new IllegalArgumentException(String.format(
-                bundle.getString("name.wind.common.cdi.ProperInterceptorMethodHandler.notProxy"),
+                bundle.getString("com.github.windchopper.common.cdi.ProperInterceptorMethodHandler.notProxy"),
                 probablyProxy));
         }
     }
