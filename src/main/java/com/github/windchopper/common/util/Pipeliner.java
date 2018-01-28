@@ -13,8 +13,7 @@ public class Pipeliner<T> implements ReinforcedSupplier<T> {
     private final T target;
 
     private Pipeliner(Supplier<T> supplier) {
-        target = Objects.requireNonNull(
-            supplier.get());
+        target = Objects.requireNonNull(supplier.get());
     }
 
     public static <V> Pipeliner<V> of(@Nonnull V value) {
