@@ -4,7 +4,7 @@ import java.util.function.Function;
 
 @FunctionalInterface public interface FailableSupplier<T, E extends Throwable> {
 
-    T get() throws Throwable;
+    T get() throws E;
 
     static <T, E extends Throwable> Function<T, FailableSupplierResult<T>> wrap(FailableSupplier<T, E> failableSupplier) {
         return value -> failsafeGet(failableSupplier);
