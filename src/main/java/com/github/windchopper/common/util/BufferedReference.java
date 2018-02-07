@@ -1,7 +1,6 @@
 package com.github.windchopper.common.util;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ResourceBundle;
@@ -31,7 +30,7 @@ public class BufferedReference<T> implements Supplier<T> {
         suppliedValue = null;
     }
 
-    @Override public @Nullable T get() {
+    @Override public T get() {
         Instant now = Instant.now();
 
         if (Duration.between(previousSupplyTime, now).compareTo(lifeTime) > 0) {

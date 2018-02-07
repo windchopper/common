@@ -3,7 +3,7 @@ package com.github.windchopper.common.util.stream;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class FailableConsumerResult<T> {
+public class FailableConsumerResult<T> implements FailableResult<T> {
 
     private final T value;
     private final Throwable exception;
@@ -13,11 +13,11 @@ public class FailableConsumerResult<T> {
         this.exception = exception;
     }
 
-    public boolean succeeded() {
+    @Override public boolean succeeded() {
         return exception == null;
     }
 
-    public boolean failed() {
+    @Override public boolean failed() {
         return exception != null;
     }
 

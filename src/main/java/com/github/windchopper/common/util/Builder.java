@@ -45,6 +45,10 @@ public class Builder<T> implements ReinforcedSupplier<T> {
         return this;
     }
 
+    @Override public <V> Builder<V> map(@Nonnull Function<T, V> mapper) {
+        return new Builder<>(() -> mapper.apply(get()));
+    }
+
     @Override public T get() {
         return built = Optional.ofNullable(built).orElseGet(Pipeliner.of(supplier).accept(target -> consumers.forEach(consumer -> consumer.accept(target))));
     }

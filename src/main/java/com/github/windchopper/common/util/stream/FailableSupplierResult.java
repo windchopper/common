@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class FailableSupplierResult<T> {
+public class FailableSupplierResult<T> implements FailableResult<T> {
 
     private final T value;
     private final Throwable exception;
@@ -14,11 +14,11 @@ public class FailableSupplierResult<T> {
         this.exception = exception;
     }
 
-    public boolean succeeded() {
+    @Override public boolean succeeded() {
         return exception == null;
     }
 
-    public boolean failed() {
+    @Override public boolean failed() {
         return exception != null;
     }
 

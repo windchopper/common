@@ -13,5 +13,6 @@ public interface ReinforcedSupplier<T> extends Supplier<T> {
     <V> ReinforcedSupplier<T> add(@Nonnull Function<T, Supplier<Collection<V>>> supplierFunction, Collection<V> values);
     ReinforcedSupplier<T> accept(@Nonnull Consumer<T> consumer);
     <V> ReinforcedSupplier<T> accept(@Nonnull BiConsumer<T, V> consumer, V value);
+    <V> ReinforcedSupplier<V> map(@Nonnull Function<T, V> mapper);
 
 }

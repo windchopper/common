@@ -42,6 +42,11 @@ public class Factory<T> implements ReinforcedSupplier<T> {
         return this;
     }
 
+    @Override
+    public <V> Factory<V> map(@Nonnull Function<T, V> mapper) {
+        return new Factory<>(() -> mapper.apply(get()));
+    }
+
     @Override public T get() {
         return Pipeliner.of(supplier).accept(target -> consumers.forEach(consumer -> consumer.accept(target))).get();
     }

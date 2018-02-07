@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
-public class FailableFunctionResult<I, O> {
+public class FailableFunctionResult<I, O> implements FailableResult<O> {
 
     private final I value;
     private final O outcome;
@@ -16,11 +16,11 @@ public class FailableFunctionResult<I, O> {
         this.exception = exception;
     }
 
-    public boolean succeeded() {
+    @Override public boolean succeeded() {
         return exception == null;
     }
 
-    public boolean failed() {
+    @Override public boolean failed() {
         return exception != null;
     }
 
