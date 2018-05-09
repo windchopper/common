@@ -10,38 +10,47 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class Builder<T> implements ReinforcedSupplier<T> {
+public class Builder<T> implements StatefulReinforcedSupplier<T> {
 
     private final Supplier<T> supplier;
-    private final Queue<Consumer<T>> consumers = new LinkedList<>();
+    private final Queue<Consumer<T>> consumerQueue;
 
     private T built;
 
     private Builder(@Nonnull Supplier<T> supplier) {
+        this(supplier, new LinkedList<>());
+    }
+
+    private Builder(@Nonnull Supplier<T> supplier, @Nonnull Queue<Consumer<T>> consumerQueue) {
         this.supplier = supplier;
+        this.consumerQueue = consumerQueue;
     }
 
     public static <V> Builder<V> of(@Nonnull Supplier<V> supplier) {
         return new Builder<>(supplier);
     }
 
+    @Override public Builder<T> copy() {
+        return new Builder<>(supplier, consumerQueue);
+    }
+
     @Override public <V> Builder<T> set(@Nonnull Function<T, Consumer<V>> consumerFunction, V value) {
-        consumers.add(target -> consumerFunction.apply(target).accept(value));
+        consumerQueue.add(target -> consumerFunction.apply(target).accept(value));
         return this;
     }
 
     @Override public <V> Builder<T> add(@Nonnull Function<T, Supplier<Collection<V>>> supplierFunction, Collection<V> values) {
-        consumers.add(target -> supplierFunction.apply(target).get().addAll(values));
+        consumerQueue.add(target -> supplierFunction.apply(target).get().addAll(values));
         return this;
     }
 
     @Override public Builder<T> accept(@Nonnull Consumer<T> consumer) {
-        consumers.add(consumer);
+        consumerQueue.add(consumer);
         return this;
     }
 
     @Override public <V> Builder<T> accept(@Nonnull BiConsumer<T, V> consumer, V value) {
-        consumers.add(target -> consumer.accept(target, value));
+        consumerQueue.add(target -> consumer.accept(target, value));
         return this;
     }
 
@@ -50,7 +59,7 @@ public class Builder<T> implements ReinforcedSupplier<T> {
     }
 
     @Override public T get() {
-        return built = Optional.ofNullable(built).orElseGet(Pipeliner.of(supplier).accept(target -> consumers.forEach(consumer -> consumer.accept(target))));
+        return built = Optional.ofNullable(built).orElseGet(Pipeliner.of(supplier).accept(target -> consumerQueue.forEach(consumer -> consumer.accept(target))));
     }
 
 }
