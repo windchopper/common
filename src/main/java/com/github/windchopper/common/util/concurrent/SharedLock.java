@@ -15,11 +15,11 @@ public class SharedLock implements Lock, Serializable {
 
         private static final long serialVersionUID = -7880228059275366427L;
 
-        protected int tryAcquireShared(int ignore) {
+        protected int tryAcquireShared(int ignored) {
             return compareAndSetState(0, 1) ? +1 : -1;
         }
 
-        protected boolean tryReleaseShared(int ignore) {
+        protected boolean tryReleaseShared(int ignored) {
             if (compareAndSetState(1, 0)) {
                 return true;
             } else {
