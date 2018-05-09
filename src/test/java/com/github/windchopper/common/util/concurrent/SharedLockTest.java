@@ -18,6 +18,9 @@ import static org.junit.Assert.assertFalse;
         SharedLock sharedLock2nd = new SharedLock();
 
         test(sharedLock1st, sharedLock2nd);
+
+        assertFalse(sharedLock1st.tryLock());
+        assertFalse(sharedLock2nd.tryLock());
     }
 
     @Test public void testMultipleTimes() throws InterruptedException {
