@@ -1,24 +1,20 @@
 package com.github.windchopper.common.util.stream;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class FailableConsumerResult<T> implements FailableResult<T> {
+public class FailableConsumerResult<T> extends FailableResult<T> {
 
     private final T value;
-    private final Throwable exception;
 
     public FailableConsumerResult(T value, Throwable exception) {
+        super(exception);
         this.value = value;
-        this.exception = exception;
     }
 
-    @Override public boolean succeeded() {
-        return exception == null;
-    }
-
-    @Override public boolean failed() {
-        return exception != null;
+    @Override public Optional<T> result() {
+        return Optional.ofNullable(value);
     }
 
     public void onSuccess(Consumer<T> handler) {

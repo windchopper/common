@@ -4,22 +4,17 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class FailableSupplierResult<T> implements FailableResult<T> {
+public class FailableSupplierResult<T> extends FailableResult<T> {
 
     private final T value;
-    private final Throwable exception;
 
     public FailableSupplierResult(T value, Throwable exception) {
+        super(exception);
         this.value = value;
-        this.exception = exception;
     }
 
-    @Override public boolean succeeded() {
-        return exception == null;
-    }
-
-    @Override public boolean failed() {
-        return exception != null;
+    @Override public Optional<T> result() {
+        return Optional.ofNullable(value);
     }
 
     public void onSuccess(Consumer<T> handler) {
@@ -36,10 +31,6 @@ public class FailableSupplierResult<T> implements FailableResult<T> {
 
     public T recover(Function<Throwable, T> recoverer) {
         return exception != null ? recoverer.apply(exception) : value;
-    }
-
-    public Optional<T> optional() {
-        return Optional.ofNullable(value);
     }
 
 }

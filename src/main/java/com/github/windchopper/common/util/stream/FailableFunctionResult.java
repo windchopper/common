@@ -4,24 +4,19 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
-public class FailableFunctionResult<I, O> implements FailableResult<O> {
+public class FailableFunctionResult<I, O> extends FailableResult<O> {
 
     private final I value;
     private final O outcome;
-    private final Throwable exception;
 
     public FailableFunctionResult(I value, O outcome, Throwable exception) {
+        super(exception);
         this.value = value;
         this.outcome = outcome;
-        this.exception = exception;
     }
 
-    @Override public boolean succeeded() {
-        return exception == null;
-    }
-
-    @Override public boolean failed() {
-        return exception != null;
+    @Override public Optional<O> result() {
+        return Optional.ofNullable(outcome);
     }
 
     public void onSuccess(BiConsumer<I, O> handler) {
@@ -38,10 +33,6 @@ public class FailableFunctionResult<I, O> implements FailableResult<O> {
 
     public O recover(BiFunction<I, Throwable, O> recoverer) {
         return exception != null ? recoverer.apply(value, exception) : outcome;
-    }
-
-    public Optional<O> optional() {
-        return Optional.ofNullable(outcome);
     }
 
 }
