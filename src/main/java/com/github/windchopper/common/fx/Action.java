@@ -65,7 +65,7 @@ public class Action implements EventHandler<ActionEvent> {
                              Property<Tooltip> widgetTooltipProperty,
                              AddEventHandlerMethod widgetAddEventHandlerMethod) {
 
-        if (widgetDisableProperty != null) widgetTextProperty.bind(textProperty);
+        if (widgetTextProperty != null) widgetTextProperty.bind(textProperty);
         if (widgetGraphicProperty != null) widgetGraphicProperty.bind(graphicProperty);
         if (widgetDisableProperty != null) widgetDisableProperty.bind(Bindings.createBooleanBinding(
             () -> disabledExternallyProperty.get() || disabledInternallyProperty.get(),
