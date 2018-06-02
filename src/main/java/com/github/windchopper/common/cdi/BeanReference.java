@@ -27,7 +27,7 @@ public class BeanReference {
         return qualifiers;
     }
 
-    @SuppressWarnings("unchecked") public Object resolve() {
+    public Object resolve() {
         Instance<?> instance = null;
 
         if (type != null && qualifiers != null) {

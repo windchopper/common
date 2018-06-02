@@ -46,11 +46,11 @@ public class TransformingBidirectionalBinding<Type1st, Type2nd> {
             }
     }
 
-    @SuppressWarnings("unused") private void changed1st(ObservableValue<? extends Type1st> observable, Type1st oldValue, Type1st newValue) {
+    private void changed1st(ObservableValue<? extends Type1st> observable, Type1st oldValue, Type1st newValue) {
         exclusiveUpdate(reference2nd.get(), transformer.apply(newValue));
     }
 
-    @SuppressWarnings("unused") private void changed2nd(ObservableValue<? extends Type2nd> observable, Type2nd oldValue, Type2nd newValue) {
+    private void changed2nd(ObservableValue<? extends Type2nd> observable, Type2nd oldValue, Type2nd newValue) {
         exclusiveUpdate(reference1st.get(), reverseTransformer.apply(newValue));
     }
 

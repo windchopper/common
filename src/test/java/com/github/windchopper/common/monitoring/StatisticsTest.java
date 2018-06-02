@@ -9,11 +9,9 @@ import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(JUnit4.class)
-public class StatisticsTest {
+@RunWith(JUnit4.class) public class StatisticsTest {
 
-    @BeforeClass
-    public static void prepareStatic() {
+    @BeforeClass public static void prepareStatic() {
         StatisticsCollector.Holder.instance.setEnabled(true);
         ExpensesCollector.Holder.instance.setEnabled(true);
     }
@@ -31,8 +29,7 @@ public class StatisticsTest {
         }
     }
 
-    @Test
-    public void testOperationMonitor() throws InterruptedException {
+    @Test public void testOperationMonitor() throws InterruptedException {
         long beginTime = currentTimeMillis();
 
         monitoredOperation("operationName", false);
@@ -50,7 +47,7 @@ public class StatisticsTest {
         assertEquals(1, statistics.getSucceededCount());
         assertEquals(0, statistics.getFailedCount());
         assertTrue(statistics.getTotalTimeNanoseconds() >= 123 * 1000000);
-        assertTrue(statistics.getMinTimeNanoseconds() == statistics.getMaxTimeNanoseconds());
+        assertEquals(statistics.getMinTimeNanoseconds(), statistics.getMaxTimeNanoseconds());
 
         assertTrue(ExpensesCollector.Holder.instance.getOperationStatisticsTimeNanoseconds() > 0);
         assertEquals(1, ExpensesCollector.Holder.instance.getOperationCount());

@@ -9,7 +9,7 @@ public class AddionalBindings {
 
     public static <T> TransformingBidirectionalBinding<T, T> bindBidirectionally(@Nonnull Property<T> property1st,
                                                                                  @Nonnull Property<T> property2nd) {
-        return bindBidirectionally(property1st, property2nd, value -> value, value -> value);
+        return bindBidirectionally(property1st, property2nd, Function.identity(), Function.identity());
     }
 
     public static <Type1st, Type2nd> TransformingBidirectionalBinding<Type1st, Type2nd>
