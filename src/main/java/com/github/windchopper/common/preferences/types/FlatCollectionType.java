@@ -13,6 +13,10 @@ import static java.util.stream.Collectors.toCollection;
 
 public class FlatCollectionType<T, C extends Collection<T>> extends CollectionType<T, C> {
 
+    public FlatCollectionType(Supplier<C> collectionSupplier, FlatType<T> flatType) {
+        this(collectionSupplier, flatType.transformer, flatType.reverseTransformer);
+    }
+
     public FlatCollectionType(Supplier<C> collectionSupplier, Function<String, T> transformer, Function<T, String> reverseTransformer) {
         super(
             source -> source.values().stream()

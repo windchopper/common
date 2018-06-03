@@ -13,6 +13,10 @@ import static java.util.stream.Collectors.toMap;
 
 public class StructuralMapType<T, M extends Map<String, T>> extends StructuralType<M> {
 
+    public StructuralMapType(Supplier<M> mapSupplier, StructuralType<T> structuralType) {
+        this(mapSupplier, structuralType.transformer, structuralType.reverseTransformer);
+    }
+
     public StructuralMapType(Supplier<M> mapSupplier, Function<JsonObject, T> transformer, Function<T, JsonObject> reverseTransformer) {
         super(
             source -> source.entrySet().stream()
@@ -22,8 +26,7 @@ public class StructuralMapType<T, M extends Map<String, T>> extends StructuralTy
                     MapType::duplicate,
                     mapSupplier)),
             source -> Pipeliner.of(Json::createObjectBuilder)
-                .accept(jsonObjectBuilder -> source.entrySet()
-                    .forEach(entry -> jsonObjectBuilder.add(entry.getKey(), reverseTransformer.apply(entry.getValue()))))
+                .accept(jsonObjectBuilder -> source.forEach((key, value) -> jsonObjectBuilder.add(key, reverseTransformer.apply(value))))
                 .map(JsonObjectBuilder::build)
                 .get());
     }

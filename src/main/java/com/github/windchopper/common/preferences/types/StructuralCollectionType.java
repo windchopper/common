@@ -13,6 +13,10 @@ import static java.util.stream.Collectors.toCollection;
 
 public class StructuralCollectionType<T, C extends Collection<T>> extends CollectionType<T, C> {
 
+    public StructuralCollectionType(Supplier<C> collectionSupplier, StructuralType<T> structuralType) {
+        this(collectionSupplier, structuralType.transformer, structuralType.reverseTransformer);
+    }
+
     public StructuralCollectionType(Supplier<C> collectionSupplier, Function<JsonObject, T> transformer, Function<T, JsonObject> reverseTransformer) {
         super(
             source -> source.values().stream()

@@ -10,8 +10,8 @@ import java.util.function.Function;
 
 public class StructuralType<T> implements PreferencesEntryType<T> {
 
-    private final Function<JsonObject, T> transformer;
-    private final Function<T, JsonObject> reverseTransformer;
+    final Function<JsonObject, T> transformer;
+    final Function<T, JsonObject> reverseTransformer;
 
     public StructuralType(Function<JsonObject, T> transformer, Function<T, JsonObject> reverseTransformer) {
         this.transformer = transformer;
