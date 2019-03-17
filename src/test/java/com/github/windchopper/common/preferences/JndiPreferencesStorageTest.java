@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.naming.Context;
 import javax.naming.NameClassPair;
@@ -20,16 +20,14 @@ import static org.mockito.Mockito.*;
 
     @Mock private Context context;
 
-    @Before @SuppressWarnings("unchecked")  public void prepare() throws NamingException {
+    @Before @SuppressWarnings("unchecked") public void prepare() throws NamingException {
         NamingEnumeration<NameClassPair> bindingEnumeration = mock(NamingEnumeration.class);
         Iterator<NameClassPair> bindingIterator = Arrays.asList(
             new NameClassPair("value:k#1", String.class.getName()),
             new NameClassPair("value:k#2", String.class.getName())).iterator();
 
-        when(bindingEnumeration.hasMoreElements()).thenAnswer(invocationOnMock -> bindingIterator.hasNext());
-        when(bindingEnumeration.hasMore()).thenAnswer(invocationOnMock -> bindingIterator.hasNext());
-        when(bindingEnumeration.nextElement()).thenAnswer(invocationOnMock -> bindingIterator.next());
-        when(bindingEnumeration.next()).thenAnswer(invocationOnMock -> bindingIterator.next());
+        when(bindingEnumeration.hasMoreElements()).thenAnswer(invocation -> bindingIterator.hasNext());
+        when(bindingEnumeration.nextElement()).thenAnswer(invocation -> bindingIterator.next());
         doNothing().when(bindingEnumeration).close();
 
         when(context.lookup("value:k#1")).thenReturn("v#1");

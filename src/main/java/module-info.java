@@ -16,6 +16,7 @@ module common {
 
     requires cdi.api;
 
-    provides javax.enterprise.inject.spi.Extension with com.github.windchopper.common.cdi.temporary.TemporaryExtension;
+    provides javax.enterprise.inject.spi.Extension
+        with com.github.windchopper.common.cdi.temporary.TemporaryExtension;
 
 }
