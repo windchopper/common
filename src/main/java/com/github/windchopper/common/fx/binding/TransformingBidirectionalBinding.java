@@ -3,7 +3,6 @@ package com.github.windchopper.common.fx.binding;
 import javafx.beans.property.Property;
 import javafx.beans.value.ObservableValue;
 
-import javax.annotation.Nonnull;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -21,10 +20,10 @@ public class TransformingBidirectionalBinding<Type1st, Type2nd> {
 
     private final Lock updateLock = new ReentrantLock();
 
-    public TransformingBidirectionalBinding(@Nonnull Property<Type1st> property1st,
-                                            @Nonnull Property<Type2nd> property2nd,
-                                            @Nonnull Function<Type1st, Type2nd> transformer,
-                                            @Nonnull Function<Type2nd, Type1st> reverseTransformer) {
+    public TransformingBidirectionalBinding(Property<Type1st> property1st,
+                                            Property<Type2nd> property2nd,
+                                            Function<Type1st, Type2nd> transformer,
+                                            Function<Type2nd, Type1st> reverseTransformer) {
         reference1st = new WeakReference<>(requireNonNull(property1st));
         reference2nd = new WeakReference<>(requireNonNull(property2nd));
 

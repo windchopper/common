@@ -1,6 +1,5 @@
 package com.github.windchopper.common.ng;
 
-import javax.annotation.Nonnull;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -101,7 +100,7 @@ public class NumeralGenerator {
      *
      */
 
-    public @Nonnull String generate(@Nonnull String delimiter, @Nonnull BigInteger value) {
+    public String generate(String delimiter, BigInteger value) {
         return String.join(requireNonNull(delimiter), generateWords(
             requireNonNull(value).abs(), new Stack<>(), new Stack<>(), new LinkedList<>()));
     }

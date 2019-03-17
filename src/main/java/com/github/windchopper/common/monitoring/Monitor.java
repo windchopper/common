@@ -1,9 +1,5 @@
 package com.github.windchopper.common.monitoring;
 
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.NotThreadSafe;
-
-@NotThreadSafe
 public class Monitor {
 
     private final String name;
@@ -11,7 +7,7 @@ public class Monitor {
     private long startTimeSeconds;
     private long startTimeNanoseconds;
 
-    public Monitor(@Nonnull String name) {
+    public Monitor(String name) {
         this.name = name;
     }
 

@@ -55,7 +55,7 @@ import static java.util.Collections.addAll;
         }
 
         Assert.assertEquals(-1, lastValue);
-        Assert.assertEquals(false, iterator.hasNext());
+        Assert.assertFalse(iterator.hasNext());
 
         try {
             iterator.next();

@@ -1,6 +1,5 @@
 package com.github.windchopper.common.util.concurrent;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
@@ -47,7 +46,7 @@ public class SharedLock implements Lock, Serializable {
         return sync.tryAcquireShared(1) >= 0;
     }
 
-    @Override public boolean tryLock(long timeout, @Nonnull TimeUnit unit) throws InterruptedException {
+    @Override public boolean tryLock(long timeout, TimeUnit unit) throws InterruptedException {
         return sync.tryAcquireSharedNanos(1, unit.toNanos(timeout));
     }
 
@@ -55,7 +54,7 @@ public class SharedLock implements Lock, Serializable {
         sync.releaseShared(1);
     }
 
-    @Override public @Nonnull Condition newCondition() {
+    @Override public Condition newCondition() {
         return sync.newCondition();
     }
 

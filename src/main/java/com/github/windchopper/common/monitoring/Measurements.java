@@ -1,8 +1,5 @@
 package com.github.windchopper.common.monitoring;
 
-import javax.annotation.CheckForSigned;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -25,7 +22,7 @@ public class Measurements {
     private long periodStartTimeSeconds;
     private long periodEndTimeSeconds;
 
-    private @CheckForSigned int determineOffset(@Nonnegative long startTimeSeconds) {
+    private int determineOffset(long startTimeSeconds) {
         if (periodStartTimeSeconds > startTimeSeconds) {
             return -1;
         }
@@ -50,7 +47,7 @@ public class Measurements {
         return offset;
     }
 
-    public void registerStart(@Nonnegative long startTimeSeconds) {
+    public void registerStart(long startTimeSeconds) {
         lock.lock();
 
         try {
@@ -64,7 +61,7 @@ public class Measurements {
         }
     }
 
-    public void registerFinish(@Nonnegative int index, @Nonnegative long startTimeSeconds, @Nonnegative long executionTimeNanoseconds) {
+    public void registerFinish(int index, long startTimeSeconds, long executionTimeNanoseconds) {
         lock.lock();
 
         try {
@@ -81,15 +78,15 @@ public class Measurements {
         }
     }
 
-    public void registerSuccess(@Nonnegative long startTimeSeconds, @Nonnegative long executionTimeNanoseconds) {
+    public void registerSuccess(long startTimeSeconds, long executionTimeNanoseconds) {
         registerFinish(SUCCEEDED_COUNT_INDEX, startTimeSeconds, executionTimeNanoseconds);
     }
 
-    public void registerFail(@Nonnegative long startTimeSeconds, @Nonnegative long executionTimeNanoseconds) {
+    public void registerFail(long startTimeSeconds, long executionTimeNanoseconds) {
         registerFinish(FAILED_COUNT_INDEX, startTimeSeconds, executionTimeNanoseconds);
     }
 
-    public @Nonnull Statistics gatherStatistics(@Nonnull String name, @Nonnegative long startTimeSeconds, @Nonnegative long endTimeSeconds) {
+    public Statistics gatherStatistics(String name, long startTimeSeconds, long endTimeSeconds) {
         if (endTimeSeconds < startTimeSeconds) throw new IllegalArgumentException("endTimeSeconds < startTimeSeconds");
 
         startTimeSeconds = Math.max(startTimeSeconds, periodStartTimeSeconds);

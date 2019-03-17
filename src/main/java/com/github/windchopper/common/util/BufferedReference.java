@@ -1,6 +1,5 @@
 package com.github.windchopper.common.util;
 
-import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ResourceBundle;
@@ -20,7 +19,7 @@ public class BufferedReference<T> implements Supplier<T> {
     private Instant previousSupplyTime = Instant.MIN;
     private T suppliedValue;
 
-    public BufferedReference(@Nonnull Duration lifeTime, @Nonnull Supplier<T> valueSupplier) {
+    public BufferedReference(Duration lifeTime, Supplier<T> valueSupplier) {
         this.lifeTime = requireNonNull(lifeTime, () -> String.format(bundle.getString(BUNDLE_KEY__NULL_PARAMETER), "lifeTime"));
         this.valueSupplier = requireNonNull(valueSupplier, () -> String.format(bundle.getString(BUNDLE_KEY__NULL_PARAMETER), "valueSupplier"));
     }
@@ -31,7 +30,7 @@ public class BufferedReference<T> implements Supplier<T> {
     }
 
     @Override public T get() {
-        Instant now = Instant.now();
+        var now = Instant.now();
 
         if (Duration.between(previousSupplyTime, now).compareTo(lifeTime) > 0) {
             suppliedValue = null;

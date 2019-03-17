@@ -1,6 +1,5 @@
 package com.github.windchopper.common.util;
 
-import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
@@ -43,7 +42,7 @@ public class HierarchyIterator<T> implements Iterator<T> {
 
     private Node node;
 
-    public HierarchyIterator(@Nonnull T root, @Nonnull Function<T, Iterable<? extends T>> exposer) {
+    public HierarchyIterator(T root, Function<T, Iterable<? extends T>> exposer) {
         this.root = requireNonNull(root);
         this.exposer = requireNonNull(exposer);
     }
@@ -52,7 +51,7 @@ public class HierarchyIterator<T> implements Iterator<T> {
         return node == null || node.hasNext();
     }
 
-    @Override @Nonnull public T next() {
+    @Override public T next() {
         T next;
 
         if (node == null) {

@@ -1,6 +1,5 @@
 package com.github.windchopper.common.ng;
 
-import javax.annotation.Nonnull;
 import java.math.BigInteger;
 import java.util.EnumSet;
 import java.util.function.Function;
@@ -76,7 +75,7 @@ public class Unit implements Comparable<Unit> {
     private final UnitCase form;
     private final String feminine;
 
-    public Unit(@Nonnull String line) {
+    public Unit(String line) {
         Matcher lineMatcher = linePattern.matcher(line);
 
         if (lineMatcher.matches()) {
@@ -109,7 +108,7 @@ public class Unit implements Comparable<Unit> {
         return feminine;
     }
 
-    @Override public int compareTo(@Nonnull Unit anotherUnit) {
+    @Override public int compareTo(Unit anotherUnit) {
         return value.compareTo(anotherUnit.value);
     }
 

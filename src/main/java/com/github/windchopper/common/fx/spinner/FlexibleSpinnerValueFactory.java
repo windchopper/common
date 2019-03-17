@@ -2,8 +2,6 @@ package com.github.windchopper.common.fx.spinner;
 
 import javafx.scene.control.SpinnerValueFactory;
 
-import javax.annotation.Nonnull;
-
 import static java.util.Objects.requireNonNull;
 
 public class FlexibleSpinnerValueFactory<T> extends SpinnerValueFactory<T> {
@@ -12,10 +10,10 @@ public class FlexibleSpinnerValueFactory<T> extends SpinnerValueFactory<T> {
     private final T max;
     private final SpinnableType<T> spinnableType;
 
-    public FlexibleSpinnerValueFactory(@Nonnull SpinnableType<T> spinnableType,
-                                       @Nonnull T min,
-                                       @Nonnull T max,
-                                       @Nonnull T value) {
+    public FlexibleSpinnerValueFactory(SpinnableType<T> spinnableType,
+                                       T min,
+                                       T max,
+                                       T value) {
         this.spinnableType = requireNonNull(spinnableType);
         this.min = requireNonNull(min);
         this.max = requireNonNull(max);

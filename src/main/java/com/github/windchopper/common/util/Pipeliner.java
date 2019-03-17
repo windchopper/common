@@ -1,6 +1,5 @@
 package com.github.windchopper.common.util;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -16,35 +15,35 @@ public class Pipeliner<T> implements ReinforcedSupplier<T> {
         target = Objects.requireNonNull(supplier.get());
     }
 
-    public static <V> Pipeliner<V> of(@Nonnull V value) {
-        return new Pipeliner<>(() -> value);
+    public static <V> Pipeliner<V> of(V value) {
+        return new Pipeliner<V>(() -> value);
     }
 
-    public static <V> Pipeliner<V> of(@Nonnull Supplier<V> supplier) {
+    public static <V> Pipeliner<V> of(Supplier<V> supplier) {
         return new Pipeliner<>(supplier);
     }
 
-    @Override public <V> Pipeliner<T> set(@Nonnull Function<T, Consumer<V>> consumerFunction, V value) {
+    @Override public <V> Pipeliner<T> set(Function<T, Consumer<V>> consumerFunction, V value) {
         consumerFunction.apply(this.target).accept(value);
         return this;
     }
 
-    @Override public <V> Pipeliner<T> add(@Nonnull Function<T, Supplier<Collection<V>>> supplierFunction, Collection<V> values) {
+    @Override public <V> Pipeliner<T> add(Function<T, Supplier<Collection<V>>> supplierFunction, Collection<V> values) {
         supplierFunction.apply(target).get().addAll(values);
         return this;
     }
 
-    @Override public Pipeliner<T> accept(@Nonnull Consumer<T> consumer) {
+    @Override public Pipeliner<T> accept(Consumer<T> consumer) {
         consumer.accept(target);
         return this;
     }
 
-    @Override public <V> Pipeliner<T> accept(@Nonnull BiConsumer<T, V> consumer, V argument) {
+    @Override public <V> Pipeliner<T> accept(BiConsumer<T, V> consumer, V argument) {
         consumer.accept(target, argument);
         return this;
     }
 
-    @Override public <V> Pipeliner<V> map(@Nonnull Function<T, V> mapper) {
+    @Override public <V> Pipeliner<V> map(Function<T, V> mapper) {
         return new Pipeliner<>(() -> mapper.apply(target));
     }
 

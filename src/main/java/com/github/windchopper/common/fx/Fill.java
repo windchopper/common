@@ -6,8 +6,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-import javax.annotation.Nonnull;
-
 import static java.util.Objects.requireNonNull;
 
 public enum Fill {
@@ -27,7 +25,7 @@ public enum Fill {
         verticalPriority = (this.vertical = vertical) ? Priority.ALWAYS : Priority.NEVER;
     }
 
-    public void apply(@Nonnull Node node) {
+    public void apply(Node node) {
         requireNonNull(node);
 
         GridPane.setFillWidth(node, horizontal);
