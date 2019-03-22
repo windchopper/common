@@ -6,7 +6,7 @@
 
     <groupId>com.github.windchopper</groupId>
     <artifactId>common</artifactId>
-    <version>1.0</version>
+    <version>1.0-java11</version>
 
     <packaging>jar</packaging>
 
