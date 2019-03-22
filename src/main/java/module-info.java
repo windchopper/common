@@ -35,6 +35,7 @@ module windchopper.common {
     requires javax.inject;
     requires javax.interceptor.api;
 
+    requires javafx.base;
     requires javafx.graphics;
     requires javafx.controls;
     requires javafx.fxml;

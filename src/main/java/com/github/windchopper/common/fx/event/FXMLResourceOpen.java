@@ -5,6 +5,7 @@ import javafx.stage.Stage;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.Collections.emptyMap;
 
@@ -43,10 +44,10 @@ public class FXMLResourceOpen {
     public <T> T findParameter(String name, Class<? extends T> type) {
         Objects.requireNonNull(name);
         Objects.requireNonNull(type);
-        return parameters.entrySet().stream()
-            .filter(entry -> name.equals(entry.getKey()) && type.isInstance(entry.getValue()))
-            .map(entry -> (T) entry.getValue())
-            .findFirst().orElse(null);
+        return Optional.ofNullable(parameters.get(name))
+            .filter(type::isInstance)
+            .map(type::cast)
+            .orElse(null);
     }
 
 }
