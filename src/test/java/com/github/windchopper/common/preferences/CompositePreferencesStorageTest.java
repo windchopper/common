@@ -18,14 +18,10 @@ import static org.mockito.Mockito.*;
     @Mock private PreferencesStorage storageNode2nd;
 
     @Before public void prepare() {
-        when(storageNode1st.value(eq("key#1"), any(String.class))).thenReturn("value#1@1");
-        when(storageNode2nd.value(eq("key#1"), any(String.class))).thenReturn("value#1@2");
-
-        when(storageNode1st.value(eq("key#2"), any(String.class))).thenReturn(null);
-        when(storageNode2nd.value(eq("key#2"), any(String.class))).thenReturn("value#2@2");
-
-        when(storageNode1st.value(eq("key#3"), any(String.class))).thenReturn("value#3@1");
-        when(storageNode2nd.value(eq("key#3"), any(String.class))).thenReturn(null);
+        when(storageNode1st.value(eq("key#1"), nullable(String.class))).thenReturn("value#1@1");
+        when(storageNode1st.value(eq("key#2"), nullable(String.class))).thenReturn(null);
+        when(storageNode1st.value(eq("key#3"), nullable(String.class))).thenReturn("value#3@1");
+        when(storageNode2nd.value(eq("key#2"), nullable(String.class))).thenReturn("value#2@2");
     }
 
     @Test public void testLoadValue() {

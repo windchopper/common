@@ -17,9 +17,9 @@ import static org.mockito.Mockito.*;
     @Mock private PreferencesStorage storage;
 
     @Before public void prepare() {
-        when(storage.value(eq("stringKey"), any(String.class))).thenReturn("string");
-        when(storage.value(eq("shortKey"), any(String.class))).thenReturn("1");
-        when(storage.value(eq("booleanKey"), any(String.class))).thenReturn("true");
+        when(storage.value(eq("stringKey"), nullable(String.class))).thenReturn("string");
+        when(storage.value(eq("shortKey"), nullable(String.class))).thenReturn("1");
+        when(storage.value(eq("booleanKey"), nullable(String.class))).thenReturn("true");
     }
 
     @Test public void test() {
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
         assertEquals(Short.valueOf("1"), shortEntry.get());
         assertEquals(true, booleanEntry.get());
 
-        verify(storage, times(3)).value(any(String.class), any(String.class));
+        verify(storage, times(3)).value(any(String.class), nullable(String.class));
     }
 
 }

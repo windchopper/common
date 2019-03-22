@@ -2,7 +2,8 @@ package com.github.windchopper.common.preferences;
 
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toSet;
 
 public class CompositePreferencesStorage implements PreferencesStorage {
 
@@ -46,50 +47,69 @@ public class CompositePreferencesStorage implements PreferencesStorage {
     }
 
     @Override public String value(String name, String defaultValue) {
-        Optional<Pair> mediatorAndValue = mediators.stream().filter(loadSelector).sorted(loadComparator)
+        Optional<Pair> mediatorWithValue = mediators.stream()
+            .filter(loadSelector)
+            .sorted(loadComparator)
             .map(mediator -> new Pair(mediator, mediator.value(name, null)))
-            .filter(pair -> pair.value != null).findFirst();
+            .filter(pair -> pair.value != null)
+            .findFirst();
 
-        mediatorAndValue.ifPresent(pair -> mediators.stream()
-            .filter(saveSelector).filter(mediator -> mediator.propagateTarget).sorted(saveComparator)
-            .filter(mediator -> mediator != pair.mediator).forEach(mediator -> mediator.putValue(name, pair.value)));
+        mediatorWithValue.ifPresent(pair -> mediators.stream()
+            .filter(saveSelector)
+            .filter(mediator -> mediator.propagateTarget)
+            .sorted(saveComparator)
+            .filter(mediator -> mediator != pair.mediator)
+            .forEach(mediator -> mediator.putValue(name, pair.value)));
 
-        return mediatorAndValue.map(pair -> pair.value).orElse(defaultValue);
+        return mediatorWithValue.map(pair -> pair.value).orElse(defaultValue);
     }
 
     @Override public void putValue(String name, String value) {
-        mediators.stream().filter(saveSelector).sorted(saveComparator)
+        mediators.stream()
+            .filter(saveSelector)
+            .sorted(saveComparator)
             .forEach(mediator -> mediator.putValue(name, value));
     }
 
     @Override public void removeValue(String name) {
-        mediators.stream().filter(saveSelector).sorted(saveComparator)
+        mediators.stream()
+            .filter(saveSelector)
+            .sorted(saveComparator)
             .forEach(mediator -> mediator.removeValue(name));
     }
 
     @Override public Set<String> valueNames() {
-        return mediators.stream().filter(loadSelector).sorted(loadComparator)
-            .flatMap(mediator -> mediator.valueNames().stream()).collect(Collectors.toSet());
+        return mediators.stream()
+            .filter(loadSelector)
+            .sorted(loadComparator)
+            .flatMap(mediator -> mediator.valueNames().stream())
+            .collect(toSet());
     }
 
     @Override public Set<String> childNames() {
-        return mediators.stream().filter(loadSelector).sorted(loadComparator)
-            .flatMap(mediator -> mediator.childNames().stream()).collect(Collectors.toSet());
+        return mediators.stream()
+            .filter(loadSelector)
+            .sorted(loadComparator)
+            .flatMap(mediator -> mediator.childNames().stream())
+            .collect(toSet());
     }
 
     @Override public PreferencesStorage child(String name) {
         return bufferedChilds.computeIfAbsent(name, key -> new CompositePreferencesStorage(
-            mediators.stream().map(mediator -> new Mediator(
-                mediator.storage.child(name),
-                mediator.loadOrder,
-                mediator.saveOrder,
-                mediator.propagateTarget)).collect(
-                    Collectors.toSet())));
+            mediators.stream()
+                .map(mediator -> new Mediator(
+                    mediator.storage.child(name),
+                    mediator.loadOrder,
+                    mediator.saveOrder,
+                    mediator.propagateTarget))
+                .collect(toSet())));
     }
 
     @Override public void removeChild(String name) {
         bufferedChilds.remove(name);
-        mediators.stream().filter(saveSelector).sorted(saveComparator)
+        mediators.stream()
+            .filter(saveSelector)
+            .sorted(saveComparator)
             .forEach(mediator -> mediator.removeChild(name));
     }
 
