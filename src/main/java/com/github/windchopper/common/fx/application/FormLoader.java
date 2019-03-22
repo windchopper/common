@@ -1,9 +1,9 @@
-package com.github.windchopper.common.fx.application.fx;
+package com.github.windchopper.common.fx.application;
 
 import com.github.windchopper.common.cdi.BeanReference;
-import com.github.windchopper.common.fx.application.event.ResourceBundleLoading;
-import com.github.windchopper.common.fx.application.fx.annotation.FXMLResourceLiteral;
-import com.github.windchopper.common.fx.application.fx.event.FXMLResourceOpen;
+import com.github.windchopper.common.fx.event.ResourceBundleLoading;
+import com.github.windchopper.common.fx.annotation.FXMLResourceLiteral;
+import com.github.windchopper.common.fx.event.FXMLResourceOpen;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

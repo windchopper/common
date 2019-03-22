@@ -1,4 +1,4 @@
-package com.github.windchopper.common.fx.application.fx.event;
+package com.github.windchopper.common.fx.event;
 
 import javafx.stage.Stage;
 

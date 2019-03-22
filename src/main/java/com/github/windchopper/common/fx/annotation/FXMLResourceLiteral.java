@@ -1,4 +1,4 @@
-package com.github.windchopper.common.fx.application.fx.annotation;
+package com.github.windchopper.common.fx.annotation;
 
 import javax.enterprise.util.AnnotationLiteral;
 

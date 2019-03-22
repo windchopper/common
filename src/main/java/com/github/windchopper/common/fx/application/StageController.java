@@ -1,4 +1,4 @@
-package com.github.windchopper.common.fx.application.fx;
+package com.github.windchopper.common.fx.application;
 
 import com.github.windchopper.common.fx.behavior.WindowApplyStoredBoundsBehavior;
 import com.github.windchopper.common.fx.search.FormIterator;
