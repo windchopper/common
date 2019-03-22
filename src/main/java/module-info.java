@@ -1,4 +1,21 @@
-module common {
+module windchopper.common {
+
+    exports com.github.windchopper.common.cdi;
+    exports com.github.windchopper.common.cdi.temporary;
+    exports com.github.windchopper.common.fx;
+    exports com.github.windchopper.common.fx.application.annotation;
+    exports com.github.windchopper.common.fx.application.event;
+    exports com.github.windchopper.common.fx.application.fx;
+    exports com.github.windchopper.common.jmx;
+    exports com.github.windchopper.common.jmx.annotations;
+    exports com.github.windchopper.common.monitoring;
+    exports com.github.windchopper.common.ng;
+    exports com.github.windchopper.common.preferences;
+    exports com.github.windchopper.common.preferences.types;
+    exports com.github.windchopper.common.util;
+    exports com.github.windchopper.common.util.bean;
+    exports com.github.windchopper.common.util.concurrent;
+    exports com.github.windchopper.common.util.stream;
 
     requires java.naming;
     requires java.annotation;
@@ -8,11 +25,12 @@ module common {
     requires java.logging;
     requires java.desktop;
 
+    requires javax.inject;
+    requires javax.interceptor.api;
+
     requires javafx.graphics;
     requires javafx.controls;
     requires javafx.fxml;
-    requires javax.inject;
-    requires javax.interceptor.api;
 
     requires cdi.api;
 
