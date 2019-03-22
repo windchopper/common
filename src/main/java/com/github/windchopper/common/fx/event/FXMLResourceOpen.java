@@ -34,7 +34,7 @@ public class FXMLResourceOpen {
     }
 
     public InputStream resourceAsStream() {
-        return getClass().getResourceAsStream(resource);
+        return getClass().getClassLoader().getResourceAsStream(resource);
     }
 
     public Map<String, ?> parameters() {

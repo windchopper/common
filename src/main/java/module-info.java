@@ -24,6 +24,30 @@ module windchopper.common {
     exports com.github.windchopper.common.util.concurrent;
     exports com.github.windchopper.common.util.stream;
 
+    opens com.github.windchopper.common.cdi;
+    opens com.github.windchopper.common.cdi.temporary;
+    opens com.github.windchopper.common.fx;
+    opens com.github.windchopper.common.fx.annotation;
+    opens com.github.windchopper.common.fx.application;
+    opens com.github.windchopper.common.fx.behavior;
+    opens com.github.windchopper.common.fx.binding;
+    opens com.github.windchopper.common.fx.dialog;
+    opens com.github.windchopper.common.fx.event;
+    opens com.github.windchopper.common.fx.preferences;
+    opens com.github.windchopper.common.fx.search;
+    opens com.github.windchopper.common.fx.spinner;
+    opens com.github.windchopper.common.fx.util;
+    opens com.github.windchopper.common.jmx;
+    opens com.github.windchopper.common.jmx.annotations;
+    opens com.github.windchopper.common.monitoring;
+    opens com.github.windchopper.common.ng;
+    opens com.github.windchopper.common.preferences;
+    opens com.github.windchopper.common.preferences.types;
+    opens com.github.windchopper.common.util;
+    opens com.github.windchopper.common.util.bean;
+    opens com.github.windchopper.common.util.concurrent;
+    opens com.github.windchopper.common.util.stream;
+
     requires java.naming;
     requires java.annotation;
     requires java.json;
