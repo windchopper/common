@@ -44,7 +44,7 @@ public class Unit implements Comparable<Unit> {
         }
 
         public String expression() {
-            StringBuilder expressionBuilder = new StringBuilder();
+            var expressionBuilder = new StringBuilder();
 
             if (quoted) {
                 expressionBuilder.append("\"");
@@ -76,7 +76,7 @@ public class Unit implements Comparable<Unit> {
     private final String feminine;
 
     public Unit(String line) {
-        Matcher lineMatcher = linePattern.matcher(line);
+        var lineMatcher = linePattern.matcher(line);
 
         if (lineMatcher.matches()) {
             limit = CapturingGroup.LIMIT.extract(lineMatcher, BigInteger::new);

@@ -15,7 +15,6 @@ import java.util.function.Function;
         return value -> failsafeAccept(value, failableConsumer);
     }
 
-    @SuppressWarnings("unchecked")
     static <T, E extends Throwable> FailableConsumerResult<T> failsafeAccept(T value, FailableConsumer<T, E> failableConsumer) {
         try {
             return new FailableConsumerResult<>(failableConsumer.acceptAndReturn(value), null);

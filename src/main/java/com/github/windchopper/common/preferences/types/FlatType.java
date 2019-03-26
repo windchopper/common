@@ -8,8 +8,8 @@ import java.util.function.Function;
 
 public class FlatType<T> implements PreferencesEntryType<T> {
 
-    final Function<String, T> transformer;
-    final Function<T, String> reverseTransformer;
+    protected final Function<String, T> transformer;
+    protected final Function<T, String> reverseTransformer;
 
     public FlatType(Function<String, T> transformer, Function<T, String> reverseTransformer) {
         this.transformer = transformer;

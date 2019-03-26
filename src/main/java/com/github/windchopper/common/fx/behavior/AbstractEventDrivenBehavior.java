@@ -25,7 +25,7 @@ public abstract class AbstractEventDrivenBehavior<T extends Node> implements Beh
     protected abstract void handleEvent(Event event);
 
     @Override public void apply(T target) {
-        for (EventType<?> eventType : eventTypes) {
+        for (var eventType : eventTypes) {
             target.addEventHandler(eventType, this::handleEvent);
         }
     }

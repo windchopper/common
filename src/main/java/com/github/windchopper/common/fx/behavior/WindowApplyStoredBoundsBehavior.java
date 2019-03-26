@@ -40,15 +40,15 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
     }
 
     private void adjustSize(Window window) {
-        Scene scene = window.getScene();
+        var scene = window.getScene();
 
-        double sceneWidth = scene.getWidth();
-        double sceneHeight = scene.getHeight();
+        var sceneWidth = scene.getWidth();
+        var sceneHeight = scene.getHeight();
 
-        Parent sceneRoot = scene.getRoot();
+        var sceneRoot = scene.getRoot();
 
-        double preferredWidth = sceneRoot.prefWidth(-1);
-        double preferredHeight = sceneRoot.prefHeight(preferredWidth);
+        var preferredWidth = sceneRoot.prefWidth(-1);
+        var preferredHeight = sceneRoot.prefHeight(preferredWidth);
 
         if (preferredWidth > sceneWidth) {
             window.setWidth(preferredWidth + window.getWidth() - sceneWidth);
@@ -74,7 +74,7 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
             pointType,
             Duration.ofMinutes(1));
 
-        Point2D location = preferencesEntry.get();
+        var location = preferencesEntry.get();
 
         if (location != null) {
             window.setX(location.getX());
@@ -97,13 +97,13 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
     }
 
     private void applyResizable(Window window) {
-        PreferencesEntry<Rectangle2D> preferencesEntry = new PreferencesEntry<>(
+        var preferencesEntry = new PreferencesEntry<>(
             boundsStorage,
             preferencesEntryName,
             rectangleType,
             Duration.ofMinutes(1));
 
-        Rectangle2D bounds = preferencesEntry.get();
+        var bounds = preferencesEntry.get();
 
         if (bounds == null) {
             boundsInitializer.initialize(window, true);

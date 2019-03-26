@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
     }
 
     public void monitoredOperation(String name, boolean fail) throws InterruptedException {
-        Monitor monitor = new Monitor(name);
+        var monitor = new Monitor(name);
         monitor.started();
 
         Thread.sleep(123);
@@ -36,12 +36,12 @@ import static org.junit.Assert.assertTrue;
 
         long endTime = currentTimeMillis();
 
-        Statistics[] statisticsArray = StatisticsCollector.Holder.instance.gatherStatistics(
+        var statisticsArray = StatisticsCollector.Holder.instance.gatherStatistics(
             beginTime / 1000, endTime / 1000 + 1);
 
         assertEquals(1, statisticsArray.length);
 
-        Statistics statistics = statisticsArray[0];
+        var statistics = statisticsArray[0];
 
         assertEquals(1, statistics.getStartedCount());
         assertEquals(1, statistics.getSucceededCount());

@@ -44,7 +44,7 @@ public class ScaleUnit implements Comparable<ScaleUnit> {
         }
 
         public String expression() {
-            StringBuilder expressionBuilder = new StringBuilder();
+            var expressionBuilder = new StringBuilder();
 
             if (quoted) {
                 expressionBuilder.append("\"");
@@ -76,7 +76,7 @@ public class ScaleUnit implements Comparable<ScaleUnit> {
     private final ScaleUnitGender gender;
 
     public ScaleUnit(String line) throws IllegalArgumentException {
-        Matcher lineMatcher = linePattern.matcher(line);
+        var lineMatcher = linePattern.matcher(line);
 
         if (lineMatcher.matches()) {
             power = CapturingGroup.POWER.extract(lineMatcher, BigInteger::new);

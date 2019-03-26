@@ -21,7 +21,7 @@ public class CompositeBehavior<T extends Node> implements Behavior<T> {
     }
 
     @Override public void apply(T target) {
-        for (Behavior<T> behavior : behaviors) {
+        for (var behavior : behaviors) {
             behavior.apply(target);
         }
     }

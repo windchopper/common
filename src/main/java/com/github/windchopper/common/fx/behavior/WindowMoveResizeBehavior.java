@@ -102,14 +102,14 @@ public class WindowMoveResizeBehavior implements Behavior<Region> {
             region.setCursor(cursor);
 
             if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
-                Window window = region.getScene().getWindow();
-                Bounds bounds = calculateBounds(event, window);
+                var window = region.getScene().getWindow();
+                var bounds = calculateBounds(event, window);
 
-                double width = bounds.getWidth();
-                double height = bounds.getHeight();
+                var width = bounds.getWidth();
+                var height = bounds.getHeight();
 
                 if (window instanceof Stage) {
-                    Stage stage = (Stage) window;
+                    var stage = (Stage) window;
 
                     if (stage.isResizable()) {
                         width = Math.min(Math.max(width, stage.getMinWidth()), stage.getMaxWidth());

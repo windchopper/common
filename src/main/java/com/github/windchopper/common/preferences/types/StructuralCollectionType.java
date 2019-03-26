@@ -25,7 +25,7 @@ public class StructuralCollectionType<T, C extends Collection<T>> extends Collec
             source -> Pipeliner.of(Json::createObjectBuilder)
                 .accept(jsonObjectBuilder -> source.stream()
                     .map(reverseTransformer)
-                    .forEach(value -> jsonObjectBuilder.add(String.valueOf(++index), value)))
+                    .forEach(value -> jsonObjectBuilder.add(String.valueOf(++counter), value)))
                 .map(JsonObjectBuilder::build)
                 .get());
     }

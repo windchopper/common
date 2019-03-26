@@ -17,7 +17,7 @@ public class NumeralGeneratorTest {
     }
 
     @Test public void testRussian() throws IOException {
-        NumeralGenerator generator = new NumeralGenerator(Locale.forLanguageTag("ru"));
+        var generator = new NumeralGenerator(Locale.forLanguageTag("ru"));
 
         testValue(generator, new BigInteger("1"), "один");
         testValue(generator, new BigInteger("11"), "одиннадцать");
@@ -33,7 +33,7 @@ public class NumeralGeneratorTest {
     }
 
     @Test public void testEnglish() throws IOException {
-        NumeralGenerator generator = new NumeralGenerator(Locale.forLanguageTag("en"));
+        var generator = new NumeralGenerator(Locale.forLanguageTag("en"));
 
         testValue(generator, new BigInteger("1"), "one");
         testValue(generator, new BigInteger("11"), "eleven");

@@ -49,7 +49,7 @@ public class DialogAction extends Action {
     @Override
     public void setHandler(EventHandler<ActionEvent> handler) {
         if (ThreatThreshold.ACCEPT.belongs(this) || ThreatThreshold.REJECT.belongs(this)) {
-            EventHandler<ActionEvent> originalHandler = handler;
+            var originalHandler = handler;
             handler = event -> {
                 originalHandler.handle(event);
                 dialog.hide();

@@ -13,12 +13,12 @@ import static java.util.Objects.requireNonNull;
 
 public class PreferencesEntry<T> implements Supplier<T>, Consumer<T> {
 
-    private static final Logger logger = Logger.getLogger("com.github.windchopper.common.preferences");
-    private static final ResourceBundle bundle = ResourceBundle.getBundle("com.github.windchopper.common.preferences.i18n.messages");
-
     private static final String BUNDLE_KEY__NULL_PARAMETER = "com.github.windchopper.common.preferences.nullParameter";
     private static final String BUNDLE_KEY__LOAD_FAIL = "com.github.windchopper.common.preferences.PreferencesEntry.fail.load";
     private static final String BUNDLE_KEY__SAVE_FAIL = "com.github.windchopper.common.preferences.PreferencesEntry.fail.save";
+
+    private static final Logger logger = Logger.getLogger("com.github.windchopper.common.preferences");
+    private static final ResourceBundle bundle = ResourceBundle.getBundle("com.github.windchopper.common.preferences.i18n.messages");
 
     private final PreferencesStorage storage;
     private final String name;

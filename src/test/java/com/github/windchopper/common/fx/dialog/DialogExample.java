@@ -45,7 +45,7 @@ public class DialogExample extends Application {
     }
 
     void open1st(ActionEvent event) {
-        StageDialogFrame frame = new StageDialogFrame(Pipeliner.of(Stage::new)
+        var frame = new StageDialogFrame(Pipeliner.of(Stage::new)
             .set(stage -> stage::initStyle, StageStyle.UTILITY)
             .set(stage -> stage::initOwner, primaryStage)
             .set(stage -> stage::initModality, Modality.WINDOW_MODAL)

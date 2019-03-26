@@ -46,8 +46,8 @@ public class TemporaryContext implements AlterableContext {
     }
 
     public static <E extends Exception> void executeWithTemporaryScope(ExceptionExecutor<E> executor) throws E {
-        Map<Contextual<?>, TemporaryInstance<?>> instances = instancesReference.get();
-        boolean clean = instances == null;
+        var instances = instancesReference.get();
+        var clean = instances == null;
 
         if (clean) {
             instancesReference.set(instances = new HashMap<>());
@@ -68,8 +68,8 @@ public class TemporaryContext implements AlterableContext {
     }
 
     public static <T, E extends Exception> T extractFromTemporaryScope(ExceptionExtractor<T, E> extractor) throws E {
-        Map<Contextual<?>, TemporaryInstance<?>> instances = instancesReference.get();
-        boolean clean = instances == null;
+        var instances = instancesReference.get();
+        var clean = instances == null;
 
         if (clean) {
             instancesReference.set(instances = new HashMap<>());

@@ -4,7 +4,6 @@ import com.github.windchopper.common.jmx.AnnotatedMBean;
 import com.github.windchopper.common.util.Pipeliner;
 
 import javax.management.JMException;
-import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.swing.*;
 import java.lang.management.ManagementFactory;
@@ -14,11 +13,11 @@ import java.util.UUID;
 public class RegisterSample {
 
     public static void main(String... args) throws JMException {
-        String domain = "testDomain";
-        String application = "testApplication";
-        String uniqueIdentifier = UUID.randomUUID().toString();
+        var domain = "testDomain";
+        var application = "testApplication";
+        var uniqueIdentifier = UUID.randomUUID().toString();
 
-        MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+        var server = ManagementFactory.getPlatformMBeanServer();
 
         System.out.println(
             server.registerMBean(

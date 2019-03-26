@@ -5,7 +5,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import javax.management.IntrospectionException;
-import javax.management.MBeanInfo;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,9 +13,9 @@ public class AnnotatedMBeanTest {
 
     @Test
     public void test() throws IntrospectionException {
-        Sample sample = new Sample();
-        AnnotatedMBean annotatedManagementBean = new AnnotatedMBean(sample, SampleMBean.class, false);
-        MBeanInfo managementBeanInfo = annotatedManagementBean.getMBeanInfo();
+        var sample = new Sample();
+        var annotatedManagementBean = new AnnotatedMBean(sample, SampleMBean.class, false);
+        var managementBeanInfo = annotatedManagementBean.getMBeanInfo();
 
         assertEquals("Sample bean", managementBeanInfo.getDescription());
         assertEquals("Sample bean test operation", managementBeanInfo.getOperations()[0].getDescription());

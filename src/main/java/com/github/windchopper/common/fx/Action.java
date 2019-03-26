@@ -73,7 +73,7 @@ public class Action implements EventHandler<ActionEvent> {
 
         if (widgetTooltipProperty != null) {
             longTextProperty.isNotEmpty().addListener((property, oldNotEmptyState, newNotEmptyState) -> {
-                Tooltip tooltip = widgetTooltipProperty.getValue();
+                var tooltip = widgetTooltipProperty.getValue();
 
                 if (newNotEmptyState) {
                     tooltip = new Tooltip();

@@ -23,9 +23,9 @@ import static org.mockito.Mockito.*;
     }
 
     @Test public void test() {
-        PreferencesEntry<String> stringEntry = new PreferencesEntry<>(storage, "stringKey", new FlatType<>(string -> string, string -> string), Duration.ZERO);
-        PreferencesEntry<Short> shortEntry = new PreferencesEntry<>(storage, "shortKey", new FlatType<>(Short::parseShort, Object::toString), Duration.ZERO);
-        PreferencesEntry<Boolean> booleanEntry = new PreferencesEntry<>(storage, "booleanKey", new FlatType<>(Boolean::parseBoolean, Object::toString), Duration.ZERO);
+        var stringEntry = new PreferencesEntry<String>(storage, "stringKey", new FlatType<>(string -> string, string -> string), Duration.ZERO);
+        var shortEntry = new PreferencesEntry<Short>(storage, "shortKey", new FlatType<>(Short::parseShort, Object::toString), Duration.ZERO);
+        var booleanEntry = new PreferencesEntry<Boolean>(storage, "booleanKey", new FlatType<>(Boolean::parseBoolean, Object::toString), Duration.ZERO);
 
         assertEquals("string", stringEntry.get());
         assertEquals(Short.valueOf("1"), shortEntry.get());

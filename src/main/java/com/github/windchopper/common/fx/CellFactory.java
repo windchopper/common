@@ -34,8 +34,8 @@ public class CellFactory {
 
     public static <I, T> Callback<TableColumn<I, T>, TableCell<I, T>> tableColumnCellFactory(
         List<ColumnContainerCellUpdater<I, T, TableCell<I, T>>> updaters) {
-        return column -> new TableCell<I, T>() {
-            @Override @SuppressWarnings("unchecked") protected void updateItem(T item, boolean empty) {
+        return column -> new TableCell<>() {
+            @Override protected void updateItem(T item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty) {
                     setText(null);
@@ -50,7 +50,7 @@ public class CellFactory {
 
     public static <I, T> Callback<TreeTableColumn<I, T>, TreeTableCell<I, T>> treeTableColumnCellFactory(
         List<ColumnContainerCellUpdater<I, T, TreeTableCell<I, T>>> squeezers) {
-        return column -> new TreeTableCell<I, T>() {
+        return column -> new TreeTableCell<>() {
             @Override protected void updateItem(T item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty) {

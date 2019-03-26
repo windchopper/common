@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
     }
 
     @Test public void testLoadValue() {
-        CompositePreferencesStorage compositeStorageNode = new CompositePreferencesStorage(Arrays.asList(
+        var compositeStorageNode = new CompositePreferencesStorage(Arrays.asList(
             new CompositePreferencesStorage.Mediator(storageNode1st, 1, 2, false),
             new CompositePreferencesStorage.Mediator(storageNode2nd, 2, 1, false)));
 
@@ -37,13 +37,13 @@ import static org.mockito.Mockito.*;
     }
 
     @Test public void testSaveValue() {
-        CompositePreferencesStorage compositeStorageNode = new CompositePreferencesStorage(Arrays.asList(
+        var compositeStorageNode = new CompositePreferencesStorage(Arrays.asList(
             new CompositePreferencesStorage.Mediator(storageNode1st, 1, 2, false),
             new CompositePreferencesStorage.Mediator(storageNode2nd, 2, 1, false)));
 
         compositeStorageNode.putValue("key#new", "value#new");
 
-        InOrder order = inOrder(storageNode2nd, storageNode1st);
+        var order = inOrder(storageNode2nd, storageNode1st);
 
         order.verify(storageNode2nd, times(1)).putValue(eq("key#new"), eq("value#new"));
         order.verify(storageNode1st, times(1)).putValue(eq("key#new"), eq("value#new"));

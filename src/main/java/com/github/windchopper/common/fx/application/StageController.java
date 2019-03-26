@@ -30,7 +30,7 @@ public abstract class StageController {
 
         stream(getClass().getDeclaredFields())
             .filter(field -> field.isAnnotationPresent(FXML.class)).forEach(field -> {
-                for (Iterator<Object> i = new FormIterator(stage.getScene()); i.hasNext(); ) {
+                for (var i = new FormIterator(stage.getScene()); i.hasNext(); ) {
                     Object formElement = i.next();
                     if (formElement instanceof Styleable && field.getName().equalsIgnoreCase(((Styleable) formElement).getId())) {
                         try {

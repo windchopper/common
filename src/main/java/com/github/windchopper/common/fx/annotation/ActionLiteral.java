@@ -11,7 +11,7 @@ public class ActionLiteral extends AnnotationLiteral<Action> implements Action {
     }
 
     @Override public String value() {
-        return null;
+        return value;
     }
 
 }

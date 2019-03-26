@@ -17,16 +17,20 @@ public class FailableSupplierResult<T> extends FailableResult<T> {
         return Optional.ofNullable(value);
     }
 
-    public void onSuccess(Consumer<T> handler) {
+    public FailableSupplierResult<T> onSuccess(Consumer<T> handler) {
         if (exception == null) {
             handler.accept(value);
         }
+
+        return this;
     }
 
-    public void onFailure(Consumer<Throwable> handler) {
+    public FailableSupplierResult<T> onFailure(Consumer<Throwable> handler) {
         if (exception != null) {
             handler.accept(exception);
         }
+
+        return this;
     }
 
     public T recover(Function<Throwable, T> recoverer) {

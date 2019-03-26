@@ -1,5 +1,10 @@
 package com.github.windchopper.common.preferences;
 
+import com.github.windchopper.common.util.stream.FailableConsumer;
+import com.github.windchopper.common.util.stream.FailableFunction;
+import com.github.windchopper.common.util.stream.FailableRunnable;
+import com.github.windchopper.common.util.stream.FailableSupplier;
+
 import javax.naming.Context;
 import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
@@ -8,16 +13,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class JndiPreferencesStorage extends AbstractPreferencesStorage {
+import static java.util.stream.Collectors.toMap;
 
-    @FunctionalInterface public interface ContextMethod<R> {
-        R invoke() throws NamingException;
-    }
+public class JndiPreferencesStorage extends AbstractPreferencesStorage {
 
     private static final String DEFAULT_PREFIX__VALUE = "preferences:value:";
     private static final String DEFAULT_PREFIX__CHILD = "preferences:child:";
 
-    private final ContextMethod<Context> contextBuilder;
+    private final FailableSupplier<Context, NamingException> contextBuilder;
     private final String valuePrefix;
     private final String childPrefix;
     private final String name;
@@ -26,7 +29,7 @@ public class JndiPreferencesStorage extends AbstractPreferencesStorage {
     private final Map<String, String> values = new HashMap<>();
     private final Map<String, PreferencesStorage> childs = new HashMap<>();
 
-    public JndiPreferencesStorage(ContextMethod<Context> contextBuilder, String valuePrefix, String childPrefix) {
+    public JndiPreferencesStorage(FailableSupplier<Context, NamingException> contextBuilder, String valuePrefix, String childPrefix) {
         this.contextBuilder = contextBuilder;
         this.valuePrefix = Objects.toString(valuePrefix, DEFAULT_PREFIX__VALUE);
         this.childPrefix = Objects.toString(childPrefix, DEFAULT_PREFIX__CHILD);
@@ -52,32 +55,24 @@ public class JndiPreferencesStorage extends AbstractPreferencesStorage {
         return context;
     }
 
-    @FunctionalInterface private interface ContextAction<R> {
-        R execute(Context context) throws NamingException;
-    }
-
-    private <R> R performWithContext(ContextAction<R> action) throws NamingException {
-        Context context = contextBuilder.invoke();
+    private void performWithContext(FailableConsumer<Context, NamingException> action) throws NamingException {
+        Context context = contextBuilder.get();
 
         try {
-            return action.execute(context);
+            action.accept(context);
         } finally {
             context.close();
         }
     }
 
     private void load() {
-        invoke(
-            () -> performWithContext(context -> {
-                continueLoad(context);
-                return null;
-            }),
-            this::logError,
-            () -> null);
+        FailableRunnable
+            .failsafeRun(() -> performWithContext(this::continueLoad))
+            .onFailure(this::logError);
     }
 
-    private <B extends NameClassPair> Stream<B> bindingsAsStream(ContextMethod<NamingEnumeration<B>> listMethod) throws NamingException {
-        NamingEnumeration<B> bindingEnumeration = listMethod.invoke();
+    private <B extends NameClassPair> Stream<B> bindingsAsStream(FailableSupplier<NamingEnumeration<B>, NamingException> listMethod) throws NamingException {
+        NamingEnumeration<B> bindingEnumeration = listMethod.get();
         List<B> bindingList;
 
         try {
@@ -94,14 +89,16 @@ public class JndiPreferencesStorage extends AbstractPreferencesStorage {
             .collect(Collectors.groupingBy(binding -> binding.getName().startsWith(valuePrefix) ? "values" : binding.getName().startsWith(childPrefix) ? "childs" : "others", Collectors.toSet()));
 
         Optional.ofNullable(separatedBindings.get("values")).ifPresent(bindings -> values.putAll(
-            bindings.stream().collect(
-                Collectors.toMap(
+            bindings.stream()
+                .collect(toMap(
                     binding -> binding.getName().replace(valuePrefix, ""),
-                    binding -> invoke(() -> (String) context.lookup(binding.getName()), this::logError, () -> null)))));
+                    FailableFunction.wrap((NameClassPair binding) -> context.lookup(binding.getName()))
+                        .andThen(result -> result.recover((binding, exception) -> null))
+                        .andThen(result -> Objects.toString(result, null))))));
 
         Optional.ofNullable(separatedBindings.get("childs")).ifPresent(bindings -> childs.putAll(
             bindings.stream().collect(
-                Collectors.toMap(
+                toMap(
                     binding -> binding.getName().replace(childPrefix, ""),
                     binding -> new JndiPreferencesStorage(this, binding.getName().replace(childPrefix, ""))))));
     }
@@ -111,25 +108,21 @@ public class JndiPreferencesStorage extends AbstractPreferencesStorage {
     }
 
     @Override public void putValue(String name, String value) {
-        invoke(
-            () -> performWithContext(context -> {
+        FailableRunnable
+            .failsafeRun(() -> performWithContext(context -> {
                 traverse(context).rebind(name, value);
                 values.put(name, value);
-                return null;
-            }),
-            this::logError,
-            () -> null);
+            }))
+            .onFailure(this::logError);
     }
 
     @Override public void removeValue(String name) {
-        invoke(
-            () -> performWithContext(context -> {
+        FailableRunnable
+            .failsafeRun(() -> performWithContext(context -> {
                 traverse(context).unbind(name);
                 values.remove(name);
-                return null;
-            }),
-            this::logError,
-            () -> null);
+            }))
+            .onFailure(this::logError);
     }
 
     @Override public Set<String> valueNames() {
@@ -145,14 +138,12 @@ public class JndiPreferencesStorage extends AbstractPreferencesStorage {
     }
 
     @Override public void removeChild(String name) {
-        invoke(
-            () -> performWithContext(context -> {
+        FailableRunnable
+            .failsafeRun(() -> performWithContext(context -> {
                 traverse(context).destroySubcontext(name);
                 childs.remove(name);
-                return null;
-            }),
-            this::logError,
-            () -> null);
+            }))
+            .onFailure(this::logError);
     }
 
 }

@@ -5,7 +5,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.NoSuchElementException;
 import java.util.stream.IntStream;
 
 import static java.util.Collections.addAll;
@@ -29,10 +31,10 @@ import static java.util.Collections.addAll;
     }
 
     @Test public void testIterator() {
-        PrimitiveIterator.OfInt valueIterator = IntStream.range(0, 20).iterator();
+        var valueIterator = IntStream.range(0, 20).iterator();
         int lastValue;
 
-        Node root = new Node(valueIterator.next()).subnodes(
+        var root = new Node(valueIterator.next()).subnodes(
             new Node(valueIterator.next()).subnodes(
                 new Node(valueIterator.next()),
                 new Node(valueIterator.next()),
@@ -46,7 +48,7 @@ import static java.util.Collections.addAll;
                 new Node(valueIterator.next()),
                 new Node(lastValue = valueIterator.next())));
 
-        Iterator<Node> iterator = new HierarchyIterator<>(root, node -> node.subnodes);
+        var iterator = new HierarchyIterator<>(root, node -> node.subnodes);
         valueIterator = IntStream.range(0, 20).iterator();
 
         while (iterator.hasNext()) {

@@ -1,10 +1,11 @@
 package com.github.windchopper.common.preferences;
 
-import java.util.Arrays;
+import com.github.windchopper.common.util.stream.FailableRunnable;
+import com.github.windchopper.common.util.stream.FailableSupplier;
+
 import java.util.Collections;
 import java.util.Set;
 import java.util.prefs.Preferences;
-import java.util.stream.Collectors;
 
 public class PlatformPreferencesStorage extends AbstractPreferencesStorage {
 
@@ -27,36 +28,31 @@ public class PlatformPreferencesStorage extends AbstractPreferencesStorage {
     }
 
     @Override public Set<String> valueNames() {
-        return invoke(
-            () -> Arrays.stream(preferences.keys())
-                .collect(Collectors.toSet()),
-            this::logError,
-            Collections::emptySet);
+        return FailableSupplier.failsafeGet(preferences::keys)
+            .onFailure(this::logError)
+            .result()
+            .map(Set::of)
+            .orElseGet(Collections::emptySet);
     }
 
     @Override public Set<String> childNames() {
-        return invoke(
-            () -> Arrays.stream(preferences.childrenNames())
-                .collect(Collectors.toSet()),
-            this::logError,
-            Collections::emptySet);
+        return FailableSupplier.failsafeGet(preferences::childrenNames)
+            .onFailure(this::logError)
+            .result()
+            .map(Set::of)
+            .orElseGet(Collections::emptySet);
     }
 
     @Override public PreferencesStorage child(String name) {
-        return invoke(
-            () -> new PlatformPreferencesStorage(preferences.node(name)),
-            this::logError,
-            () -> null);
+        return FailableSupplier.failsafeGet(() -> new PlatformPreferencesStorage(preferences.node(name)))
+            .onFailure(this::logError)
+            .result()
+            .orElse(null);
     }
 
     @Override public void removeChild(String name) {
-        invoke(
-            () -> {
-                preferences.node(name).removeNode();
-                return null;
-            },
-            this::logError,
-            () -> null);
+        FailableRunnable.failsafeRun(() -> preferences.node(name).removeNode())
+            .onFailure(this::logError);
     }
 
 }

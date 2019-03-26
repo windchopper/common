@@ -38,13 +38,14 @@ public class NumeralGenerator {
      */
 
     private static List<String> readResource(String resource, Locale locale) throws IOException {
-        List<String> lines = new ArrayList<>();
+        var lines = new ArrayList<String>();
 
-        try (BufferedReader bufferedReader = new BufferedReader(
-            new InputStreamReader(
-                NumeralGenerator.class.getResourceAsStream(
-                    "/com/github/windchopper/common/ng/i18n/" + resource + "_" + locale.getLanguage() + ".csv"), StandardCharsets.UTF_8))) {
-            for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
+        try (
+            var resourceStream = NumeralGenerator.class.getResourceAsStream("/com/github/windchopper/common/ng/i18n/" + resource + "_" + locale.getLanguage() + ".csv");
+            var inputStreamReader = new InputStreamReader(resourceStream, StandardCharsets.UTF_8);
+            var bufferedReader = new BufferedReader(inputStreamReader)) {
+
+            for (var line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
                 lines.add(line);
             }
         }
@@ -58,13 +59,13 @@ public class NumeralGenerator {
 
     private LinkedList<String> generateWords(BigInteger value, Stack<UnitCase> unitCases, Stack<ScaleUnitGender> scaleUnitGenders, LinkedList<String> words) {
         outer: for ( ; value.compareTo(BigInteger.ZERO) > 0; ) {
-            for (Map.Entry<BigInteger, Map<BigInteger, Unit>> entry : units.entrySet()) {
-                BigInteger limit = entry.getKey();
+            for (var entry : units.entrySet()) {
+                var limit = entry.getKey();
 
                 if (value.compareTo(limit.abs()) < 0) {
-                    BigInteger remainder = value.remainder(limit.signum() < 0 ? BigInteger.ONE : limit.divide(RADIX));
+                    var remainder = value.remainder(limit.signum() < 0 ? BigInteger.ONE : limit.divide(RADIX));
                     generateWords(remainder, unitCases, scaleUnitGenders, words);
-                    Unit unit = entry.getValue().get(value.subtract(remainder));
+                    var unit = entry.getValue().get(value.subtract(remainder));
                     unitCases.push(unit.form());
 
                     try {
@@ -77,13 +78,13 @@ public class NumeralGenerator {
                 }
             }
 
-            for (ScaleUnit scaleUnit : scaleUnits) {
-                BigInteger divider = RADIX.pow(scaleUnit.power().intValue());
+            for (var scaleUnit : scaleUnits) {
+                var divider = RADIX.pow(scaleUnit.power().intValue());
 
                 if (value.compareTo(divider.multiply(SCALE_STEP)) < 0) {
-                    BigInteger remainder = value.remainder(divider);
+                    var remainder = value.remainder(divider);
                     generateWords(remainder, unitCases, scaleUnitGenders, words);
-                    int beforeSize = words.size();
+                    var beforeSize = words.size();
                     scaleUnitGenders.push(scaleUnit.gender());
                     generateWords(value.subtract(remainder).divide(divider), unitCases, scaleUnitGenders, words);
                     words.add(words.size() - beforeSize, unitCases.pop().scaleUnitName(scaleUnit));

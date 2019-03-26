@@ -1,10 +1,10 @@
 package com.github.windchopper.common.fx.dialog;
 
+import com.github.windchopper.common.fx.dialog.OptionDialogModel.Option;
+import com.github.windchopper.common.util.Pipeliner;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
-import com.github.windchopper.common.fx.dialog.OptionDialogModel.Option;
-import com.github.windchopper.common.util.Pipeliner;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -33,7 +33,7 @@ public class OptionDialog<F extends DialogFrame, M extends OptionDialogModel> ex
     }
 
     @Override protected Pane prepareRootPane() {
-        Pane rootPane = super.prepareRootPane();
+        var rootPane = super.prepareRootPane();
         rootPane.setMinWidth(Screen.getPrimary().getVisualBounds().getWidth() / 4);
         return rootPane;
     }

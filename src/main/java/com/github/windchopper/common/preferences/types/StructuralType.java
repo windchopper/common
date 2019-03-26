@@ -4,14 +4,15 @@ import com.github.windchopper.common.preferences.PreferencesEntryType;
 import com.github.windchopper.common.preferences.PreferencesStorage;
 
 import javax.json.*;
+import javax.json.JsonValue.ValueType;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
 public class StructuralType<T> implements PreferencesEntryType<T> {
 
-    final Function<JsonObject, T> transformer;
-    final Function<T, JsonObject> reverseTransformer;
+    protected final Function<JsonObject, T> transformer;
+    protected final Function<T, JsonObject> reverseTransformer;
 
     public StructuralType(Function<JsonObject, T> transformer, Function<T, JsonObject> reverseTransformer) {
         this.transformer = transformer;
@@ -20,7 +21,8 @@ public class StructuralType<T> implements PreferencesEntryType<T> {
 
     @Override public T load(PreferencesStorage storage, String name) {
         return Optional.ofNullable(load(storage.child(name)).build())
-            .map(transformer).orElse(null);
+            .map(transformer)
+            .orElse(null);
     }
 
     private JsonObjectBuilder load(PreferencesStorage storage) {
@@ -39,7 +41,8 @@ public class StructuralType<T> implements PreferencesEntryType<T> {
 
     @Override public void save(PreferencesStorage storage, String name, T value) {
         save(storage.child(name), Optional.ofNullable(value)
-            .map(reverseTransformer).orElse(null));
+            .map(reverseTransformer)
+            .orElse(null));
     }
 
     private void save(PreferencesStorage storage, JsonObject jsonObject) {
@@ -56,18 +59,12 @@ public class StructuralType<T> implements PreferencesEntryType<T> {
                 String key = entry.getKey();
                 JsonValue value = entry.getValue();
 
-                switch (value.getValueType()) {
-                    case STRING:
-                        storage.putValue(key,
-                            JsonString.class.cast(value).getString());
-                        break;
-
-                    case OBJECT:
-                        save(storage.child(key),
-                            JsonObject.class.cast(value));
-                        break;
-
-                    default:
+                if (value.getValueType() == ValueType.OBJECT) {
+                    save(storage.child(key), value.asJsonObject());
+                } else if (value.getValueType() == ValueType.STRING) {
+                    storage.putValue(key, ((JsonString) value).getString());
+                } else {
+                    storage.putValue(key, value.toString());
                 }
             }
     }

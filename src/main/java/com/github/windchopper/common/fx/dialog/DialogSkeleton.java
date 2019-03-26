@@ -46,7 +46,7 @@ public class DialogSkeleton {
             int value;
         }
 
-        MutableInt rowIndex = new MutableInt();
+        var rowIndex = new MutableInt();
 
         return Pipeliner.of(GridPane::new)
             .add(root -> root::getChildren, Stream.of(

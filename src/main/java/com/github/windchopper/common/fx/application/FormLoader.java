@@ -24,16 +24,16 @@ import java.util.ResourceBundle;
     }
 
     protected void formOpen(@Observes FXMLResourceOpen fxmlResourceOpen) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader();
+        var fxmlLoader = new FXMLLoader();
 
         if (resources != null) {
             fxmlLoader.setResources(resources);
         }
 
         try (InputStream inputStream = fxmlResourceOpen.resourceAsStream()) {
-            FXMLResourceLiteral fxmlResourceLiteral = new FXMLResourceLiteral(fxmlResourceOpen.resource());
-            BeanReference controllerReference = new BeanReference().withType(StageController.class).withQualifiers(fxmlResourceLiteral);
-            StageController controller = (StageController) controllerReference.resolve();
+            var fxmlResourceLiteral = new FXMLResourceLiteral(fxmlResourceOpen.resource());
+            var controllerReference = new BeanReference().withType(StageController.class).withQualifiers(fxmlResourceLiteral);
+            var controller = (StageController) controllerReference.resolve();
             fxmlLoader.setController(controller);
             Parent sceneRoot = fxmlLoader.load(inputStream);
             Scene scene = new Scene(sceneRoot);

@@ -27,13 +27,13 @@ import static org.junit.Assert.*;
     private PreferencesStorage storage;
 
     @Before public void prepare() throws BackingStoreException {
-        Preferences preferences = Preferences.userRoot().node("com.github.windchopper.common.preferences/test");
+        var preferences = Preferences.userRoot().node("com.github.windchopper.common.preferences/test");
 
-        for (String childrenName : preferences.childrenNames()) {
+        for (var childrenName : preferences.childrenNames()) {
             preferences.node(childrenName).removeNode();
         }
 
-        for (String key : preferences.keys()) {
+        for (var key : preferences.keys()) {
             preferences.remove(key);
         }
 
@@ -41,29 +41,29 @@ import static org.junit.Assert.*;
     }
 
     @Test public void testFlatString() {
-        PreferencesEntryType<String> stringType = new FlatType<>(string -> string, string -> string);
-        PreferencesEntry<String> stringEntry = new PreferencesEntry<>(storage, "stringEntry", stringType, Duration.ZERO);
-        String value = "testValue";
+        var stringType = new FlatType<>(string -> string, string -> string);
+        var stringEntry = new PreferencesEntry<>(storage, "stringEntry", stringType, Duration.ZERO);
+        var value = "testValue";
         assertNull(stringEntry.get());
         stringEntry.accept(value);
         assertEquals(value, stringEntry.get());
         assertEquals(value, storage.value("stringEntry", null));
         stringEntry.accept(null);
-        assertEquals(null, stringEntry.get());
-        assertEquals(null, storage.value("stringEntry", null));
+        assertNull(stringEntry.get());
+        assertNull(storage.value("stringEntry", null));
     }
 
     @Test public void testFlatDouble() {
-        PreferencesEntryType<Double> doubleType = new FlatType<>(Double::parseDouble, Object::toString);
-        PreferencesEntry<Double> doubleEntry = new PreferencesEntry<>(storage, "doubleEntry", doubleType, Duration.ofMinutes(1));
+        var doubleType = new FlatType<>(Double::parseDouble, Object::toString);
+        var doubleEntry = new PreferencesEntry<>(storage, "doubleEntry", doubleType, Duration.ofMinutes(1));
         Double value = 1.1;
         assertNull(doubleEntry.get());
         doubleEntry.accept(value);
         assertEquals(value, doubleEntry.get());
         assertEquals(value.toString(), storage.value("doubleEntry", null));
         doubleEntry.accept(null);
-        assertEquals(null, doubleEntry.get());
-        assertEquals(null, storage.value("doubleEntry", null));
+        assertNull(doubleEntry.get());
+        assertNull(storage.value("doubleEntry", null));
     }
 
     @Test public void testFlatCollection() {
