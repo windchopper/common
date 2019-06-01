@@ -10,10 +10,10 @@ public class Statistics {
     private long startedCount;
     private long succeededCount;
     private long failedCount;
-    private long totalTimeNanoseconds;
-    private long averageTimeNanoseconds;
-    private long minTimeNanoseconds;
-    private long maxTimeNanoseconds;
+    private long totalTimeMilliseconds;
+    private long averageTimeMilliseconds;
+    private long minTimeMilliseconds;
+    private long maxTimeMilliseconds;
 
     @ConstructorProperties({
         "name",
@@ -35,10 +35,10 @@ public class Statistics {
         "startedCount",
         "succeededCount",
         "failedCount",
-        "totalTimeNanoseconds",
-        "averageTimeNanoseconds",
-        "minTimeNanoseconds",
-        "maxTimeNanoseconds"
+        "totalTimeMilliseconds",
+        "averageTimeMilliseconds",
+        "minTimeMilliseconds",
+        "maxTimeMilliseconds"
     })
     public Statistics(String name,
                       long startTimeSeconds,
@@ -46,18 +46,18 @@ public class Statistics {
                       long startedCount,
                       long succeededCount,
                       long failedCount,
-                      long totalTimeNanoseconds,
-                      long averageTimeNanoseconds,
-                      long minTimeNanoseconds,
-                      long maxTimeNanoseconds) {
+                      long totalTimeMilliseconds,
+                      long averageTimeMilliseconds,
+                      long minTimeMilliseconds,
+                      long maxTimeMilliseconds) {
         this(name, startTimeSeconds, endTimeSeconds);
         this.startedCount = startedCount;
         this.succeededCount = succeededCount;
         this.failedCount = failedCount;
-        this.totalTimeNanoseconds = totalTimeNanoseconds;
-        this.averageTimeNanoseconds = averageTimeNanoseconds;
-        this.minTimeNanoseconds = minTimeNanoseconds;
-        this.maxTimeNanoseconds = maxTimeNanoseconds;
+        this.totalTimeMilliseconds = totalTimeMilliseconds;
+        this.averageTimeMilliseconds = averageTimeMilliseconds;
+        this.minTimeMilliseconds = minTimeMilliseconds;
+        this.maxTimeMilliseconds = maxTimeMilliseconds;
     }
 
     public String getName() {
@@ -108,67 +108,67 @@ public class Statistics {
         this.failedCount = failedCount;
     }
 
-    public long getTotalTimeNanoseconds() {
-        return totalTimeNanoseconds;
+    public long getTotalTimeMilliseconds() {
+        return totalTimeMilliseconds;
     }
 
-    public void setTotalTimeNanoseconds(long totalTimeNanoseconds) {
-        this.totalTimeNanoseconds = totalTimeNanoseconds;
+    public void setTotalTimeMilliseconds(long totalTimeMilliseconds) {
+        this.totalTimeMilliseconds = totalTimeMilliseconds;
     }
 
-    public long getAverageTimeNanoseconds() {
-        return averageTimeNanoseconds;
+    public long getAverageTimeMilliseconds() {
+        return averageTimeMilliseconds;
     }
 
-    public void setAverageTimeNanoseconds(long averageTimeNanoseconds) {
-        this.averageTimeNanoseconds = averageTimeNanoseconds;
+    public void setAverageTimeMilliseconds(long averageTimeMilliseconds) {
+        this.averageTimeMilliseconds = averageTimeMilliseconds;
     }
 
-    public long getMinTimeNanoseconds() {
-        return minTimeNanoseconds;
+    public long getMinTimeMilliseconds() {
+        return minTimeMilliseconds;
     }
 
-    public void setMinTimeNanoseconds(long minTimeNanoseconds) {
-        this.minTimeNanoseconds = minTimeNanoseconds;
+    public void setMinTimeMilliseconds(long minTimeMilliseconds) {
+        this.minTimeMilliseconds = minTimeMilliseconds;
     }
 
-    public long getMaxTimeNanoseconds() {
-        return maxTimeNanoseconds;
+    public long getMaxTimeMilliseconds() {
+        return maxTimeMilliseconds;
     }
 
-    public void setMaxTimeNanoseconds(long maxTimeNanoseconds) {
-        this.maxTimeNanoseconds = maxTimeNanoseconds;
+    public void setMaxTimeMilliseconds(long maxTimeMilliseconds) {
+        this.maxTimeMilliseconds = maxTimeMilliseconds;
     }
 
     public void add(long startedCountAmount,
                     long succeededCountAmount,
                     long failedCountAmount,
-                    long totalTimeNanosecondsAmount,
-                    long minTimeNanosecondsAmount,
-                    long maxTimeNanosecondsAmount) {
+                    long totalTimeMillisecondsAmount,
+                    long minTimeMillisecondsAmount,
+                    long maxTimeMillisecondsAmount) {
         startedCount += startedCountAmount;
         succeededCount += succeededCountAmount;
         failedCount += failedCountAmount;
 
-        totalTimeNanoseconds += totalTimeNanosecondsAmount;
+        totalTimeMilliseconds += totalTimeMillisecondsAmount;
 
         if (succeededCount + failedCount > 0) {
-            averageTimeNanoseconds = totalTimeNanoseconds / (succeededCount + failedCount);
+            averageTimeMilliseconds = totalTimeMilliseconds / (succeededCount + failedCount);
         }
 
-        if (minTimeNanosecondsAmount > 0) {
-            if (minTimeNanoseconds > 0) {
-                minTimeNanoseconds = Math.min(minTimeNanoseconds, minTimeNanosecondsAmount);
+        if (minTimeMillisecondsAmount > 0) {
+            if (minTimeMilliseconds > 0) {
+                minTimeMilliseconds = Math.min(minTimeMilliseconds, minTimeMillisecondsAmount);
             } else {
-                minTimeNanoseconds = minTimeNanosecondsAmount;
+                minTimeMilliseconds = minTimeMillisecondsAmount;
             }
         }
 
-        if (maxTimeNanosecondsAmount > 0) {
-            if (maxTimeNanoseconds > 0) {
-                maxTimeNanoseconds = Math.max(maxTimeNanoseconds, maxTimeNanosecondsAmount);
+        if (maxTimeMillisecondsAmount > 0) {
+            if (maxTimeMilliseconds > 0) {
+                maxTimeMilliseconds = Math.max(maxTimeMilliseconds, maxTimeMillisecondsAmount);
             } else {
-                maxTimeNanoseconds = maxTimeNanosecondsAmount;
+                maxTimeMilliseconds = maxTimeMillisecondsAmount;
             }
         }
     }

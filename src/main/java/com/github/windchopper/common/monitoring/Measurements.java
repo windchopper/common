@@ -48,21 +48,21 @@ public class Measurements {
         values.incrementAndGet(offset + STARTED_COUNT_INDEX);
     }
 
-    public void registerFinish(int index, long executionTimeNanoseconds) {
+    public void registerFinish(int index, long executionTimeMilliseconds) {
         int offset = determineOffset(currentTimeMillis() / 1000L);
 
         values.incrementAndGet(offset + index);
-        values.addAndGet(offset + TOTAL_TIME_INDEX, executionTimeNanoseconds);
-        values.getAndUpdate(offset + MIN_TIME_INDEX, oldMinTime -> Math.min(oldMinTime, executionTimeNanoseconds));
-        values.getAndUpdate(offset + MAX_TIME_INDEX, oldMaxTime -> Math.max(oldMaxTime, executionTimeNanoseconds));
+        values.addAndGet(offset + TOTAL_TIME_INDEX, executionTimeMilliseconds);
+        values.getAndUpdate(offset + MIN_TIME_INDEX, oldMinTime -> Math.min(oldMinTime, executionTimeMilliseconds));
+        values.getAndUpdate(offset + MAX_TIME_INDEX, oldMaxTime -> Math.max(oldMaxTime, executionTimeMilliseconds));
     }
 
-    public void registerSuccess(long executionTimeNanoseconds) {
-        registerFinish(SUCCEEDED_COUNT_INDEX, executionTimeNanoseconds);
+    public void registerSuccess(long executionTimeMilliseconds) {
+        registerFinish(SUCCEEDED_COUNT_INDEX, executionTimeMilliseconds);
     }
 
-    public void registerFail(long executionTimeNanoseconds) {
-        registerFinish(FAILED_COUNT_INDEX, executionTimeNanoseconds);
+    public void registerFail(long executionTimeMilliseconds) {
+        registerFinish(FAILED_COUNT_INDEX, executionTimeMilliseconds);
     }
 
     public Statistics gatherStatistics(String name, long startTimeSeconds, long endTimeSeconds) {

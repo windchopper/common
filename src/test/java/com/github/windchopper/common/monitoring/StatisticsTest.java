@@ -45,8 +45,8 @@ import static org.junit.Assert.assertTrue;
         assertEquals(1, statistics.getStartedCount());
         assertEquals(1, statistics.getSucceededCount());
         assertEquals(0, statistics.getFailedCount());
-        assertTrue(statistics.getTotalTimeNanoseconds() >= 123 * 1000000);
-        assertEquals(statistics.getMinTimeNanoseconds(), statistics.getMaxTimeNanoseconds());
+        assertTrue(statistics.getTotalTimeMilliseconds() >= 123 * 1000000);
+        assertEquals(statistics.getMinTimeMilliseconds(), statistics.getMaxTimeMilliseconds());
     }
 
 }

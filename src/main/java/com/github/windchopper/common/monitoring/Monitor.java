@@ -1,26 +1,29 @@
 package com.github.windchopper.common.monitoring;
 
+import static java.lang.System.currentTimeMillis;
+
 public class Monitor {
 
-    private final String name;
-
-    private long startTimeNanoseconds;
+    private String name;
+    private long startTimeMilliseconds;
 
     public Monitor(String name) {
         this.name = name;
     }
 
     public void started() {
-        startTimeNanoseconds = System.nanoTime();
+        startTimeMilliseconds = currentTimeMillis();
         StatisticsCollector.Holder.instance.registerStart(name);
     }
 
     public void succeeded() {
-        StatisticsCollector.Holder.instance.registerSuccess(name, System.nanoTime() - startTimeNanoseconds);
+        StatisticsCollector.Holder.instance.registerSuccess(name,
+            currentTimeMillis() - startTimeMilliseconds);
     }
 
     public void failed() {
-        StatisticsCollector.Holder.instance.registerFail(name, System.nanoTime() - startTimeNanoseconds);
+        StatisticsCollector.Holder.instance.registerFail(name,
+            currentTimeMillis() - startTimeMilliseconds);
     }
 
 }

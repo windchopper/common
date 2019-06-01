@@ -12,11 +12,6 @@ public class StatisticsCollector implements StatisticsCollectorMXBean {
     private boolean enabled;
 
     private final Map<String, Measurements> namedMeasurements = new ConcurrentHashMap<>();
-    private final Measurements missingMeasurements = new Measurements() {
-        @Override public void registerStart() {}
-        @Override public void registerSuccess(long executionTimeNanoseconds) {}
-        @Override public void registerFail(long executionTimeNanoseconds) {}
-    };
 
     @Override
     public boolean isEnabled() {
@@ -34,16 +29,16 @@ public class StatisticsCollector implements StatisticsCollectorMXBean {
             .registerStart();
     }
 
-    public void registerSuccess(String name, long executionTimeNanoseconds) {
+    public void registerSuccess(String name, long executionTimeMilliseconds) {
         if (!enabled) return;
-        namedMeasurements.getOrDefault(name, missingMeasurements)
-            .registerSuccess(executionTimeNanoseconds);
+        namedMeasurements.get(name)
+            .registerSuccess(executionTimeMilliseconds);
     }
 
-    public void registerFail(String name, long executionTimeNanoseconds) {
+    public void registerFail(String name, long executionTimeMilliseconds) {
         if (!enabled) return;
-        namedMeasurements.getOrDefault(name, missingMeasurements)
-            .registerFail(executionTimeNanoseconds);
+        namedMeasurements.get(name)
+            .registerFail(executionTimeMilliseconds);
     }
 
     @Override
