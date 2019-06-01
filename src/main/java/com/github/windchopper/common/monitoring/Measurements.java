@@ -1,8 +1,8 @@
 package com.github.windchopper.common.monitoring;
 
-import java.util.Arrays;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.atomic.AtomicLongArray;
+
+import static java.lang.System.currentTimeMillis;
 
 public class Measurements {
 
@@ -16,74 +16,53 @@ public class Measurements {
     private static final int SLOT_NUMBER = 600;
     private static final int SLOT_LENGTH = 6;
 
-    private final long[] values = new long[SLOT_NUMBER * SLOT_LENGTH];
-    private final Lock lock = new ReentrantLock();
+    private final AtomicLongArray values = new AtomicLongArray(SLOT_NUMBER * SLOT_LENGTH);
 
     private long periodStartTimeSeconds;
     private long periodEndTimeSeconds;
 
-    private int determineOffset(long startTimeSeconds) {
-        if (periodStartTimeSeconds > startTimeSeconds) {
-            return -1;
-        }
-
-        int offset = (int) (startTimeSeconds - periodStartTimeSeconds) * SLOT_LENGTH;
+    private int determineOffset(long timeSeconds) {
+        int offset = (int) (timeSeconds - periodStartTimeSeconds) * SLOT_LENGTH;
 
         if (offset > SLOT_NUMBER) {
-            periodStartTimeSeconds = startTimeSeconds;
+            periodStartTimeSeconds = timeSeconds;
             offset = 0;
 
-            for (int i = 0; i < values.length; i++) {
-                values[i] = 0L;
+            for (int i = 0; i < values.length(); i++) {
+                values.set(i, 0L);
             }
 
-            for (int i = MIN_TIME_INDEX; i < values.length; i += SLOT_LENGTH) {
-                values[i] = Long.MAX_VALUE;
+            for (int i = MIN_TIME_INDEX; i < values.length(); i += SLOT_LENGTH) {
+                values.set(i, Long.MAX_VALUE);
             }
         }
 
-        periodEndTimeSeconds = startTimeSeconds;
+        periodEndTimeSeconds = timeSeconds;
 
         return offset;
     }
 
-    public void registerStart(long startTimeSeconds) {
-        lock.lock();
+    public void registerStart() {
+        int offset = determineOffset(currentTimeMillis() / 1000L);
 
-        try {
-            int offset = determineOffset(startTimeSeconds);
-
-            if (offset >= 0) {
-                values[offset + STARTED_COUNT_INDEX]++;
-            }
-        } finally {
-            lock.unlock();
-        }
+        values.incrementAndGet(offset + STARTED_COUNT_INDEX);
     }
 
-    public void registerFinish(int index, long startTimeSeconds, long executionTimeNanoseconds) {
-        lock.lock();
+    public void registerFinish(int index, long executionTimeNanoseconds) {
+        int offset = determineOffset(currentTimeMillis() / 1000L);
 
-        try {
-            int offset = determineOffset(startTimeSeconds);
-
-            if (offset >= 0) {
-                values[offset + index]++;
-                values[offset + TOTAL_TIME_INDEX] += executionTimeNanoseconds;
-                values[offset + MIN_TIME_INDEX] = Math.min(values[offset + MIN_TIME_INDEX], executionTimeNanoseconds);
-                values[offset + MAX_TIME_INDEX] = Math.max(values[offset + MAX_TIME_INDEX], executionTimeNanoseconds);
-            }
-        } finally {
-            lock.unlock();
-        }
+        values.incrementAndGet(offset + index);
+        values.addAndGet(offset + TOTAL_TIME_INDEX, executionTimeNanoseconds);
+        values.getAndUpdate(offset + MIN_TIME_INDEX, oldMinTime -> Math.min(oldMinTime, executionTimeNanoseconds));
+        values.getAndUpdate(offset + MAX_TIME_INDEX, oldMaxTime -> Math.max(oldMaxTime, executionTimeNanoseconds));
     }
 
-    public void registerSuccess(long startTimeSeconds, long executionTimeNanoseconds) {
-        registerFinish(SUCCEEDED_COUNT_INDEX, startTimeSeconds, executionTimeNanoseconds);
+    public void registerSuccess(long executionTimeNanoseconds) {
+        registerFinish(SUCCEEDED_COUNT_INDEX, executionTimeNanoseconds);
     }
 
-    public void registerFail(long startTimeSeconds, long executionTimeNanoseconds) {
-        registerFinish(FAILED_COUNT_INDEX, startTimeSeconds, executionTimeNanoseconds);
+    public void registerFail(long executionTimeNanoseconds) {
+        registerFinish(FAILED_COUNT_INDEX, executionTimeNanoseconds);
     }
 
     public Statistics gatherStatistics(String name, long startTimeSeconds, long endTimeSeconds) {
@@ -98,25 +77,14 @@ public class Measurements {
             return statistics;
         }
 
-        long[] copiedValues;
-
-        lock.lock();
-
-        try {
-            copiedValues = Arrays.copyOfRange(values, (int) (startTimeSeconds - periodStartTimeSeconds) * SLOT_LENGTH,
-                (int) (endTimeSeconds - periodStartTimeSeconds + 1) * SLOT_LENGTH);
-        } finally {
-            lock.unlock();
-        }
-
-        for (int i = 0; i < copiedValues.length; i += SLOT_LENGTH) {
+        for (int i = (int) (startTimeSeconds - periodStartTimeSeconds) * SLOT_LENGTH; i < (int) (endTimeSeconds - periodStartTimeSeconds + 1) * SLOT_LENGTH; i += SLOT_LENGTH) {
             statistics.add(
-                copiedValues[i + STARTED_COUNT_INDEX],
-                copiedValues[i + SUCCEEDED_COUNT_INDEX],
-                copiedValues[i + FAILED_COUNT_INDEX],
-                copiedValues[i + TOTAL_TIME_INDEX],
-                copiedValues[i + MIN_TIME_INDEX],
-                copiedValues[i + MAX_TIME_INDEX]);
+                values.get(i + STARTED_COUNT_INDEX),
+                values.get(i + SUCCEEDED_COUNT_INDEX),
+                values.get(i + FAILED_COUNT_INDEX),
+                values.get(i + TOTAL_TIME_INDEX),
+                values.get(i + MIN_TIME_INDEX),
+                values.get(i + MAX_TIME_INDEX));
         }
 
         return statistics;

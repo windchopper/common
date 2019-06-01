@@ -22,19 +22,6 @@ public class RegisterSample {
         System.out.println(
             server.registerMBean(
                 new AnnotatedMBean(
-                    ExpensesCollector.Holder.instance,
-                    ExpensesCollectorMXBean.class,
-                    true),
-                new ObjectName(
-                    domain, Pipeliner.of(Hashtable<String, String>::new)
-                        .set(map -> value -> map.put(ExpensesCollector.KEY__TYPE, value), ExpensesCollector.TYPE)
-                        .set(map -> value -> map.put(ExpensesCollector.KEY__APPLICATION, value), application)
-                        .set(map -> value -> map.put(ExpensesCollector.KEY__UNIQUE_IDENTIFIER, value), uniqueIdentifier)
-                        .get())));
-
-        System.out.println(
-            server.registerMBean(
-                new AnnotatedMBean(
                     StatisticsCollector.Holder.instance,
                     StatisticsCollectorMXBean.class,
                     true),

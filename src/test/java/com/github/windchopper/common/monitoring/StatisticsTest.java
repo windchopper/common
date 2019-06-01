@@ -13,7 +13,6 @@ import static org.junit.Assert.assertTrue;
 
     @BeforeClass public static void prepareStatic() {
         StatisticsCollector.Holder.instance.setEnabled(true);
-        ExpensesCollector.Holder.instance.setEnabled(true);
     }
 
     public void monitoredOperation(String name, boolean fail) throws InterruptedException {
@@ -48,9 +47,6 @@ import static org.junit.Assert.assertTrue;
         assertEquals(0, statistics.getFailedCount());
         assertTrue(statistics.getTotalTimeNanoseconds() >= 123 * 1000000);
         assertEquals(statistics.getMinTimeNanoseconds(), statistics.getMaxTimeNanoseconds());
-
-        assertTrue(ExpensesCollector.Holder.instance.getOperationStatisticsTimeNanoseconds() > 0);
-        assertEquals(1, ExpensesCollector.Holder.instance.getOperationCount());
     }
 
 }

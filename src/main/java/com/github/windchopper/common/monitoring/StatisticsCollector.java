@@ -3,35 +3,47 @@ package com.github.windchopper.common.monitoring;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class StatisticsCollector extends AnyCollector implements StatisticsCollectorMXBean {
+public class StatisticsCollector implements StatisticsCollectorMXBean {
 
     public interface Holder {
         StatisticsCollector instance = new StatisticsCollector();
     }
 
+    private boolean enabled;
+
     private final Map<String, Measurements> namedMeasurements = new ConcurrentHashMap<>();
     private final Measurements missingMeasurements = new Measurements() {
-        @Override public void registerStart(long startTimeSeconds) {}
-        @Override public void registerSuccess(long startTimeSeconds, long executionTimeNanoseconds) {}
-        @Override public void registerFail(long startTimeSeconds, long executionTimeNanoseconds) {}
+        @Override public void registerStart() {}
+        @Override public void registerSuccess(long executionTimeNanoseconds) {}
+        @Override public void registerFail(long executionTimeNanoseconds) {}
     };
 
-    public void registerStart(String name, long startTimeSeconds) {
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void registerStart(String name) {
         if (!enabled) return;
         namedMeasurements.computeIfAbsent(name, missingName -> new Measurements())
-            .registerStart(startTimeSeconds);
+            .registerStart();
     }
 
-    public void registerSuccess(String name, long startTimeSeconds, long executionTimeNanoseconds) {
+    public void registerSuccess(String name, long executionTimeNanoseconds) {
         if (!enabled) return;
         namedMeasurements.getOrDefault(name, missingMeasurements)
-            .registerSuccess(startTimeSeconds, executionTimeNanoseconds);
+            .registerSuccess(executionTimeNanoseconds);
     }
 
-    public void registerFail(String name, long startTimeSeconds, long executionTimeNanoseconds) {
+    public void registerFail(String name, long executionTimeNanoseconds) {
         if (!enabled) return;
         namedMeasurements.getOrDefault(name, missingMeasurements)
-            .registerFail(startTimeSeconds, executionTimeNanoseconds);
+            .registerFail(executionTimeNanoseconds);
     }
 
     @Override
