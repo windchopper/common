@@ -4,10 +4,9 @@ import javafx.beans.property.Property;
 
 import java.util.function.Function;
 
-public class AddionalBindings {
+public class AdditionalBindings {
 
-    public static <T> TransformingBidirectionalBinding<T, T> bindBidirectionally(Property<T> property1st,
-                                                                                 Property<T> property2nd) {
+    public static <T> TransformingBidirectionalBinding<T, T> bindBidirectionally(Property<T> property1st, Property<T> property2nd) {
         return bindBidirectionally(property1st, property2nd, Function.identity(), Function.identity());
     }
 
