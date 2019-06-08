@@ -23,7 +23,7 @@ public class PreferencesEntry<T> implements Supplier<T>, Consumer<T> {
     private final PreferencesStorage storage;
     private final String name;
     private final PreferencesEntryType<T> type;
-    private final BufferedReference<T> storedValueReference;
+    private final BufferedReference<T, RuntimeException> storedValueReference;
 
     public PreferencesEntry(PreferencesStorage storage, String name, PreferencesEntryType<T> type, Duration bufferLifetime) {
         this.storage = requireNonNull(storage, String.format(bundle.getString(BUNDLE_KEY__NULL_PARAMETER), "storage"));
