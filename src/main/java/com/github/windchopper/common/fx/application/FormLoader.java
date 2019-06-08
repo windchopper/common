@@ -1,9 +1,10 @@
 package com.github.windchopper.common.fx.application;
 
 import com.github.windchopper.common.cdi.BeanReference;
-import com.github.windchopper.common.fx.event.ResourceBundleLoading;
 import com.github.windchopper.common.fx.annotation.FXMLResourceLiteral;
 import com.github.windchopper.common.fx.event.FXMLResourceOpen;
+import com.github.windchopper.common.fx.event.ResourceBundleLoading;
+import com.github.windchopper.common.util.Pipeliner;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -30,16 +31,26 @@ import java.util.ResourceBundle;
             fxmlLoader.setResources(resources);
         }
 
+        var fxmlResourceLiteral = new FXMLResourceLiteral(fxmlResourceOpen.resource());
+
+        fxmlLoader.setControllerFactory(controllerType -> new BeanReference()
+            .withType(controllerType)
+            .withQualifiers(fxmlResourceLiteral)
+            .resolve());
+
         try (InputStream inputStream = fxmlResourceOpen.resourceAsStream()) {
-            var fxmlResourceLiteral = new FXMLResourceLiteral(fxmlResourceOpen.resource());
-            var controllerReference = new BeanReference().withType(StageController.class).withQualifiers(fxmlResourceLiteral);
-            var controller = (StageController) controllerReference.resolve();
-            fxmlLoader.setController(controller);
-            Parent sceneRoot = fxmlLoader.load(inputStream);
-            Scene scene = new Scene(sceneRoot);
-            Stage stage = fxmlResourceOpen.stage();
-            stage.setScene(scene);
-            controller.start(stage, fxmlResourceOpen.resource(), fxmlResourceOpen.parameters());
+            Stage stage = Pipeliner.of(fxmlResourceOpen.stage())
+                .set(bean -> bean::setScene, Pipeliner.of(fxmlLoader.<Parent>load(inputStream))
+                    .map(Scene::new)
+                    .get())
+                .get();
+
+            var controller = fxmlLoader.getController();
+
+            if (controller instanceof StageController) {
+                ((StageController) controller).start(stage,  fxmlResourceOpen.resource(), fxmlResourceOpen.parameters());
+            }
+
             stage.show();
         }
     }

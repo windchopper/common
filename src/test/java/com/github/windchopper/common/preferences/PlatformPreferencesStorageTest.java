@@ -73,7 +73,10 @@ import static org.junit.Assert.*;
         assertEquals(emptyList(), stringListEntry.get());
         assertTrue(stringListEntry.get() instanceof ArrayList);
         stringListEntry.accept(value);
-        assertEquals(value, stringListEntry.get());
+        assertTrue(stringListEntry.get().contains("1st"));
+        assertTrue(stringListEntry.get().contains("2nd"));
+        assertTrue(stringListEntry.get().contains("3rd"));
+        assertTrue(stringListEntry.get().contains("4th"));
         assertTrue(stringListEntry.get() instanceof ArrayList);
         assertEquals(value.size(), storage.child("stringListEntry").valueNames().size());
     }
