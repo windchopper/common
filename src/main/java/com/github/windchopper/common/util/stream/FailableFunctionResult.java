@@ -19,16 +19,20 @@ public class FailableFunctionResult<I, O> extends FailableResult<O> {
         return Optional.ofNullable(outcome);
     }
 
-    public void onSuccess(BiConsumer<I, O> handler) {
+    public FailableFunctionResult<I, O> onSuccess(BiConsumer<I, O> handler) {
         if (exception == null) {
             handler.accept(value, outcome);
         }
+
+        return this;
     }
 
-    public void onFailure(BiConsumer<I, Throwable> handler) {
+    public FailableFunctionResult<I, O> onFailure(BiConsumer<I, Throwable> handler) {
         if (exception != null) {
             handler.accept(value, exception);
         }
+
+        return this;
     }
 
     public O recover(BiFunction<I, Throwable, O> recoverer) {
