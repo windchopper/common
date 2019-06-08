@@ -48,7 +48,7 @@ import java.util.ResourceBundle;
             var controller = fxmlLoader.getController();
 
             if (controller instanceof StageController) {
-                ((StageController) controller).start(stage,  fxmlResourceOpen.resource(), fxmlResourceOpen.parameters());
+                ((StageController) controller).start(stage,  fxmlResourceOpen.resource(), fxmlResourceOpen.parameters(), fxmlLoader.getNamespace());
             }
 
             stage.show();

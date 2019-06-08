@@ -1,16 +1,13 @@
 package com.github.windchopper.common.fx.application;
 
 import com.github.windchopper.common.fx.behavior.WindowApplyStoredBoundsBehavior;
-import com.github.windchopper.common.fx.search.FormIterator;
 import com.github.windchopper.common.util.Pipeliner;
-import javafx.css.Styleable;
 import javafx.fxml.FXML;
 import javafx.geometry.Dimension2D;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.logging.Level;
@@ -24,24 +21,23 @@ public abstract class StageController {
 
     protected Stage stage;
 
-    protected void start(Stage stage, String fxmlResource, Map<String, ?> parameters) {
+    protected void start(Stage stage, String fxmlResource, Map<String, ?> parameters, Map<String, ?> fxmlLoaderNamespace) {
         new WindowApplyStoredBoundsBehavior(fxmlResource, this::initializeBounds)
             .apply(this.stage = stage);
 
         stream(getClass().getDeclaredFields())
             .filter(field -> field.isAnnotationPresent(FXML.class)).forEach(field -> {
-                for (var i = new FormIterator(stage.getScene()); i.hasNext(); ) {
-                    Object formElement = i.next();
-                    if (formElement instanceof Styleable && field.getName().equalsIgnoreCase(((Styleable) formElement).getId())) {
-                        try {
-                            field.setAccessible(true);
-                            field.set(this, formElement);
-                        } catch (SecurityException | IllegalAccessException thrown) {
-                            logger.log(
-                                Level.WARNING,
-                                thrown.getMessage(),
-                                thrown);
-                        }
+                Object value = fxmlLoaderNamespace.get(field.getName());
+
+                if (value != null) {
+                    try {
+                        field.setAccessible(true);
+                        field.set(this, value);
+                    } catch (SecurityException | IllegalAccessException thrown) {
+                        logger.log(
+                            Level.WARNING,
+                            thrown.getMessage(),
+                            thrown);
                     }
                 }
             });
