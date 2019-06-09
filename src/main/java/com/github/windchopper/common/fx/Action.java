@@ -126,13 +126,13 @@ public class Action implements EventHandler<ActionEvent> {
      * EventHandler implementation
      */
 
-    @Override public void handle(ActionEvent event) {
+    public void run(Runnable action) {
         disabledInternallyProperty.set(
             !reenterable);
 
         Runnable runnable = () -> {
             try {
-                handler.handle(event);
+                action.run();
             } finally {
                 disabledInternallyProperty.set(false);
             }
@@ -143,6 +143,10 @@ public class Action implements EventHandler<ActionEvent> {
         } else {
             runnable.run();
         }
+    }
+
+    @Override public void handle(ActionEvent event) {
+        run(() -> handler.handle(event));
     }
 
 }
