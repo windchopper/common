@@ -3,15 +3,13 @@ package com.github.windchopper.common.fx.behavior;
 import com.github.windchopper.common.fx.preferences.PointPreferencesEntryType;
 import com.github.windchopper.common.fx.preferences.RectanglePreferencesEntryType;
 import com.github.windchopper.common.preferences.PlatformPreferencesStorage;
+import com.github.windchopper.common.preferences.PreferencesEntry;
 import com.github.windchopper.common.preferences.PreferencesEntryType;
 import com.github.windchopper.common.preferences.PreferencesStorage;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import com.github.windchopper.common.preferences.PreferencesEntry;
 
 import java.time.Duration;
 import java.util.prefs.Preferences;
@@ -26,7 +24,7 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
     }
 
     private static final PreferencesStorage boundsStorage = new PlatformPreferencesStorage(
-        Preferences.userRoot().node("name/wind/common/fx/behavior"));
+        Preferences.userRoot().node("com/github/windchopper/common/fx/behavior"));
 
     private static final PreferencesEntryType<Rectangle2D> rectangleType = new RectanglePreferencesEntryType();
     private static final PreferencesEntryType<Point2D> pointType = new PointPreferencesEntryType();
@@ -116,33 +114,57 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
 
         window.addEventHandler(WINDOW_SHOWN, event -> adjustSize(window));
         window.addEventHandler(WINDOW_SHOWING, event -> {
-            window.xProperty().addListener((property, oldX, newX) -> preferencesEntry.accept(
-                new Rectangle2D(
-                    newX.doubleValue(),
-                    window.getY(),
-                    window.getWidth(),
-                    window.getHeight())));
+            window.xProperty().addListener((property, oldX, newX) -> {
+                if (window instanceof Stage && ((Stage) window).isMaximized()) {
+                    return;
+                }
 
-            window.yProperty().addListener((property, oldY, newY) -> preferencesEntry.accept(
-                new Rectangle2D(
-                    window.getX(),
-                    newY.doubleValue(),
-                    window.getWidth(),
-                    window.getHeight())));
+                preferencesEntry.accept(
+                    new Rectangle2D(
+                        newX.doubleValue(),
+                        window.getY(),
+                        window.getWidth(),
+                        window.getHeight()));
+            });
 
-            window.widthProperty().addListener((property, oldWidth, newWidth) -> preferencesEntry.accept(
-                new Rectangle2D(
-                    window.getX(),
-                    window.getY(),
-                    newWidth.doubleValue(),
-                    window.getHeight())));
+            window.yProperty().addListener((property, oldY, newY) -> {
+                if (window instanceof Stage && ((Stage) window).isMaximized()) {
+                    return;
+                }
 
-            window.heightProperty().addListener((property, oldHeight, newHeight) -> preferencesEntry.accept(
-                new Rectangle2D(
-                    window.getX(),
-                    window.getY(),
-                    window.getWidth(),
-                    newHeight.doubleValue())));
+                preferencesEntry.accept(
+                    new Rectangle2D(
+                        window.getX(),
+                        newY.doubleValue(),
+                        window.getWidth(),
+                        window.getHeight()));
+            });
+
+            window.widthProperty().addListener((property, oldWidth, newWidth) -> {
+                if (window instanceof Stage && ((Stage) window).isMaximized()) {
+                    return;
+                }
+
+                preferencesEntry.accept(
+                    new Rectangle2D(
+                        window.getX(),
+                        window.getY(),
+                        newWidth.doubleValue(),
+                        window.getHeight()));
+            });
+
+            window.heightProperty().addListener((property, oldHeight, newHeight) -> {
+                if (window instanceof Stage && ((Stage) window).isMaximized()) {
+                    return;
+                }
+
+                preferencesEntry.accept(
+                    new Rectangle2D(
+                        window.getX(),
+                        window.getY(),
+                        window.getWidth(),
+                        newHeight.doubleValue()));
+            });
         });
     }
 
