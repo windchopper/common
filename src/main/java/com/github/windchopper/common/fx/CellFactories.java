@@ -6,7 +6,7 @@ import javafx.util.Callback;
 
 import java.util.List;
 
-public class CellFactory {
+public class CellFactories {
 
     @FunctionalInterface public interface ListCellUpdater<I, C> {
         void update(C cell, I item);
