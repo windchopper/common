@@ -20,12 +20,12 @@ public class DelegatingStringConverter<T> extends StringConverter<T> {
 
     @Override
     public String toString(T object) {
-        return toStringConverter.apply(object);
+        return object == null ? null : toStringConverter.apply(object);
     }
 
     @Override
     public T fromString(String string) {
-        return fromStringConverter.apply(string);
+        return string == null || string.isEmpty() ? null : fromStringConverter.apply(string);
     }
 
 }
