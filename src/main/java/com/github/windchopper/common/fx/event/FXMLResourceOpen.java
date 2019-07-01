@@ -6,27 +6,36 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import static java.util.Collections.emptyMap;
 
 public class FXMLResourceOpen {
 
-    private final Stage stage;
+    private final Supplier<Stage> stageSupplier;
     private final String resource;
     private final Map<String, ?> parameters;
 
     public FXMLResourceOpen(Stage stage, String resource) {
-        this(stage, resource, emptyMap());
+        this(() -> stage, resource, emptyMap());
+    }
+
+    public FXMLResourceOpen(Supplier<Stage> stageSupplier, String resource) {
+        this(stageSupplier, resource, emptyMap());
     }
 
     public FXMLResourceOpen(Stage stage, String resource, Map<String, ?> parameters) {
-        this.stage = stage;
+        this(() -> stage, resource, parameters);
+    }
+
+    public FXMLResourceOpen(Supplier<Stage> stageSupplier, String resource, Map<String, ?> parameters) {
+        this.stageSupplier = stageSupplier;
         this.resource = resource;
         this.parameters = parameters;
     }
 
     public Stage stage() {
-        return stage;
+        return stageSupplier.get();
     }
 
     public String resource() {
@@ -42,10 +51,8 @@ public class FXMLResourceOpen {
     }
 
     public <T> T findParameter(String name, Class<? extends T> type) {
-        Objects.requireNonNull(name);
-        Objects.requireNonNull(type);
-        return Optional.ofNullable(parameters.get(name))
-            .filter(type::isInstance)
+        return Optional.ofNullable(parameters.get(Objects.requireNonNull(name)))
+            .filter(Objects.requireNonNull(type)::isInstance)
             .map(type::cast)
             .orElse(null);
     }

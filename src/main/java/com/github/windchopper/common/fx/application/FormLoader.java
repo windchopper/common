@@ -4,11 +4,10 @@ import com.github.windchopper.common.cdi.BeanReference;
 import com.github.windchopper.common.fx.annotation.FXMLResourceLiteral;
 import com.github.windchopper.common.fx.event.FXMLResourceOpen;
 import com.github.windchopper.common.fx.event.ResourceBundleLoading;
-import com.github.windchopper.common.util.Pipeliner;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -22,6 +21,14 @@ import java.util.ResourceBundle;
 
     protected void registerResourceBundle(@Observes ResourceBundleLoading resourceBundleLoading) {
         resources = resourceBundleLoading.resources();
+    }
+
+    protected void runFxThreadSensitiveAction(Runnable action) {
+        if (Platform.isFxApplicationThread()) {
+            action.run();
+        } else {
+            Platform.runLater(action);
+        }
     }
 
     protected void formOpen(@Observes FXMLResourceOpen fxmlResourceOpen) throws IOException {
@@ -39,19 +46,18 @@ import java.util.ResourceBundle;
             .resolve());
 
         try (InputStream inputStream = fxmlResourceOpen.resourceAsStream()) {
-            Stage stage = Pipeliner.of(fxmlResourceOpen.stage())
-                .set(bean -> bean::setScene, Pipeliner.of(fxmlLoader.<Parent>load(inputStream))
-                    .map(Scene::new)
-                    .get())
-                .get();
+            var loaded = fxmlLoader.<Parent>load(inputStream);
 
-            var controller = fxmlLoader.getController();
+            runFxThreadSensitiveAction(() -> {
+                var openingStage = fxmlResourceOpen.stage();
+                openingStage.setScene(new Scene(loaded));
 
-            if (controller instanceof StageController) {
-                ((StageController) controller).start(stage,  fxmlResourceOpen.resource(), fxmlResourceOpen.parameters(), fxmlLoader.getNamespace());
-            }
+                if (fxmlLoader.getController() instanceof StageController) {
+                    ((StageController) fxmlLoader.getController()).start(openingStage,  fxmlResourceOpen.resource(), fxmlResourceOpen.parameters(), fxmlLoader.getNamespace());
+                }
 
-            stage.show();
+                openingStage.show();
+            });
         }
     }
 
