@@ -1,10 +1,7 @@
 package com.github.windchopper.common.fx;
 
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
 import javafx.util.Callback;
-
-import java.util.function.Consumer;
 
 import static java.util.Arrays.stream;
 
@@ -12,21 +9,8 @@ public class CellFactories {
 
     @FunctionalInterface public interface CellUpdater<ItemType, CellType extends Cell<ItemType>> {
 
-        void update(CellType cell, ItemType item);
+        void update(CellType cell, ItemType item, boolean empty);
 
-    }
-
-    static <ItemType, CellType extends Cell, UpdaterType> void updateItemImpl(CellType cell,
-                                                                              ItemType item,
-                                                                              boolean empty,
-                                                                              UpdaterType[] updaters,
-                                                                              Consumer<UpdaterType> updaterInvoker) {
-        if (empty || item == null) {
-            cell.setText(null);
-            cell.setGraphic(null);
-        } else {
-            stream(updaters).forEach(updaterInvoker);
-        }
     }
 
     public static class DefaultListCell<ItemType> extends ListCell<ItemType> {
@@ -39,7 +23,7 @@ public class CellFactories {
 
         @Override protected void updateItem(ItemType item, boolean empty) {
             super.updateItem(item, empty);
-            updateItemImpl(this, item, empty, updaters, updater -> updater.update(this, item));
+            stream(updaters).forEach(updater -> updater.update(this, item, empty));
         }
 
     }
@@ -54,14 +38,14 @@ public class CellFactories {
 
         @Override protected void updateItem(ItemType item, boolean empty) {
             super.updateItem(item, empty);
-            updateItemImpl(this, item, empty, updaters, updater -> updater.update(this, item));
+            stream(updaters).forEach(updater -> updater.update(this, item, empty));
         }
 
     }
 
     @FunctionalInterface public interface ColumnContainerCellUpdater<ColumnType, ItemType, CellType extends IndexedCell<ItemType>> {
 
-        void update(CellType cell, ColumnType column, ItemType item);
+        void update(CellType cell, ColumnType column, ItemType item, boolean empty);
 
     }
 
@@ -75,7 +59,7 @@ public class CellFactories {
 
         @Override protected void updateItem(ItemType item, boolean empty) {
             super.updateItem(item, empty);
-            updateItemImpl(this, item, empty, updaters, updater -> updater.update(this, getTableRow().getItem(), item));
+            stream(updaters).forEach(updater -> updater.update(this, getTableRow().getItem(), item, empty));
         }
 
     }
@@ -90,7 +74,7 @@ public class CellFactories {
 
         @Override protected void updateItem(ItemType item, boolean empty) {
             super.updateItem(item, empty);
-            updateItemImpl(this, item, empty, updaters, updater -> updater.update(this, getTreeTableRow().getItem(), item));
+            stream(updaters).forEach(updater -> updater.update(this, getTreeTableRow().getItem(), item, empty));
         }
 
     }
@@ -111,22 +95,6 @@ public class CellFactories {
     @SafeVarargs public static <ColumnType, ItemType> Callback<TreeTableColumn<ColumnType, ItemType>, TreeTableCell<ColumnType, ItemType>> treeTableColumnCellFactory(
         ColumnContainerCellUpdater<ColumnType, ItemType, TreeTableCell<ColumnType, ItemType>>... updaters) {
         return column -> new DefaultTreeTableCell<>(updaters);
-    }
-
-    @FunctionalInterface public interface ColumnContainerCellValueSupplier<T, F> {
-
-        ObservableValue<T> observable(F features);
-
-    }
-
-    public static <I, T> Callback<TableColumn.CellDataFeatures<I, T>, ObservableValue<T>> tableColumnCellValueFactory(
-        ColumnContainerCellValueSupplier<T, TableColumn.CellDataFeatures<I, T>> observableSupplier) {
-        return observableSupplier::observable;
-    }
-
-    public static <I, T> Callback<TreeTableColumn.CellDataFeatures<I, T>, ObservableValue<T>> treeTableColumnCellValueFactory(
-        ColumnContainerCellValueSupplier<T, TreeTableColumn.CellDataFeatures<I, T>> observableSupplier) {
-        return observableSupplier::observable;
     }
 
 }
