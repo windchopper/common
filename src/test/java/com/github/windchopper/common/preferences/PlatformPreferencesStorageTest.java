@@ -44,12 +44,12 @@ import static org.junit.Assert.*;
         var stringType = new FlatType<>(string -> string, string -> string);
         var stringEntry = new PreferencesEntry<>(storage, "stringEntry", stringType, Duration.ZERO);
         var value = "testValue";
-        assertNull(stringEntry.get());
-        stringEntry.accept(value);
-        assertEquals(value, stringEntry.get());
+        assertNull(stringEntry.load());
+        stringEntry.save(value);
+        assertEquals(value, stringEntry.load());
         assertEquals(value, storage.value("stringEntry", null));
-        stringEntry.accept(null);
-        assertNull(stringEntry.get());
+        stringEntry.save(null);
+        assertNull(stringEntry.load());
         assertNull(storage.value("stringEntry", null));
     }
 
@@ -57,12 +57,12 @@ import static org.junit.Assert.*;
         var doubleType = new FlatType<>(Double::parseDouble, Object::toString);
         var doubleEntry = new PreferencesEntry<>(storage, "doubleEntry", doubleType, Duration.ofMinutes(1));
         Double value = 1.1;
-        assertNull(doubleEntry.get());
-        doubleEntry.accept(value);
-        assertEquals(value, doubleEntry.get());
+        assertNull(doubleEntry.load());
+        doubleEntry.save(value);
+        assertEquals(value, doubleEntry.load());
         assertEquals(value.toString(), storage.value("doubleEntry", null));
-        doubleEntry.accept(null);
-        assertNull(doubleEntry.get());
+        doubleEntry.save(null);
+        assertNull(doubleEntry.load());
         assertNull(storage.value("doubleEntry", null));
     }
 
@@ -70,14 +70,14 @@ import static org.junit.Assert.*;
         PreferencesEntryType<List<String>> stringListType = new FlatCollectionType<>(ArrayList::new, string -> string, string -> string);
         PreferencesEntry<List<String>> stringListEntry = new PreferencesEntry<>(storage, "stringListEntry", stringListType, Duration.ZERO);
         List<String> value = asList("1st", "2nd", "3rd", "4th");
-        assertEquals(emptyList(), stringListEntry.get());
-        assertTrue(stringListEntry.get() instanceof ArrayList);
-        stringListEntry.accept(value);
-        assertTrue(stringListEntry.get().contains("1st"));
-        assertTrue(stringListEntry.get().contains("2nd"));
-        assertTrue(stringListEntry.get().contains("3rd"));
-        assertTrue(stringListEntry.get().contains("4th"));
-        assertTrue(stringListEntry.get() instanceof ArrayList);
+        assertEquals(emptyList(), stringListEntry.load());
+        assertTrue(stringListEntry.load() instanceof ArrayList);
+        stringListEntry.save(value);
+        assertTrue(stringListEntry.load().contains("1st"));
+        assertTrue(stringListEntry.load().contains("2nd"));
+        assertTrue(stringListEntry.load().contains("3rd"));
+        assertTrue(stringListEntry.load().contains("4th"));
+        assertTrue(stringListEntry.load() instanceof ArrayList);
         assertEquals(value.size(), storage.child("stringListEntry").valueNames().size());
     }
 
@@ -90,11 +90,11 @@ import static org.junit.Assert.*;
             .set(map -> entryValue -> map.put("3", entryValue), "3rd")
             .set(map -> entryValue -> map.put("4", entryValue), "4th")
             .get();
-        assertEquals(emptyMap(), stringMapEntry.get());
-        assertTrue(stringMapEntry.get() instanceof HashMap);
-        stringMapEntry.accept(value);
-        assertEquals(value, stringMapEntry.get());
-        assertTrue(stringMapEntry.get() instanceof HashMap);
+        assertEquals(emptyMap(), stringMapEntry.load());
+        assertTrue(stringMapEntry.load() instanceof HashMap);
+        stringMapEntry.save(value);
+        assertEquals(value, stringMapEntry.load());
+        assertTrue(stringMapEntry.load() instanceof HashMap);
         assertEquals(value.size(), storage.child("stringMapEntry").valueNames().size());
     }
 

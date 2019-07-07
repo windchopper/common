@@ -27,9 +27,9 @@ import static org.mockito.Mockito.*;
         var shortEntry = new PreferencesEntry<Short>(storage, "shortKey", new FlatType<>(Short::parseShort, Object::toString), Duration.ZERO);
         var booleanEntry = new PreferencesEntry<Boolean>(storage, "booleanKey", new FlatType<>(Boolean::parseBoolean, Object::toString), Duration.ZERO);
 
-        assertEquals("string", stringEntry.get());
-        assertEquals(Short.valueOf("1"), shortEntry.get());
-        assertEquals(true, booleanEntry.get());
+        assertEquals("string", stringEntry.load());
+        assertEquals(Short.valueOf("1"), shortEntry.load());
+        assertEquals(true, booleanEntry.load());
 
         verify(storage, times(3)).value(any(String.class), nullable(String.class));
     }

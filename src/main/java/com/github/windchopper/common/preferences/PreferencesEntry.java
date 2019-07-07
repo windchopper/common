@@ -3,15 +3,14 @@ package com.github.windchopper.common.preferences;
 import com.github.windchopper.common.util.BufferedReference;
 
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.util.Objects.requireNonNull;
 
-public class PreferencesEntry<T> implements Supplier<T>, Consumer<T> {
+public class PreferencesEntry<T> {
 
     private static final String BUNDLE_KEY__NULL_PARAMETER = "com.github.windchopper.common.preferences.nullParameter";
     private static final String BUNDLE_KEY__LOAD_FAIL = "com.github.windchopper.common.preferences.PreferencesEntry.fail.load";
@@ -23,41 +22,54 @@ public class PreferencesEntry<T> implements Supplier<T>, Consumer<T> {
     private final PreferencesStorage storage;
     private final String name;
     private final PreferencesEntryType<T> type;
-    private final BufferedReference<T, RuntimeException> storedValueReference;
+    private final BufferedReference<T, RuntimeException> storedValue;
 
     public PreferencesEntry(PreferencesStorage storage, String name, PreferencesEntryType<T> type, Duration bufferLifetime) {
+        this(storage, name, type, null, bufferLifetime);
+    }
+
+    public PreferencesEntry(PreferencesStorage storage, String name, PreferencesEntryType<T> type, T defaultValue) {
+        this(storage, name, type, defaultValue, ChronoUnit.FOREVER.getDuration());
+    }
+
+    public PreferencesEntry(PreferencesStorage storage, String name, PreferencesEntryType<T> type) {
+        this(storage, name, type, null, ChronoUnit.FOREVER.getDuration());
+    }
+
+    public PreferencesEntry(PreferencesStorage storage, String name, PreferencesEntryType<T> type, T defaultValue, Duration bufferLifetime) {
         this.storage = requireNonNull(storage, String.format(bundle.getString(BUNDLE_KEY__NULL_PARAMETER), "storage"));
         this.name = requireNonNull(name, String.format(bundle.getString(BUNDLE_KEY__NULL_PARAMETER), "name"));
         this.type = requireNonNull(type, String.format(bundle.getString(BUNDLE_KEY__NULL_PARAMETER), "type"));
-        storedValueReference = new BufferedReference<>(
+
+        storedValue = new BufferedReference<>(
             requireNonNull(bufferLifetime, String.format(bundle.getString(BUNDLE_KEY__NULL_PARAMETER), "bufferLifetime")),
-            this::load);
+            () -> {
+                T value = null;
+
+                try {
+                    value = type.load(storage, name);
+                } catch (Exception thrown) {
+                    logger.log(Level.SEVERE, String.format(bundle.getString(BUNDLE_KEY__LOAD_FAIL), name), thrown);
+                }
+
+                if (value == null && defaultValue != null) {
+                    save(value = defaultValue);
+                }
+
+                return value;
+            });
     }
 
-    private T load() {
-        try {
-            return type.load(storage, name);
-        } catch (Exception thrown) {
-            if (logger.isLoggable(Level.SEVERE)) {
-                logger.log(Level.SEVERE, String.format(bundle.getString(BUNDLE_KEY__LOAD_FAIL), name), thrown);
-            }
-        }
-
-        return null;
+    public T load() {
+        return storedValue.get();
     }
 
-    @Override public T get() {
-        return storedValueReference.get();
-    }
-
-    @Override public void accept(T value) {
+    public void save(T value) {
         try {
             type.save(storage, name, value);
-            storedValueReference.invalidate();
+            storedValue.invalidate();
         } catch (Exception thrown) {
-            if (logger.isLoggable(Level.SEVERE)) {
-                logger.log(Level.SEVERE, String.format(bundle.getString(BUNDLE_KEY__SAVE_FAIL), name), thrown);
-            }
+            logger.log(Level.SEVERE, String.format(bundle.getString(BUNDLE_KEY__SAVE_FAIL), name), thrown);
         }
     }
 

@@ -72,7 +72,7 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
             pointType,
             Duration.ofMinutes(1));
 
-        var location = preferencesEntry.get();
+        var location = preferencesEntry.load();
 
         if (location != null) {
             window.setX(location.getX());
@@ -82,12 +82,12 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
         boundsInitializer.initialize(window, false);
 
         window.addEventHandler(WINDOW_SHOWING, event -> {
-            window.xProperty().addListener((property, oldX, newX) -> preferencesEntry.accept(
+            window.xProperty().addListener((property, oldX, newX) -> preferencesEntry.save(
                 new Point2D(
                     newX.doubleValue(),
                     window.getY())));
 
-            window.yProperty().addListener((property, oldY, newY) -> preferencesEntry.accept(
+            window.yProperty().addListener((property, oldY, newY) -> preferencesEntry.save(
                 new Point2D(
                     window.getX(),
                     newY.doubleValue())));
@@ -101,7 +101,7 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
             rectangleType,
             Duration.ofMinutes(1));
 
-        var bounds = preferencesEntry.get();
+        var bounds = preferencesEntry.load();
 
         if (bounds == null) {
             boundsInitializer.initialize(window, true);
@@ -119,7 +119,7 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
                     return;
                 }
 
-                preferencesEntry.accept(
+                preferencesEntry.save(
                     new Rectangle2D(
                         newX.doubleValue(),
                         window.getY(),
@@ -132,7 +132,7 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
                     return;
                 }
 
-                preferencesEntry.accept(
+                preferencesEntry.save(
                     new Rectangle2D(
                         window.getX(),
                         newY.doubleValue(),
@@ -145,7 +145,7 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
                     return;
                 }
 
-                preferencesEntry.accept(
+                preferencesEntry.save(
                     new Rectangle2D(
                         window.getX(),
                         window.getY(),
@@ -158,7 +158,7 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
                     return;
                 }
 
-                preferencesEntry.accept(
+                preferencesEntry.save(
                     new Rectangle2D(
                         window.getX(),
                         window.getY(),
