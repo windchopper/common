@@ -1,5 +1,6 @@
 package com.github.windchopper.common.util;
 
+import com.github.windchopper.common.util.stream.FailableConsumer;
 import com.github.windchopper.common.util.stream.FailableFunction;
 
 import java.util.Collection;
@@ -40,6 +41,11 @@ public class Pipeliner<T> implements ReinforcedSupplier<T> {
     }
 
     @Override public Pipeliner<T> accept(Consumer<T> consumer) {
+        consumer.accept(target);
+        return this;
+    }
+
+    public <E extends Throwable> Pipeliner<T> acceptFailable(FailableConsumer<T, E> consumer) throws E {
         consumer.accept(target);
         return this;
     }
