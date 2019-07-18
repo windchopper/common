@@ -2,23 +2,31 @@ package com.github.windchopper.common.util;
 
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
-import static java.util.Objects.requireNonNull;
+import static java.util.function.Function.identity;
 
-public class SystemProperty<T> implements Supplier<Optional<T>> {
+public enum SystemProperty {
 
-    private final String name;
-    private final Function<String, T> transformer;
+    OS_ARCHITECTURE("os.arch"),
+    OS_VERSION("os.version"),
+    OS_NAME("os.name"),
+    USER_HOME("user.home"),
+    USER_NAME("user.name");
 
-    public SystemProperty(String name, Function<String, T> transformer) {
-        this.name = requireNonNull(name);
-        this.transformer = requireNonNull(transformer);
+    private final String property;
+
+    SystemProperty(String property) {
+        this.property = property;
     }
 
-    @Override public Optional<T> get() {
-        return Optional.ofNullable(System.getProperty(name))
-            .map(transformer);
+    public Optional<String> read() {
+        return read(identity());
+    }
+
+    public <T> Optional<T> read(Function<String, T> converter) {
+        return Optional.of(property)
+            .map(System::getProperty)
+            .map(converter);
     }
 
 }

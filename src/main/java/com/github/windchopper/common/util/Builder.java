@@ -29,13 +29,13 @@ public class Builder<T> implements ReinforcedSupplier<T> {
         return new Builder<>(supplier);
     }
 
-    @Override public <V> Builder<T> set(Function<T, Consumer<V>> consumerFunction, V value) {
-        consumerQueue.add(target -> consumerFunction.apply(target).accept(value));
+    @Override public <V> Builder<T> set(Function<T, Consumer<V>> setterFunction, V value) {
+        consumerQueue.add(target -> setterFunction.apply(target).accept(value));
         return this;
     }
 
-    @Override public <V> Builder<T> add(Function<T, Supplier<Collection<V>>> supplierFunction, Collection<V> values) {
-        consumerQueue.add(target -> supplierFunction.apply(target).get().addAll(values));
+    @Override public <V> Builder<T> add(Function<T, Supplier<Collection<V>>> collectionFunction, Collection<V> values) {
+        consumerQueue.add(target -> collectionFunction.apply(target).get().addAll(values));
         return this;
     }
 
@@ -54,7 +54,10 @@ public class Builder<T> implements ReinforcedSupplier<T> {
     }
 
     @Override public T get() {
-        return built = Optional.ofNullable(built).orElseGet(() -> Pipeliner.of(supplier).accept(target -> consumerQueue.forEach(consumer -> consumer.accept(target))).get());
+        return built = Optional.ofNullable(built)
+            .orElseGet(() -> Pipeliner.of(supplier)
+                .accept(target -> consumerQueue.forEach(consumer -> consumer.accept(target)))
+                .get());
     }
 
 }
