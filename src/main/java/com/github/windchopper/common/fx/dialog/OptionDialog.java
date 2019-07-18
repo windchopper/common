@@ -7,7 +7,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 public class OptionDialog<F extends DialogFrame, M extends OptionDialogModel> extends Dialog<F, M> {
 
@@ -43,18 +42,16 @@ public class OptionDialog<F extends DialogFrame, M extends OptionDialogModel> ex
                                                                   List<Option> options,
                                                                   F frame) {
         return Pipeliner.of(OptionDialogModel::new)
-            .accept(model -> Pipeliner.of((Supplier<OptionDialog<F, OptionDialogModel>>) OptionDialog::new)
+            .accept(model -> Pipeliner.of(OptionDialog<F, OptionDialogModel>::new)
                 .accept(dialog -> dialog.installFrame(frame))
                 .accept(dialog -> dialog.installModel(model))
                 .accept(dialog -> dialog.installSkeleton(Pipeliner.of(CaptionedDialogSkeleton::new)
                     .accept(skeleton -> skeleton.titleProperty().set(message))
                     .accept(skeleton -> skeleton.imageProperty().set(type.image()))
                     .get()))
-                .accept(dialog -> options.forEach(
-                    option -> dialog.add(
-                        Pipeliner.of(() -> option.newAction(dialog))
-                            .set(action -> action::setHandler, event -> model.setOption(option))
-                            .get())))
+                .accept(dialog -> options.forEach(option -> dialog.add(Pipeliner.of(() -> option.newAction(dialog))
+                    .set(action -> action::setHandler, event -> model.setOption(option))
+                    .get())))
                 .accept(Dialog::show)
                 .get())
             .map(OptionDialogModel::getOption)
