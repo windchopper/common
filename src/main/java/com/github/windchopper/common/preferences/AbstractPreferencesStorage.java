@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 
 public abstract class AbstractPreferencesStorage implements PreferencesStorage {
 
-    protected static final Logger logger = Logger.getLogger("com.github.windchopper.common.preferences");
+    protected static final Logger logger = Logger.getLogger(AbstractPreferencesStorage.class.getName());
 
     protected void logError(Throwable exception) {
         logger.log(Level.SEVERE, "Unexpected error", exception);

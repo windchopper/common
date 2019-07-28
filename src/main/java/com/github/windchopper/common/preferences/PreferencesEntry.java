@@ -16,7 +16,7 @@ public class PreferencesEntry<T> {
     private static final String BUNDLE_KEY__LOAD_FAIL = "com.github.windchopper.common.preferences.PreferencesEntry.fail.load";
     private static final String BUNDLE_KEY__SAVE_FAIL = "com.github.windchopper.common.preferences.PreferencesEntry.fail.save";
 
-    private static final Logger logger = Logger.getLogger("com.github.windchopper.common.preferences");
+    private static final Logger logger = Logger.getLogger(PreferencesEntry.class.getName());
     private static final ResourceBundle bundle = ResourceBundle.getBundle("com.github.windchopper.common.preferences.i18n.messages");
 
     private final PreferencesStorage storage;

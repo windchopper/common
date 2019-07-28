@@ -9,8 +9,8 @@ import java.util.logging.Logger;
 
 public class SpinnableTypeConverter<T> extends StringConverter<T> {
 
+    private static final Logger logger = Logger.getLogger(SpinnableTypeConverter.class.getName());
     private static final ResourceBundle bundle = ResourceBundle.getBundle("com.github.windchopper.common.fx.i18n.messages");
-    private static final Logger logger = Logger.getLogger("com.github.windchopper.common.fx.spinner");
 
     private final SpinnableType<T> spinnableType;
 
