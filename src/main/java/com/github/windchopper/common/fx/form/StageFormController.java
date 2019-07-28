@@ -1,9 +1,10 @@
-package com.github.windchopper.common.fx.application;
+package com.github.windchopper.common.fx.form;
 
 import com.github.windchopper.common.fx.behavior.WindowApplyStoredBoundsBehavior;
 import com.github.windchopper.common.util.Pipeliner;
 import javafx.fxml.FXML;
 import javafx.geometry.Dimension2D;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -15,19 +16,19 @@ import java.util.logging.Logger;
 
 import static java.util.Arrays.stream;
 
-public abstract class StageController {
+public abstract class StageFormController extends FormContoller {
 
     protected static final Logger logger = Logger.getLogger("name.wind.application.cdi.fx");
 
     protected Stage stage;
 
-    protected void start(Stage stage, String fxmlResource, Map<String, ?> parameters, Map<String, ?> fxmlLoaderNamespace) {
-        new WindowApplyStoredBoundsBehavior(fxmlResource, this::initializeBounds)
-            .apply(this.stage = stage);
+    @Override protected void afterLoad(Parent form, Map<String, ?> eventParameters, Map<String, ?> formNamespace) {
+        new WindowApplyStoredBoundsBehavior(getClass().getName(), this::initializeBounds)
+            .apply(stage = (Stage) form.getScene().getWindow());
 
         stream(getClass().getDeclaredFields())
             .filter(field -> field.isAnnotationPresent(FXML.class)).forEach(field -> {
-                Object value = fxmlLoaderNamespace.get(field.getName());
+                Object value = formNamespace.get(field.getName());
 
                 if (value != null) {
                     try {

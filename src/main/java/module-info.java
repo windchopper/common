@@ -4,11 +4,11 @@ module windchopper.common {
     exports com.github.windchopper.common.cdi.temporary;
     exports com.github.windchopper.common.fx;
     exports com.github.windchopper.common.fx.annotation;
-    exports com.github.windchopper.common.fx.application;
     exports com.github.windchopper.common.fx.behavior;
     exports com.github.windchopper.common.fx.binding;
     exports com.github.windchopper.common.fx.dialog;
     exports com.github.windchopper.common.fx.event;
+    exports com.github.windchopper.common.fx.form;
     exports com.github.windchopper.common.fx.preferences;
     exports com.github.windchopper.common.fx.search;
     exports com.github.windchopper.common.fx.spinner;
@@ -28,11 +28,11 @@ module windchopper.common {
     opens com.github.windchopper.common.cdi.temporary;
     opens com.github.windchopper.common.fx;
     opens com.github.windchopper.common.fx.annotation;
-    opens com.github.windchopper.common.fx.application;
     opens com.github.windchopper.common.fx.behavior;
     opens com.github.windchopper.common.fx.binding;
     opens com.github.windchopper.common.fx.dialog;
     opens com.github.windchopper.common.fx.event;
+    opens com.github.windchopper.common.fx.form;
     opens com.github.windchopper.common.fx.preferences;
     opens com.github.windchopper.common.fx.search;
     opens com.github.windchopper.common.fx.spinner;

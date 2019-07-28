@@ -1,41 +1,27 @@
-package com.github.windchopper.common.fx.event;
+package com.github.windchopper.common.fx.form;
 
-import javafx.stage.Stage;
+import javafx.collections.ObservableMap;
+import javafx.scene.Parent;
 
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import static java.util.Collections.emptyMap;
 
-public class FXMLResourceOpen {
+public class FormLoad {
 
-    private final Supplier<Stage> stageSupplier;
     private final String resource;
     private final Map<String, ?> parameters;
 
-    public FXMLResourceOpen(Stage stage, String resource) {
-        this(() -> stage, resource, emptyMap());
+    public FormLoad(String resource) {
+        this(resource, emptyMap());
     }
 
-    public FXMLResourceOpen(Supplier<Stage> stageSupplier, String resource) {
-        this(stageSupplier, resource, emptyMap());
-    }
-
-    public FXMLResourceOpen(Stage stage, String resource, Map<String, ?> parameters) {
-        this(() -> stage, resource, parameters);
-    }
-
-    public FXMLResourceOpen(Supplier<Stage> stageSupplier, String resource, Map<String, ?> parameters) {
-        this.stageSupplier = stageSupplier;
+    public FormLoad(String resource, Map<String, ?> parameters) {
         this.resource = resource;
         this.parameters = parameters;
-    }
-
-    public Stage stage() {
-        return stageSupplier.get();
     }
 
     public String resource() {
@@ -55,6 +41,12 @@ public class FXMLResourceOpen {
             .filter(Objects.requireNonNull(type)::isInstance)
             .map(type::cast)
             .orElse(null);
+    }
+
+    public void afterLoad(Parent form, Object controller, Map<String, ?> parameters, ObservableMap<String, ?> formNamespace) {
+        if (controller instanceof FormContoller) {
+            ((FormContoller) controller).afterLoad(form, parameters, formNamespace);
+        }
     }
 
 }
