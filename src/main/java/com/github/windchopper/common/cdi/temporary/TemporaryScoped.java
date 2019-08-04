@@ -9,7 +9,5 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@NormalScope @Inherited @Documented @Retention(RUNTIME) @Target({
-    TYPE, METHOD, FIELD
-}) public @interface TemporaryScoped {
+@NormalScope @Inherited @Documented @Retention(RUNTIME) @Target({ TYPE, METHOD, FIELD }) public @interface TemporaryScoped {
 }

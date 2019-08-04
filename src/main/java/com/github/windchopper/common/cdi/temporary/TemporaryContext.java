@@ -1,5 +1,8 @@
 package com.github.windchopper.common.cdi.temporary;
 
+import com.github.windchopper.common.util.stream.FailableRunnable;
+import com.github.windchopper.common.util.stream.FailableSupplier;
+
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.AlterableContext;
 import javax.enterprise.context.spi.Contextual;
@@ -18,15 +21,25 @@ public class TemporaryContext implements AlterableContext {
      */
 
     @SuppressWarnings("unchecked") @Override public <T> T get(Contextual<T> contextual) {
-        return (T) Optional.ofNullable(Optional.ofNullable(instancesReference.get()).orElseThrow(ContextNotActiveException::new).get(contextual)).map(TemporaryInstance::getObject).orElse(null);
+        return (T) Optional.ofNullable(Optional.ofNullable(instancesReference.get())
+            .orElseThrow(ContextNotActiveException::new)
+            .get(contextual))
+            .map(TemporaryInstance::getObject)
+            .orElse(null);
     }
 
     @SuppressWarnings("unchecked") @Override public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
-        return (T) Optional.ofNullable(instancesReference.get()).orElseThrow(ContextNotActiveException::new).computeIfAbsent(contextual, key -> new TemporaryInstance<>(contextual, creationalContext)).getObject();
+        return (T) Optional.ofNullable(instancesReference.get())
+            .orElseThrow(ContextNotActiveException::new)
+            .computeIfAbsent(contextual, key -> new TemporaryInstance<>(contextual, creationalContext))
+            .getObject();
     }
 
     @Override public void destroy(Contextual<?> contextual) {
-        Optional.ofNullable(instancesReference.get()).orElseThrow(ContextNotActiveException::new).values().forEach(TemporaryInstance::destroyObject);
+        Optional.ofNullable(instancesReference.get())
+            .orElseThrow(ContextNotActiveException::new)
+            .values()
+            .forEach(TemporaryInstance::destroyObject);
     }
 
     @Override public boolean isActive() {
@@ -41,11 +54,7 @@ public class TemporaryContext implements AlterableContext {
      *
      */
 
-    @FunctionalInterface public interface ExceptionExecutor<E extends Exception> {
-        void execute() throws E;
-    }
-
-    public static <E extends Exception> void executeWithTemporaryScope(ExceptionExecutor<E> executor) throws E {
+    public static <E extends Throwable> void executeWithTemporaryScope(FailableRunnable<E> runnable) throws E {
         var instances = instancesReference.get();
         var clean = instances == null;
 
@@ -54,7 +63,7 @@ public class TemporaryContext implements AlterableContext {
         }
 
         try {
-            executor.execute();
+            runnable.run();
         } finally {
             if (clean) {
                 instances.values().forEach(TemporaryInstance::destroyObject);
@@ -63,11 +72,7 @@ public class TemporaryContext implements AlterableContext {
         }
     }
 
-    @FunctionalInterface public interface ExceptionExtractor<T, E extends Exception> {
-        T extract() throws E;
-    }
-
-    public static <T, E extends Exception> T extractFromTemporaryScope(ExceptionExtractor<T, E> extractor) throws E {
+    public static <T, E extends Throwable> T extractFromTemporaryScope(FailableSupplier<T, E> supplier) throws E {
         var instances = instancesReference.get();
         var clean = instances == null;
 
@@ -76,7 +81,7 @@ public class TemporaryContext implements AlterableContext {
         }
 
         try {
-            return extractor.extract();
+            return supplier.get();
         } finally {
             if (clean) {
                 instances.values().forEach(TemporaryInstance::destroyObject);

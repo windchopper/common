@@ -30,8 +30,7 @@ public class AnnotatedMBean extends StandardMBean {
         return value;
     }
 
-    @Override
-    protected String getDescription(MBeanInfo info) {
+    @Override protected String getDescription(MBeanInfo info) {
         return valueOrResourceFromBundle(
             info,
             Description.DESCRIPTOR_KEY__DESCRIPTION,
@@ -39,8 +38,7 @@ public class AnnotatedMBean extends StandardMBean {
             Description.DESCRIPTOR_KEY__DESCRIPTION_RESOURCE_BUNDLE_NAME);
     }
 
-    @Override
-    protected String getDescription(MBeanAttributeInfo attributeInfo) {
+    @Override protected String getDescription(MBeanAttributeInfo attributeInfo) {
         return valueOrResourceFromBundle(
             attributeInfo,
             Description.DESCRIPTOR_KEY__DESCRIPTION,
@@ -48,8 +46,7 @@ public class AnnotatedMBean extends StandardMBean {
             Description.DESCRIPTOR_KEY__DESCRIPTION_RESOURCE_BUNDLE_NAME);
     }
 
-    @Override
-    protected String getDescription(MBeanConstructorInfo constructorInfo) {
+    @Override protected String getDescription(MBeanConstructorInfo constructorInfo) {
         return valueOrResourceFromBundle(
             constructorInfo,
             Description.DESCRIPTOR_KEY__DESCRIPTION,
@@ -57,8 +54,7 @@ public class AnnotatedMBean extends StandardMBean {
             Description.DESCRIPTOR_KEY__DESCRIPTION_RESOURCE_BUNDLE_NAME);
     }
 
-    @Override
-    protected String getDescription(MBeanConstructorInfo constructorInfo, MBeanParameterInfo parameterInfo, int sequence) {
+    @Override protected String getDescription(MBeanConstructorInfo constructorInfo, MBeanParameterInfo parameterInfo, int sequence) {
         return valueOrResourceFromBundle(
             parameterInfo,
             Description.DESCRIPTOR_KEY__DESCRIPTION,
@@ -66,8 +62,7 @@ public class AnnotatedMBean extends StandardMBean {
             Description.DESCRIPTOR_KEY__DESCRIPTION_RESOURCE_BUNDLE_NAME);
     }
 
-    @Override
-    protected String getDescription(MBeanOperationInfo operationInfo) {
+    @Override protected String getDescription(MBeanOperationInfo operationInfo) {
         return valueOrResourceFromBundle(
             operationInfo,
             Description.DESCRIPTOR_KEY__DESCRIPTION,
@@ -75,8 +70,7 @@ public class AnnotatedMBean extends StandardMBean {
             Description.DESCRIPTOR_KEY__DESCRIPTION_RESOURCE_BUNDLE_NAME);
     }
 
-    @Override
-    protected String getDescription(MBeanFeatureInfo featureInfo) {
+    @Override protected String getDescription(MBeanFeatureInfo featureInfo) {
         return valueOrResourceFromBundle(
             featureInfo,
             Description.DESCRIPTOR_KEY__DESCRIPTION,
@@ -84,8 +78,7 @@ public class AnnotatedMBean extends StandardMBean {
             Description.DESCRIPTOR_KEY__DESCRIPTION_RESOURCE_BUNDLE_NAME);
     }
 
-    @Override
-    protected String getDescription(MBeanOperationInfo operationInfo, MBeanParameterInfo parameterInfo, int sequence) {
+    @Override protected String getDescription(MBeanOperationInfo operationInfo, MBeanParameterInfo parameterInfo, int sequence) {
         return valueOrResourceFromBundle(
             parameterInfo,
             Description.DESCRIPTOR_KEY__DESCRIPTION,
@@ -93,18 +86,15 @@ public class AnnotatedMBean extends StandardMBean {
             Description.DESCRIPTOR_KEY__DESCRIPTION_RESOURCE_BUNDLE_NAME);
     }
 
-    @Override
-    protected String getParameterName(MBeanConstructorInfo constructorInfo, MBeanParameterInfo parameterInfo, int sequence) {
+    @Override protected String getParameterName(MBeanConstructorInfo constructorInfo, MBeanParameterInfo parameterInfo, int sequence) {
         return (String) parameterInfo.getDescriptor().getFieldValue(Name.DESCRIPTOR_KEY__NAME);
     }
 
-    @Override
-    protected String getParameterName(MBeanOperationInfo operationInfo, MBeanParameterInfo parameterInfo, int sequence) {
+    @Override protected String getParameterName(MBeanOperationInfo operationInfo, MBeanParameterInfo parameterInfo, int sequence) {
         return (String) parameterInfo.getDescriptor().getFieldValue(Name.DESCRIPTOR_KEY__NAME);
     }
 
-    @Override
-    protected int getImpact(MBeanOperationInfo operationInfo) {
+    @Override protected int getImpact(MBeanOperationInfo operationInfo) {
         return Optional.ofNullable(operationInfo.getDescriptor().getFieldValue(Impact.DESCRIPTOR_KEY__IMPACT))
             .map(Integer.class::cast).orElse(0);
     }
