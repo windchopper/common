@@ -7,8 +7,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import static java.util.Objects.requireNonNull;
@@ -19,7 +19,7 @@ public class StageDialogFrame implements DialogFrame {
 
     private static final String BUNDLE_KEY__NULL_PARAMETER = "com.github.windchopper.common.fx.nullParameter";
 
-    private static final Collection<StageStyle> unborderedStageStyles = Arrays.asList(
+    private static final Collection<StageStyle> unborderedStageStyles = List.of(
         StageStyle.TRANSPARENT, StageStyle.UNDECORATED);
 
     private final Stage stage;

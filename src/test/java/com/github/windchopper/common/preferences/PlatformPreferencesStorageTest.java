@@ -3,7 +3,6 @@ package com.github.windchopper.common.preferences;
 import com.github.windchopper.common.preferences.types.FlatCollectionType;
 import com.github.windchopper.common.preferences.types.FlatMapType;
 import com.github.windchopper.common.preferences.types.FlatType;
-import com.github.windchopper.common.util.Pipeliner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,12 +13,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
 import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class) public class PlatformPreferencesStorageTest {
@@ -69,33 +66,28 @@ import static org.junit.Assert.*;
     @Test public void testFlatCollection() {
         PreferencesEntryType<List<String>> stringListType = new FlatCollectionType<>(ArrayList::new, string -> string, string -> string);
         PreferencesEntry<List<String>> stringListEntry = new PreferencesEntry<>(storage, "stringListEntry", stringListType, Duration.ZERO);
-        List<String> value = asList("1st", "2nd", "3rd", "4th");
-        assertEquals(emptyList(), stringListEntry.load());
-        assertTrue(stringListEntry.load() instanceof ArrayList);
+        List<String> value = List.of("1st", "2nd", "3rd", "4th");
+        assertEquals(List.of(), stringListEntry.load());
         stringListEntry.save(value);
         assertTrue(stringListEntry.load().contains("1st"));
         assertTrue(stringListEntry.load().contains("2nd"));
         assertTrue(stringListEntry.load().contains("3rd"));
         assertTrue(stringListEntry.load().contains("4th"));
-        assertTrue(stringListEntry.load() instanceof ArrayList);
         assertEquals(value.size(), storage.child("stringListEntry").valueNames().size());
     }
 
     @Test public void testFlatMap() {
-        PreferencesEntryType<Map<String, String>> stringMapType = new FlatMapType<>(HashMap::new, string -> string, string -> string);
+        PreferencesEntryType<Map<String, String>> stringMapType = new FlatMapType<>(HashMap::new, Function.identity(), Function.identity());
         PreferencesEntry<Map<String, String>> stringMapEntry = new PreferencesEntry<>(storage, "stringMapEntry", stringMapType, Duration.ZERO);
-        Map<String, String> value = Pipeliner.of(HashMap<String, String>::new)
-            .set(map -> entryValue -> map.put("1", entryValue), "1st")
-            .set(map -> entryValue -> map.put("2", entryValue), "2nd")
-            .set(map -> entryValue -> map.put("3", entryValue), "3rd")
-            .set(map -> entryValue -> map.put("4", entryValue), "4th")
-            .get();
-        assertEquals(emptyMap(), stringMapEntry.load());
-        assertTrue(stringMapEntry.load() instanceof HashMap);
-        stringMapEntry.save(value);
-        assertEquals(value, stringMapEntry.load());
-        assertTrue(stringMapEntry.load() instanceof HashMap);
-        assertEquals(value.size(), storage.child("stringMapEntry").valueNames().size());
+        Map<String, String> stringMap = Map.of(
+            "1", "1st",
+            "2", "2nd",
+            "3", "3rd",
+            "4", "4th");
+        assertEquals(Map.of(), stringMapEntry.load());
+        stringMapEntry.save(stringMap);
+        assertEquals(stringMap, stringMapEntry.load());
+        assertEquals(stringMap.size(), storage.child("stringMapEntry").valueNames().size());
     }
 
 }

@@ -7,6 +7,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
 
 import java.util.List;
+import java.util.Optional;
 
 public class OptionDialog<F extends DialogFrame, M extends OptionDialogModel> extends Dialog<F, M> {
 
@@ -17,8 +18,6 @@ public class OptionDialog<F extends DialogFrame, M extends OptionDialogModel> ex
         ERROR("dialog-error.png"),
         WARNING("dialog-warning.png");
 
-        private static final String IMAGE_LOCATION__ROOT = "/com/sun/javafx/scene/control/skin/modena/";
-
         private final String imageFile;
 
         Type(String imageFile) {
@@ -26,7 +25,7 @@ public class OptionDialog<F extends DialogFrame, M extends OptionDialogModel> ex
         }
 
         Image image() {
-            return new Image(IMAGE_LOCATION__ROOT + imageFile);
+            return new Image("/com/sun/javafx/scene/control/skin/modena/" + imageFile);
         }
 
     }
@@ -37,10 +36,10 @@ public class OptionDialog<F extends DialogFrame, M extends OptionDialogModel> ex
         return rootPane;
     }
 
-    public static <F extends DialogFrame> Option showOptionDialog(String message,
-                                                                  Type type,
-                                                                  List<Option> options,
-                                                                  F frame) {
+    public static <F extends DialogFrame> Optional<Option> showOptionDialog(String message,
+                                                                            Type type,
+                                                                            List<Option> options,
+                                                                            F frame) {
         return Pipeliner.of(OptionDialogModel::new)
             .accept(model -> Pipeliner.of(OptionDialog<F, OptionDialogModel>::new)
                 .accept(dialog -> dialog.installFrame(frame))
@@ -54,7 +53,7 @@ public class OptionDialog<F extends DialogFrame, M extends OptionDialogModel> ex
                     .get())))
                 .accept(Dialog::show)
                 .get())
-            .map(OptionDialogModel::getOption)
+            .map(model -> Optional.ofNullable(model.getOption()))
             .get();
     }
 

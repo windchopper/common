@@ -1,5 +1,7 @@
 package com.github.windchopper.common.fx.dialog;
 
+import com.github.windchopper.common.fx.Alignment;
+import com.github.windchopper.common.fx.Fill;
 import com.github.windchopper.common.util.Pipeliner;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -19,11 +21,8 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import com.github.windchopper.common.fx.Alignment;
-import com.github.windchopper.common.fx.Fill;
-import com.github.windchopper.common.util.Pipeliner;
 
-import static java.util.Arrays.asList;
+import java.util.List;
 
 public class CaptionedDialogSkeleton extends DialogSkeleton {
 
@@ -37,7 +36,7 @@ public class CaptionedDialogSkeleton extends DialogSkeleton {
                 new BackgroundFill(
                     new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, new Stop(0, Color.DARKGRAY), new Stop(1, Color.TRANSPARENT)),
                     CornerRadii.EMPTY, Insets.EMPTY)))
-            .add(grid -> grid::getChildren, asList(
+            .add(grid -> grid::getChildren, List.of(
                 Pipeliner.of(Label::new)
                     .accept(label -> label.textProperty().bind(titleProperty))
                     .set(label -> label::setWrapText, true)

@@ -3,11 +3,10 @@ package com.github.windchopper.common.preferences;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -25,7 +24,7 @@ import static org.mockito.Mockito.*;
     }
 
     @Test public void testLoadValue() {
-        var compositeStorageNode = new CompositePreferencesStorage(Arrays.asList(
+        var compositeStorageNode = new CompositePreferencesStorage(List.of(
             new CompositePreferencesStorage.Mediator(storageNode1st, 1, 2, false),
             new CompositePreferencesStorage.Mediator(storageNode2nd, 2, 1, false)));
 
@@ -37,7 +36,7 @@ import static org.mockito.Mockito.*;
     }
 
     @Test public void testSaveValue() {
-        var compositeStorageNode = new CompositePreferencesStorage(Arrays.asList(
+        var compositeStorageNode = new CompositePreferencesStorage(List.of(
             new CompositePreferencesStorage.Mediator(storageNode1st, 1, 2, false),
             new CompositePreferencesStorage.Mediator(storageNode2nd, 2, 1, false)));
 

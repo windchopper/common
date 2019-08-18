@@ -5,8 +5,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
@@ -71,7 +71,7 @@ import static org.junit.Assert.assertFalse;
         thread1st.join();
         thread2nd.join();
 
-        var correctTickets = asList("1-1", "2-1", "2-2", "1-2");
+        var correctTickets = List.of("1-1", "2-1", "2-2", "1-2");
 
         assertEquals(correctTickets.size(), tickets.size());
 

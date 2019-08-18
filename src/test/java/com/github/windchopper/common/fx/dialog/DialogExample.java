@@ -11,21 +11,20 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
-import static java.util.Arrays.asList;
+import java.util.List;
 
 public class DialogExample extends Application {
 
     private Stage primaryStage;
 
     @Override public void start(Stage primaryStage) {
-        Pipeliner.of(() -> this.primaryStage = primaryStage)
-            .set(stage -> stage::setScene, Pipeliner.of(() -> new Scene(
+        Pipeliner.of(this.primaryStage = primaryStage)
+            .set(stage -> stage::setScene, Pipeliner.of(new Scene(
                 Pipeliner.of(FlowPane::new)
                     .set(pane -> pane::setPadding, new Insets(10.0))
                     .set(pane -> pane::setHgap, 5.0)
-                    .add(pane -> pane::getChildren, asList(
+                    .add(pane -> pane::getChildren, List.of(
                         Pipeliner.of(Button::new)
                             .set(button -> button::setText, "Open #1")
                             .set(button -> button::setOnAction, this::open1st)
@@ -45,15 +44,14 @@ public class DialogExample extends Application {
     }
 
     void open1st(ActionEvent event) {
-        var frame = new StageDialogFrame(Pipeliner.of(Stage::new)
-            .set(stage -> stage::initStyle, StageStyle.UTILITY)
-            .set(stage -> stage::initOwner, primaryStage)
-            .set(stage -> stage::initModality, Modality.WINDOW_MODAL)
-            .set(stage -> stage::setResizable, false)
-            .get());
         System.out.println(
-            OptionDialog.showOptionDialog("Message", Type.CONFIRM, asList(
-                Option.YES, Option.NO, Option.CANCEL), frame));
+            OptionDialog.showOptionDialog("Message", Type.CONFIRM, List.of(
+                Option.YES, Option.NO, Option.CANCEL), Pipeliner.of(Stage::new)
+                    .set(stage -> stage::initOwner, primaryStage)
+                    .set(stage -> stage::initModality, Modality.WINDOW_MODAL)
+                    .set(stage -> stage::setResizable, false)
+                    .map(StageDialogFrame::new)
+                    .get()));
     }
 
 }
