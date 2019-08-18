@@ -1,15 +1,17 @@
 package com.github.windchopper.common.fx.form;
 
 import com.github.windchopper.common.fx.behavior.WindowApplyStoredBoundsBehavior;
+import com.github.windchopper.common.fx.dialog.StageDialogFrame;
 import com.github.windchopper.common.util.Pipeliner;
 import javafx.geometry.Dimension2D;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
+import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 public abstract class StageFormController extends FormContoller {
 
@@ -43,9 +45,13 @@ public abstract class StageFormController extends FormContoller {
         }
     }
 
-    protected Alert prepareAlert(Supplier<Alert> constructor) {
-        return Pipeliner.of(constructor)
-            .set(alert -> alert::initOwner, stage)
+    protected StageDialogFrame prepareStageDialogFrame(Image iconImage, Modality modality, boolean resizable) {
+        return Pipeliner.of(Stage::new)
+            .set(stage -> stage::initOwner, stage)
+            .set(stage -> stage::initModality, modality)
+            .add(stage -> stage::getIcons, List.of(iconImage))
+            .set(stage -> stage::setResizable, resizable)
+            .map(StageDialogFrame::new)
             .get();
     }
 

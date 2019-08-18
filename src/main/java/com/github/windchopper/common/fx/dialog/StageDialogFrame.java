@@ -15,22 +15,17 @@ import static java.util.Objects.requireNonNull;
 
 public class StageDialogFrame implements DialogFrame {
 
-    private static final ResourceBundle bundle = ResourceBundle.getBundle("com.github.windchopper.common.fx.i18n.messages");
-
-    private static final String BUNDLE_KEY__NULL_PARAMETER = "com.github.windchopper.common.fx.nullParameter";
-
     private static final Collection<StageStyle> unborderedStageStyles = List.of(
         StageStyle.TRANSPARENT, StageStyle.UNDECORATED);
 
     private final Stage stage;
 
     public StageDialogFrame(Stage stage) {
-        this.stage = requireNonNull(stage, String.format(bundle.getString(BUNDLE_KEY__NULL_PARAMETER), "stage"));
+        this.stage = requireNonNull(stage, "stage");
     }
 
     @Override public void installRootPane(Pane rootPane) {
-        stage.setScene(
-            new Scene(requireNonNull(rootPane, String.format(bundle.getString(BUNDLE_KEY__NULL_PARAMETER), "contentPane"))));
+        stage.setScene(new Scene(requireNonNull(rootPane, "contentPane")));
 
         if (unborderedStageStyles.contains(stage.getStyle())) {
             rootPane.setEffect(

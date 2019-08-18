@@ -10,10 +10,6 @@ import static java.util.Objects.requireNonNull;
 
 public class Dialog<F extends DialogFrame, M> {
 
-    private static final ResourceBundle bundle = ResourceBundle.getBundle("com.github.windchopper.common.fx.i18n.messages");
-
-    private static final String BUNDLE_KEY__NULL_PARAMETER = "com.github.windchopper.common.fx.nullParameter";
-
     private final List<DialogAction> actions = new ArrayList<>();
 
     /*
@@ -29,16 +25,16 @@ public class Dialog<F extends DialogFrame, M> {
      */
 
     public void installSkeleton(DialogSkeleton skeleton) {
-        this.skeleton = requireNonNull(skeleton, String.format(bundle.getString(BUNDLE_KEY__NULL_PARAMETER), "skeleton"));
+        this.skeleton = requireNonNull(skeleton, "skeleton");
     }
 
     public void installFrame(F frame) {
-        this.frame = requireNonNull(frame, String.format(bundle.getString(BUNDLE_KEY__NULL_PARAMETER), "frame"));
+        this.frame = requireNonNull(frame, "frame");
 
     }
 
     public void installModel(M model) {
-        this.model = requireNonNull(model, String.format(bundle.getString(BUNDLE_KEY__NULL_PARAMETER), "model"));
+        this.model = requireNonNull(model, "model");
     }
 
     public void add(DialogAction action) {
