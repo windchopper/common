@@ -4,7 +4,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import java.lang.annotation.Annotation;
 import java.util.Optional;
 
-public class AbstractProducer {
+public abstract class Producer {
 
     protected <A extends Annotation> A findQualifier(InjectionPoint injectionPoint, Class<A> qualifierType) {
         return Optional.ofNullable(injectionPoint.getAnnotated())

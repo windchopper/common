@@ -1,48 +1,27 @@
 package com.github.windchopper.common.cdi;
 
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
 import java.lang.annotation.Annotation;
+import java.util.stream.Stream;
 
-public class BeanReference {
+public class BeanReference<T> {
 
-    private Class<?> type;
+    private Class<T> type;
     private Annotation[] qualifiers;
 
-    public BeanReference withType(Class<?> type) {
+    public BeanReference(Class<T> type, Annotation... qualifiers) {
         this.type = type;
-        return this;
-    }
-
-    public BeanReference withQualifiers(Annotation... qualifiers) {
         this.qualifiers = qualifiers;
-        return this;
     }
 
-    public Class<?> type() {
-        return type;
+    public T resolve() {
+        return CDI.current().select(type, qualifiers)
+            .get();
     }
 
-    public Annotation[] qualifiers() {
-        return qualifiers;
-    }
-
-    public Object resolve() {
-        Instance<?> instance = null;
-
-        if (type != null && qualifiers != null) {
-            instance = CDI.current().select(type, qualifiers);
-        } else if (type != null) {
-            instance = CDI.current().select(type);
-        } else if (qualifiers != null) {
-            instance = CDI.current().select(qualifiers);
-        }
-
-        if (instance == null) {
-            throw new IllegalStateException();
-        } else {
-            return instance.get();
-        }
+    public Stream<T> resolveAll() {
+        return CDI.current().select(type, qualifiers)
+            .stream();
     }
 
 }
