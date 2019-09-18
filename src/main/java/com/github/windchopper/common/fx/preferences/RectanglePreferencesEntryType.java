@@ -1,10 +1,11 @@
 package com.github.windchopper.common.fx.preferences;
 
-import javafx.geometry.Rectangle2D;
 import com.github.windchopper.common.preferences.types.StructuralType;
 import com.github.windchopper.common.util.Pipeliner;
+import javafx.geometry.Rectangle2D;
 
 import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 
 public class RectanglePreferencesEntryType extends StructuralType<Rectangle2D> {
 
@@ -25,7 +26,8 @@ public class RectanglePreferencesEntryType extends StructuralType<Rectangle2D> {
                 .set(target -> value -> target.add(KEY__Y, value), String.valueOf(source.getMinY()))
                 .set(target -> value -> target.add(KEY__WIDTH, value), String.valueOf(source.getWidth()))
                 .set(target -> value -> target.add(KEY__HEIGHT, value), String.valueOf(source.getHeight()))
-                .get().build());
+                .map(JsonObjectBuilder::build)
+                .get());
     }
 
 }

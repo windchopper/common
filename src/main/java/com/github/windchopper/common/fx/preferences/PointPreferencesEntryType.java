@@ -1,10 +1,11 @@
 package com.github.windchopper.common.fx.preferences;
 
-import javafx.geometry.Point2D;
 import com.github.windchopper.common.preferences.types.StructuralType;
 import com.github.windchopper.common.util.Pipeliner;
+import javafx.geometry.Point2D;
 
 import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 
 public class PointPreferencesEntryType extends StructuralType<Point2D> {
 
@@ -19,7 +20,8 @@ public class PointPreferencesEntryType extends StructuralType<Point2D> {
             source -> Pipeliner.of(Json::createObjectBuilder)
                 .set(target -> value -> target.add(KEY__X, value), String.valueOf(source.getX()))
                 .set(target -> value -> target.add(KEY__Y, value), String.valueOf(source.getY()))
-                .get().build());
+                .map(JsonObjectBuilder::build)
+                .get());
     }
 
 }

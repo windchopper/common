@@ -15,12 +15,14 @@ public class BeanReference<T> {
     }
 
     public T resolve() {
-        return CDI.current().select(type, qualifiers)
+        return CDI.current()
+            .select(type, qualifiers)
             .get();
     }
 
     public Stream<T> resolveAll() {
-        return CDI.current().select(type, qualifiers)
+        return CDI.current()
+            .select(type, qualifiers)
             .stream();
     }
 
