@@ -37,9 +37,7 @@ import java.util.ResourceBundle;
 
         var formLiteral = new FormLiteral(event.resource());
 
-        fxmlLoader.setControllerFactory(controllerType -> new BeanReference()
-            .withType(controllerType)
-            .withQualifiers(formLiteral)
+        fxmlLoader.setControllerFactory(controllerType -> new BeanReference<>(controllerType, formLiteral)
             .resolve());
 
         try (InputStream inputStream = event.resourceAsStream()) {
