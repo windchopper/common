@@ -9,9 +9,9 @@ import java.util.logging.Logger;
 
 import static java.util.Arrays.stream;
 
-public abstract class FormContoller {
+public abstract class FormController {
 
-    protected static final Logger logger = Logger.getLogger(FormContoller.class.getName());
+    protected static final Logger logger = Logger.getLogger(FormController.class.getName());
 
     protected void afterLoad(Parent form, Map<String, ?> parameters, Map<String, ?> formNamespace) {
         stream(getClass().getDeclaredFields())

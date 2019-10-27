@@ -13,7 +13,7 @@ import javafx.stage.Window;
 import java.util.List;
 import java.util.Map;
 
-public abstract class StageFormController extends FormContoller {
+public abstract class StageFormController extends FormController {
 
     protected Stage stage;
 
