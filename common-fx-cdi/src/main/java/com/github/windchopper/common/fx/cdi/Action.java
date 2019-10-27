@@ -1,4 +1,4 @@
-package com.github.windchopper.common.fx.annotation;
+package com.github.windchopper.common.fx.cdi;
 
 import javax.inject.Qualifier;
 import java.lang.annotation.Retention;

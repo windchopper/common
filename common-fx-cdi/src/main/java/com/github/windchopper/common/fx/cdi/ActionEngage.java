@@ -1,4 +1,4 @@
-package com.github.windchopper.common.fx.event;
+package com.github.windchopper.common.fx.cdi;
 
 public class ActionEngage<T> {
 

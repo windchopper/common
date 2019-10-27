@@ -1,4 +1,4 @@
-package com.github.windchopper.common.fx.event;
+package com.github.windchopper.common.fx.cdi;
 
 import java.util.ResourceBundle;
 

@@ -1,4 +1,4 @@
-package com.github.windchopper.common.fx.form;
+package com.github.windchopper.common.fx.cdi.form;
 
 import javafx.collections.ObservableMap;
 import javafx.scene.Parent;

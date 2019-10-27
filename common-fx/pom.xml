@@ -14,10 +14,6 @@
     <dependencies>
         <dependency>
             <groupId>com.github.windchopper</groupId>
-            <artifactId>common-cdi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.windchopper</groupId>
             <artifactId>common-preferences</artifactId>
         </dependency>
         <dependency>

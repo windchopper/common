@@ -11,4 +11,30 @@
     </parent>
     <artifactId>common-fx-cdi</artifactId>
     <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>com.github.windchopper</groupId>
+            <artifactId>common-cdi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.windchopper</groupId>
+            <artifactId>common-fx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.windchopper</groupId>
+            <artifactId>common-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+        </dependency>
+    </dependencies>
 </project>

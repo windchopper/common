@@ -1,4 +1,4 @@
-package com.github.windchopper.common.fx.form;
+package com.github.windchopper.common.fx.cdi.form;
 
 import com.github.windchopper.common.fx.behavior.WindowApplyStoredBoundsBehavior;
 import com.github.windchopper.common.fx.dialog.StageDialogFrame;

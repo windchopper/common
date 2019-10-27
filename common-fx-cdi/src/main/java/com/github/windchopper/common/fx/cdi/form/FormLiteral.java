@@ -1,12 +1,12 @@
-package com.github.windchopper.common.fx.annotation;
+package com.github.windchopper.common.fx.cdi.form;
 
 import javax.enterprise.util.AnnotationLiteral;
 
-public class ActionLiteral extends AnnotationLiteral<Action> implements Action {
+public class FormLiteral extends AnnotationLiteral<Form> implements Form {
 
     private final String value;
 
-    public ActionLiteral(String value) {
+    public FormLiteral(String value) {
         this.value = value;
     }
 

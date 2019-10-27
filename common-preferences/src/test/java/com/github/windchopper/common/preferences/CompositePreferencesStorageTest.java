@@ -1,6 +1,5 @@
 package com.github.windchopper.common.preferences;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -16,14 +15,12 @@ import static org.mockito.Mockito.*;
     @Mock private PreferencesStorage storageNode1st;
     @Mock private PreferencesStorage storageNode2nd;
 
-    @BeforeEach public void prepare() {
+    @Test public void testLoadValue() {
         when(storageNode1st.value(eq("key#1"), nullable(String.class))).thenReturn("value#1@1");
         when(storageNode1st.value(eq("key#2"), nullable(String.class))).thenReturn(null);
         when(storageNode1st.value(eq("key#3"), nullable(String.class))).thenReturn("value#3@1");
         when(storageNode2nd.value(eq("key#2"), nullable(String.class))).thenReturn("value#2@2");
-    }
 
-    @Test public void testLoadValue() {
         var compositeStorageNode = new CompositePreferencesStorage(List.of(
             new CompositePreferencesStorage.Mediator(storageNode1st, 1, 2, false),
             new CompositePreferencesStorage.Mediator(storageNode2nd, 2, 1, false)));

@@ -1,7 +1,7 @@
-package com.github.windchopper.common.fx.form;
+package com.github.windchopper.common.fx.cdi.form;
 
 import com.github.windchopper.common.cdi.BeanReference;
-import com.github.windchopper.common.fx.event.ResourceBundleLoad;
+import com.github.windchopper.common.fx.cdi.ResourceBundleLoad;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
