@@ -1,5 +1,6 @@
 package com.github.windchopper.common.fx.cdi.form;
 
+import com.github.windchopper.common.util.Resource;
 import javafx.collections.ObservableMap;
 import javafx.scene.Parent;
 

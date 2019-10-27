@@ -8,11 +8,12 @@ import javafx.scene.Parent;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.inject.Named;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ResourceBundle;
 
-@ApplicationScoped public class FormLoader {
+@Named("FormLoader") @ApplicationScoped public class FormLoader {
 
     private ResourceBundle resources;
 
@@ -28,15 +29,7 @@ import java.util.ResourceBundle;
         }
     }
 
-    protected void formOpen(@Observes StageFormLoad event) throws IOException {
-        formOpenHandler(event);
-    }
-
     protected void formOpen(@Observes FormLoad event) throws IOException {
-        formOpenHandler(event);
-    }
-
-    protected void formOpenHandler(FormLoad event) throws IOException {
         var fxmlLoader = new FXMLLoader();
 
         if (resources != null) {

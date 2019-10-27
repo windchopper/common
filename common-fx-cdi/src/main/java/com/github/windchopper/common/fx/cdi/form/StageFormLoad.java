@@ -1,5 +1,7 @@
 package com.github.windchopper.common.fx.cdi.form;
 
+import com.github.windchopper.common.util.Pipeliner;
+import com.github.windchopper.common.util.Resource;
 import javafx.collections.ObservableMap;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,8 +15,7 @@ public class StageFormLoad extends FormLoad {
     private final Supplier<Stage> stageSupplier;
 
     public StageFormLoad(Resource resource, Supplier<Stage> stageSupplier) {
-        super(resource);
-        this.stageSupplier = stageSupplier;
+        this(resource, Map.of(), stageSupplier);
     }
 
     public StageFormLoad(Resource resource, Map<String, ?> parameters, Supplier<Stage> stageSupplier) {
@@ -22,15 +23,12 @@ public class StageFormLoad extends FormLoad {
         this.stageSupplier = stageSupplier;
     }
 
-    public Stage stage() {
-        return stageSupplier.get();
-    }
-
     @Override public void afterLoad(Parent form, Object controller, Map<String, ?> parameters, ObservableMap<String, ?> formNamespace) {
-        Scene scene = new Scene(form);
-
-        Stage stage = stageSupplier.get();
-        stage.setScene(scene);
+        Stage stage = Pipeliner.of(stageSupplier)
+            .set(suppliedStage -> suppliedStage::setScene, Pipeliner.of(form)
+                .map(Scene::new)
+                .get())
+            .get();
 
         super.afterLoad(form, controller, parameters, formNamespace);
 
