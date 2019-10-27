@@ -12,12 +12,12 @@ public class StageFormLoad extends FormLoad {
 
     private final Supplier<Stage> stageSupplier;
 
-    public StageFormLoad(Supplier<Stage> stageSupplier, String resource) {
+    public StageFormLoad(Resource resource, Supplier<Stage> stageSupplier) {
         super(resource);
         this.stageSupplier = stageSupplier;
     }
 
-    public StageFormLoad(Supplier<Stage> stageSupplier, String resource, Map<String, ?> parameters) {
+    public StageFormLoad(Resource resource, Map<String, ?> parameters, Supplier<Stage> stageSupplier) {
         super(resource, parameters);
         this.stageSupplier = stageSupplier;
     }

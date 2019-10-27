@@ -28,19 +28,27 @@ import java.util.ResourceBundle;
         }
     }
 
+    protected void formOpen(@Observes StageFormLoad event) throws IOException {
+        formOpenHandler(event);
+    }
+
     protected void formOpen(@Observes FormLoad event) throws IOException {
+        formOpenHandler(event);
+    }
+
+    protected void formOpenHandler(FormLoad event) throws IOException {
         var fxmlLoader = new FXMLLoader();
 
         if (resources != null) {
             fxmlLoader.setResources(resources);
         }
 
-        var formLiteral = new FormLiteral(event.resource());
+        var formLiteral = new FormLiteral(event.resource().path());
 
         fxmlLoader.setControllerFactory(controllerType -> new BeanReference<>(controllerType, formLiteral)
             .resolve());
 
-        try (InputStream inputStream = event.resourceAsStream()) {
+        try (InputStream inputStream = event.resource().stream()) {
             var form = fxmlLoader.<Parent>load(inputStream);
             runFxThreadSensitiveAction(() -> event.afterLoad(form, fxmlLoader.getController(), event.parameters(), fxmlLoader.getNamespace()));
         }

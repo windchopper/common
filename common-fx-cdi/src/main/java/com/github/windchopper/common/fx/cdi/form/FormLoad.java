@@ -3,7 +3,6 @@ package com.github.windchopper.common.fx.cdi.form;
 import javafx.collections.ObservableMap;
 import javafx.scene.Parent;
 
-import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -12,24 +11,20 @@ import static java.util.Collections.emptyMap;
 
 public class FormLoad {
 
-    private final String resource;
+    private final Resource resource;
     private final Map<String, ?> parameters;
 
-    public FormLoad(String resource) {
+    public FormLoad(Resource resource) {
         this(resource, emptyMap());
     }
 
-    public FormLoad(String resource, Map<String, ?> parameters) {
+    public FormLoad(Resource resource, Map<String, ?> parameters) {
         this.resource = resource;
         this.parameters = parameters;
     }
 
-    public String resource() {
+    public Resource resource() {
         return resource;
-    }
-
-    public InputStream resourceAsStream() {
-        return getClass().getClassLoader().getResourceAsStream(resource);
     }
 
     public Map<String, ?> parameters() {
