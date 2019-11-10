@@ -25,7 +25,7 @@ public class OptionDialog<F extends DialogFrame, M extends OptionDialogModel> ex
         }
 
         Image image() {
-            return new Image("/com/sun/javafx/scene/control/skin/modena/" + imageFile);
+            return new Image("/com/github/windchopper/common/fx/dialog/option/" + imageFile);
         }
 
     }
