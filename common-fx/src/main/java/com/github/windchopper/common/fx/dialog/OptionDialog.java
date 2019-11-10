@@ -6,8 +6,12 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class OptionDialog<F extends DialogFrame, M extends OptionDialogModel> extends Dialog<F, M> {
 
@@ -25,7 +29,19 @@ public class OptionDialog<F extends DialogFrame, M extends OptionDialogModel> ex
         }
 
         Image image() {
-            return new Image("/com/github/windchopper/common/fx/dialog/option/" + imageFile);
+            try {
+                try (InputStream inputStream = getClass().getResourceAsStream("/com/github/windchopper/common/fx/dialog/option/" + imageFile)) {
+                    return new Image(inputStream);
+                }
+            } catch (IOException | NullPointerException thrown) {
+                Logger logger = Logger.getLogger(getDeclaringClass().getName());
+
+                if (logger.isLoggable(Level.SEVERE)) {
+                    logger.log(Level.SEVERE, thrown.getMessage(), thrown);
+                }
+            }
+
+            return null;
         }
 
     }
