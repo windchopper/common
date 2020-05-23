@@ -11,7 +11,10 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -31,7 +34,7 @@ public class CaptionedDialogSkeleton extends DialogSkeleton {
             .set(grid -> grid::setPadding, new Insets(10.0))
             .set(grid -> grid::setBackground, new Background(
                 new BackgroundFill(
-                    new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, new Stop(0, Color.DARKGRAY), new Stop(1, Color.TRANSPARENT)),
+                    new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, new Stop(0, Color.WHITE), new Stop(1, Color.TRANSPARENT)),
                     CornerRadii.EMPTY, Insets.EMPTY)))
             .add(grid -> grid::getChildren, List.of(
                 Pipeliner.of(Label::new)
