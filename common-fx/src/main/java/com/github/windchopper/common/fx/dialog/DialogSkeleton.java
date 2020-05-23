@@ -1,5 +1,8 @@
 package com.github.windchopper.common.fx.dialog;
 
+import com.github.windchopper.common.fx.Alignment;
+import com.github.windchopper.common.fx.Fill;
+import com.github.windchopper.common.util.Pipeliner;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -7,9 +10,6 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import com.github.windchopper.common.fx.Alignment;
-import com.github.windchopper.common.fx.Fill;
-import com.github.windchopper.common.util.Pipeliner;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -27,21 +27,13 @@ public class DialogSkeleton {
 
     }
 
-    /*
-     *
-     */
-
     private final Map<PartType, Node> parts = new HashMap<>();
-
-    /*
-     *
-     */
 
     public void add(PartType type, Node part) {
         parts.put(type, part);
     }
 
-    protected <F extends DialogFrame> Pane createRootPane(F frame, Collection<DialogAction> actions) {
+    protected <F extends DialogFrame> Pane buildRootPane(Collection<DialogAction> actions) {
         class MutableInt {
             int value;
         }
@@ -70,10 +62,10 @@ public class DialogSkeleton {
                     .orElseGet(Pipeliner.of(HBox::new)
                         .set(box -> box::setAlignment, Pos.BASELINE_RIGHT)
                         .set(box -> box::setSpacing, 10.0)
-                        .set(box -> box::setPadding, new Insets(20.0))
+                        .set(box -> box::setPadding, new Insets(10.0))
                         .add(box -> box::getChildren, actions.stream()
                             .map(action -> Pipeliner.of(Button::new)
-                                .accept(action::bind)
+                                .accept(button -> action.bindControl(new ActionControlAdapter.ForButtonBase(button)))
                                 .set(button -> button::setPrefWidth, 80.0)
                                 .set(button -> button::setDefaultButton, DialogAction.ThreatThreshold.ACCEPT.belongs(action))
                                 .set(button -> button::setCancelButton, DialogAction.ThreatThreshold.REJECT.belongs(action))

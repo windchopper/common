@@ -1,53 +1,44 @@
 package com.github.windchopper.common.fx.dialog;
 
-import com.github.windchopper.common.util.Pipeliner;
-
-import java.util.ResourceBundle;
+import java.util.Collection;
 
 public class OptionDialogModel {
 
-    private static final ResourceBundle bundle = ResourceBundle.getBundle("com.github.windchopper.common.fx.i18n.messages");
+    private OptionDialog.Type type;
+    private String message;
+    private Collection<OptionDialog.Option> availableOptions;
+    private OptionDialog.Option selectedOption;
 
-    private static final String BUNDLE_KEY__OK = "com.github.windchopper.common.fx.dialog.OptionDialogModel.ok";
-    private static final String BUNDLE_KEY__CANCEL = "com.github.windchopper.common.fx.dialog.OptionDialogModel.cancel";
-    private static final String BUNDLE_KEY__YES = "com.github.windchopper.common.fx.dialog.OptionDialogModel.yes";
-    private static final String BUNDLE_KEY__NO = "com.github.windchopper.common.fx.dialog.OptionDialogModel.no";
-
-    public enum Option {
-
-        OK(bundle.getString(BUNDLE_KEY__OK), DialogAction.ThreatThreshold.ACCEPT.minDegree() + 1),
-        CANCEL(bundle.getString(BUNDLE_KEY__CANCEL), DialogAction.ThreatThreshold.REJECT.maxDegree() - 1),
-        YES(bundle.getString(BUNDLE_KEY__YES), DialogAction.ThreatThreshold.ACCEPT.minDegree() + 2),
-        NO(bundle.getString(BUNDLE_KEY__NO), DialogAction.ThreatThreshold.REJECT.maxDegree() - 2);
-
-        private final String label;
-        private final int threat;
-
-        Option(String label, int threat) {
-            this.label = label;
-            this.threat = threat;
-        }
-
-        DialogAction newAction(Dialog<?, ?> dialog) {
-            return Pipeliner.of(() -> new DialogAction(dialog, threat))
-                .accept(action -> action.textProperty().set(label))
-                .get();
-        }
-
+    public OptionDialog.Type getType() {
+        return type;
     }
 
-    /*
-     *
-     */
-
-    private Option option;
-
-    public Option getOption() {
-        return option;
+    public void setType(OptionDialog.Type type) {
+        this.type = type;
     }
 
-    public void setOption(Option option) {
-        this.option = option;
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Collection<OptionDialog.Option> getAvailableOptions() {
+        return availableOptions;
+    }
+
+    public void setAvailableOptions(Collection<OptionDialog.Option> availableOptions) {
+        this.availableOptions = availableOptions;
+    }
+
+    public OptionDialog.Option getSelectedOption() {
+        return selectedOption;
+    }
+
+    public void setSelectedOption(OptionDialog.Option selectedOption) {
+        this.selectedOption = selectedOption;
     }
 
 }

@@ -11,10 +11,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -26,19 +23,19 @@ import java.util.List;
 
 public class CaptionedDialogSkeleton extends DialogSkeleton {
 
-    private final StringProperty titleProperty = new SimpleStringProperty(this, "title");
+    private final StringProperty textProperty = new SimpleStringProperty(this, "text");
     private final ObjectProperty<Image> imageProperty = new SimpleObjectProperty<>(this, "image");
 
     public CaptionedDialogSkeleton() {
         add(PartType.HEADING, Pipeliner.of(GridPane::new)
-            .set(grid -> grid::setPadding, new Insets(20.0))
+            .set(grid -> grid::setPadding, new Insets(10.0))
             .set(grid -> grid::setBackground, new Background(
                 new BackgroundFill(
                     new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, new Stop(0, Color.DARKGRAY), new Stop(1, Color.TRANSPARENT)),
                     CornerRadii.EMPTY, Insets.EMPTY)))
             .add(grid -> grid::getChildren, List.of(
                 Pipeliner.of(Label::new)
-                    .accept(label -> label.textProperty().bind(titleProperty))
+                    .accept(label -> label.textProperty().bind(textProperty))
                     .set(label -> label::setWrapText, true)
                     .accept(label -> label.setFont(
                         Font.font(
@@ -61,8 +58,8 @@ public class CaptionedDialogSkeleton extends DialogSkeleton {
             .get());
     }
 
-    public StringProperty titleProperty() {
-        return titleProperty;
+    public StringProperty textProperty() {
+        return textProperty;
     }
 
     public ObjectProperty<Image> imageProperty() {

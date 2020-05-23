@@ -1,110 +1,60 @@
 package com.github.windchopper.common.fx;
 
+import com.github.windchopper.common.fx.dialog.ActionControlAdapter;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
+import javafx.event.EventTarget;
 import javafx.scene.Node;
-import javafx.scene.control.ButtonBase;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
 
-import java.util.concurrent.Executor;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-public class Action implements EventHandler<ActionEvent> {
-
-    private static final String PROPERTY__ACTION = "com.github.windchopper.common.fx.Action";
+public class Action {
 
     private final StringProperty textProperty = new SimpleStringProperty(this, "text");
     private final StringProperty longTextProperty = new SimpleStringProperty(this, "longText");
     private final ObjectProperty<Node> graphicProperty = new SimpleObjectProperty<>(this, "graphic");
-    private final BooleanProperty disabledExternallyProperty = new SimpleBooleanProperty(this, "disabledExternally");
-    private final BooleanProperty disabledInternallyProperty = new SimpleBooleanProperty(this, "disabledInternally");
+    private final BooleanProperty externallyDisableProperty = new SimpleBooleanProperty(this, "externallyDisable");
+    private final BooleanProperty internallyDisableProperty = new SimpleBooleanProperty(this, "internallyDisable");
 
-    private boolean reenterable;
-    private Executor executor;
-    private EventHandler<ActionEvent> handler;
-
-    public boolean isReenterable() {
-        return reenterable;
+    @FunctionalInterface public interface EventHandler {
+        void handle(ActionEvent actionEvent, Action action);
     }
 
-    public void setReenterable(boolean reenterable) {
-        this.reenterable = reenterable;
+    private final List<EventHandler> handlers = new CopyOnWriteArrayList<>();
+
+    public <T extends EventTarget> void bindControl(ActionControlAdapter<T> actionControlAdapter) {
+        actionControlAdapter.textProperty().bind(textProperty);
+        actionControlAdapter.graphicProperty().bind(graphicProperty);
+
+        actionControlAdapter.disableProperty().bind(Bindings.createBooleanBinding(
+            () -> externallyDisableProperty.get() || internallyDisableProperty.get(),
+            internallyDisableProperty, internallyDisableProperty));
+
+        longTextProperty.isNotEmpty().addListener((property, oldNotEmptyState, newNotEmptyState) -> {
+            var tooltip = actionControlAdapter.toolipProperty().getValue();
+
+            if (newNotEmptyState) {
+                tooltip = new Tooltip();
+                tooltip.textProperty().bind(longTextProperty);
+            } else {
+                tooltip.textProperty().unbind();
+                tooltip = null;
+            }
+
+            actionControlAdapter.toolipProperty().setValue(tooltip);
+        });
+
+        actionControlAdapter.addEventHandler(ActionEvent.ACTION, actionEvent -> {
+            handlers.forEach(handler -> handler.handle(actionEvent, Action.this));
+        });
     }
 
-    public Executor getExecutor() {
-        return executor;
+    public void addHandler(EventHandler handler) {
+        handlers.add(handler);
     }
-
-    public void setExecutor(Executor executor) {
-        this.executor = executor;
-    }
-
-    public EventHandler<ActionEvent> getHandler() {
-        return handler;
-    }
-
-    public void setHandler(EventHandler<ActionEvent> handler) {
-        this.handler = handler;
-    }
-
-    /*
-     *
-     */
-
-    @FunctionalInterface public interface AddEventHandlerMethod {
-        <E extends Event> void invoke(EventType<E> eventType, EventHandler<E> eventHandler);
-    }
-
-    public void bindManually(Property<String> widgetTextProperty,
-                             Property<? super Node> widgetGraphicProperty,
-                             Property<Boolean> widgetDisableProperty,
-                             Property<Tooltip> widgetTooltipProperty,
-                             AddEventHandlerMethod widgetAddEventHandlerMethod) {
-
-        if (widgetTextProperty != null) widgetTextProperty.bind(textProperty);
-        if (widgetGraphicProperty != null) widgetGraphicProperty.bind(graphicProperty);
-        if (widgetDisableProperty != null) widgetDisableProperty.bind(Bindings.createBooleanBinding(
-            () -> disabledExternallyProperty.get() || disabledInternallyProperty.get(),
-            disabledInternallyProperty, disabledExternallyProperty));
-
-        if (widgetTooltipProperty != null) {
-            longTextProperty.isNotEmpty().addListener((property, oldNotEmptyState, newNotEmptyState) -> {
-                var tooltip = widgetTooltipProperty.getValue();
-
-                if (newNotEmptyState) {
-                    tooltip = new Tooltip();
-                    tooltip.textProperty().bind(longTextProperty);
-                } else {
-                    tooltip.textProperty().unbind();
-                    tooltip = null;
-                }
-
-                widgetTooltipProperty.setValue(tooltip);
-            });
-        }
-
-        if (widgetAddEventHandlerMethod != null) {
-            widgetAddEventHandlerMethod.invoke(ActionEvent.ACTION, this);
-        }
-    }
-
-    public void bind(ButtonBase button) {
-        bindManually(button.textProperty(), button.graphicProperty(), button.disableProperty(), button.tooltipProperty(),
-            button::addEventHandler);
-    }
-
-    public void bind(MenuItem menuItem) {
-        bindManually(menuItem.textProperty(), menuItem.graphicProperty(), menuItem.disableProperty(), null,
-            menuItem::addEventHandler);
-    }
-
-    /*
-     *
-     */
 
     public StringProperty textProperty() {
         return textProperty;
@@ -118,35 +68,12 @@ public class Action implements EventHandler<ActionEvent> {
         return graphicProperty;
     }
 
-    public BooleanProperty disabledProperty() {
-        return disabledExternallyProperty;
+    public BooleanProperty externallyDisableProperty() {
+        return externallyDisableProperty;
     }
 
-    /*
-     * EventHandler implementation
-     */
-
-    public void run(Runnable action) {
-        disabledInternallyProperty.set(
-            !reenterable);
-
-        Runnable runnable = () -> {
-            try {
-                action.run();
-            } finally {
-                disabledInternallyProperty.set(false);
-            }
-        };
-
-        if (executor != null) {
-            executor.execute(runnable);
-        } else {
-            runnable.run();
-        }
-    }
-
-    @Override public void handle(ActionEvent event) {
-        run(() -> handler.handle(event));
+    public BooleanProperty internallyDisableProperty() {
+        return internallyDisableProperty;
     }
 
 }

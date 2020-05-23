@@ -1,6 +1,5 @@
 package com.github.windchopper.common.fx.dialog;
 
-import com.github.windchopper.common.fx.dialog.OptionDialogModel.Option;
 import com.github.windchopper.common.util.Pipeliner;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
@@ -8,12 +7,18 @@ import javafx.stage.Screen;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class OptionDialog<F extends DialogFrame, M extends OptionDialogModel> extends Dialog<F, M> {
+public class OptionDialog<F extends DialogFrame> extends Dialog<CaptionedDialogSkeleton, F, OptionDialogModel> {
+
+    private static final ResourceBundle bundle = ResourceBundle.getBundle("com.github.windchopper.common.fx.i18n.messages");
+
+    private static final String BUNDLE_KEY__OK = "com.github.windchopper.common.fx.dialog.OptionDialog.ok";
+    private static final String BUNDLE_KEY__CANCEL = "com.github.windchopper.common.fx.dialog.OptionDialog.cancel";
+    private static final String BUNDLE_KEY__YES = "com.github.windchopper.common.fx.dialog.OptionDialog.yes";
+    private static final String BUNDLE_KEY__NO = "com.github.windchopper.common.fx.dialog.OptionDialog.no";
 
     public enum Type {
 
@@ -46,31 +51,51 @@ public class OptionDialog<F extends DialogFrame, M extends OptionDialogModel> ex
 
     }
 
-    @Override protected Pane prepareRootPane() {
-        var rootPane = super.prepareRootPane();
-        rootPane.setMinWidth(Screen.getPrimary().getVisualBounds().getWidth() / 4);
-        return rootPane;
+    public enum Option {
+
+        OK(bundle.getString(BUNDLE_KEY__OK), DialogAction.ThreatThreshold.ACCEPT.min() + 1),
+        CANCEL(bundle.getString(BUNDLE_KEY__CANCEL), DialogAction.ThreatThreshold.REJECT.max() - 1),
+        YES(bundle.getString(BUNDLE_KEY__YES), DialogAction.ThreatThreshold.ACCEPT.min() + 2),
+        NO(bundle.getString(BUNDLE_KEY__NO), DialogAction.ThreatThreshold.REJECT.max() - 2);
+
+        private final String label;
+        private final int threat;
+
+        Option(String label, int threat) {
+            this.label = label;
+            this.threat = threat;
+        }
+
+        DialogAction newAction(Dialog<?, ?, ?> dialog) {
+            return Pipeliner.of(() -> new DialogAction(dialog, threat))
+                .accept(action -> action.textProperty().set(label))
+                .get();
+        }
+
     }
 
-    public static <F extends DialogFrame> Optional<Option> showOptionDialog(String message,
-                                                                            Type type,
-                                                                            List<Option> options,
-                                                                            F frame) {
-        return Pipeliner.of(OptionDialogModel::new)
-            .accept(model -> Pipeliner.of(OptionDialog<F, OptionDialogModel>::new)
-                .accept(dialog -> dialog.installFrame(frame))
-                .accept(dialog -> dialog.installModel(model))
-                .accept(dialog -> dialog.installSkeleton(Pipeliner.of(CaptionedDialogSkeleton::new)
-                    .accept(skeleton -> skeleton.titleProperty().set(message))
-                    .accept(skeleton -> skeleton.imageProperty().set(type.image()))
-                    .get()))
-                .accept(dialog -> options.forEach(option -> dialog.add(Pipeliner.of(() -> option.newAction(dialog))
-                    .set(action -> action::setHandler, event -> model.setOption(option))
-                    .get())))
-                .accept(Dialog::show)
-                .get())
-            .map(model -> Optional.ofNullable(model.getOption()))
-            .get();
+    public OptionDialog(F frame, OptionDialogModel model) {
+        this(new CaptionedDialogSkeleton(), frame, model);
+    }
+
+    public OptionDialog(CaptionedDialogSkeleton skeleton, F frame, OptionDialogModel model) {
+        super(skeleton, frame, model);
+    }
+
+    @Override protected Pane buildRootPane() {
+        skeleton.textProperty().set(model.getMessage());
+        skeleton.imageProperty().set(model.getType().image());
+
+        for (var option : model.getAvailableOptions()) {
+            var dialogAction = option.newAction(this);
+            dialogAction.addHandler((actionEvent, action) -> model.setSelectedOption(option));
+            actions.add(dialogAction);
+        }
+
+        var rootPane = skeleton.buildRootPane(actions);
+        rootPane.setMinWidth(Screen.getPrimary().getVisualBounds().getWidth() / 4);
+
+        return rootPane;
     }
 
 }

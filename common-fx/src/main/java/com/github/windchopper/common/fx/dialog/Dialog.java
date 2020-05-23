@@ -4,58 +4,40 @@ import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import static java.util.Objects.requireNonNull;
 
-public class Dialog<F extends DialogFrame, M> {
+public class Dialog<S extends DialogSkeleton, F extends DialogFrame, M> {
 
-    private final List<DialogAction> actions = new ArrayList<>();
+    protected final S skeleton;
+    protected final F frame;
+    protected final M model;
 
-    /*
-     *
-     */
+    protected final List<DialogAction> actions = new ArrayList<>();
 
-    private DialogSkeleton skeleton;
-    private F frame;
-    private M model;
-
-    /*
-     *
-     */
-
-    public void installSkeleton(DialogSkeleton skeleton) {
+    public Dialog(S skeleton, F frame, M model) {
         this.skeleton = requireNonNull(skeleton, "skeleton");
-    }
-
-    public void installFrame(F frame) {
         this.frame = requireNonNull(frame, "frame");
-
-    }
-
-    public void installModel(M model) {
         this.model = requireNonNull(model, "model");
     }
 
-    public void add(DialogAction action) {
+    public Dialog<S, F, M> addAction(DialogAction action) {
         actions.add(action);
+        return this;
     }
 
-    /*
-     *
-     */
-
-    protected Pane prepareRootPane() {
-        return skeleton.createRootPane(frame, actions);
+    protected Pane buildRootPane() {
+        return skeleton.buildRootPane(actions);
     }
 
-    /*
-     *
-     */
+    public void showAndWait() {
+        frame.installRootPane(buildRootPane());
+        frame.showAndWait();
+    }
 
     public void show() {
-        frame.installRootPane(prepareRootPane());
-        frame.showAndWait();
+        frame.installRootPane(buildRootPane());
+        frame.show();
     }
 
     public void hide() {

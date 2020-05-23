@@ -1,7 +1,5 @@
 package com.github.windchopper.common.fx.dialog;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import com.github.windchopper.common.fx.Action;
 
 public class DialogAction extends Action {
@@ -9,54 +7,49 @@ public class DialogAction extends Action {
     public enum ThreatThreshold {
 
         REJECT(Integer.MIN_VALUE, -1),
-        INDEFINITE(0, 0),
-        ACCEPT(+1, Integer.MAX_VALUE);
+        INDEFINITE(0, 1000),
+        ACCEPT(1001, Integer.MAX_VALUE);
 
-        private final int minDegree;
-        private final int maxDegree;
+        private final int min;
+        private final int max;
 
-        ThreatThreshold(int minDegree, int maxDegree) {
-            this.minDegree = minDegree;
-            this.maxDegree = maxDegree;
+        ThreatThreshold(int min, int max) {
+            this.min = min;
+            this.max = max;
         }
 
-        public int minDegree() {
-            return minDegree;
+        public int min() {
+            return min;
         }
 
-        public int maxDegree() {
-            return maxDegree;
+        public int max() {
+            return max;
         }
 
         public boolean belongs(DialogAction action) {
-            return maxDegree >= action.threat && minDegree <= action.threat;
+            return max >= action.threat && min <= action.threat;
         }
 
     }
 
-    /*
-     *
-     */
-
-    private final Dialog<?, ?> dialog;
+    private final Dialog<?, ?, ?> dialog;
     private final int threat;
 
-    public DialogAction(Dialog<?, ?> dialog, int threat) {
+    public DialogAction(Dialog<?, ?, ?> dialog, int threat) {
         this.dialog = dialog;
         this.threat = threat;
     }
 
-    @Override
-    public void setHandler(EventHandler<ActionEvent> handler) {
+    @Override public void addHandler(EventHandler handler) {
         if (ThreatThreshold.ACCEPT.belongs(this) || ThreatThreshold.REJECT.belongs(this)) {
             var originalHandler = handler;
-            handler = event -> {
-                originalHandler.handle(event);
+            handler = (actionEvent, action) -> {
+                originalHandler.handle(actionEvent, action);
                 dialog.hide();
             };
         }
 
-        super.setHandler(handler);
+        super.addHandler(handler);
     }
 
 }
