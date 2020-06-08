@@ -2,13 +2,13 @@ package com.github.windchopper.common.fx.cdi.form;
 
 import com.github.windchopper.common.cdi.BeanReference;
 import com.github.windchopper.common.fx.cdi.ResourceBundleLoad;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Named;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Named;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ResourceBundle;

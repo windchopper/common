@@ -3,7 +3,6 @@ module windchopper.common.fx {
     exports com.github.windchopper.common.fx;
     exports com.github.windchopper.common.fx.behavior;
     exports com.github.windchopper.common.fx.binding;
-    exports com.github.windchopper.common.fx.dialog;
     exports com.github.windchopper.common.fx.preferences;
     exports com.github.windchopper.common.fx.search;
     exports com.github.windchopper.common.fx.spinner;
@@ -11,7 +10,6 @@ module windchopper.common.fx {
     opens com.github.windchopper.common.fx;
     opens com.github.windchopper.common.fx.behavior;
     opens com.github.windchopper.common.fx.binding;
-    opens com.github.windchopper.common.fx.dialog;
     opens com.github.windchopper.common.fx.preferences;
     opens com.github.windchopper.common.fx.search;
     opens com.github.windchopper.common.fx.spinner;

@@ -1,6 +1,7 @@
 package com.github.windchopper.common.cdi;
 
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.CDI;
+
 import java.lang.annotation.Annotation;
 import java.util.stream.Stream;
 

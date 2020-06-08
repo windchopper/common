@@ -1,6 +1,7 @@
 package com.github.windchopper.common.cdi;
 
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+
 import java.lang.annotation.Annotation;
 import java.util.Optional;
 

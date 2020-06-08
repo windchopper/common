@@ -1,6 +1,6 @@
 package com.github.windchopper.common.fx.cdi.form;
 
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 public class FormLiteral extends AnnotationLiteral<Form> implements Form {
 

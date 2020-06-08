@@ -1,6 +1,5 @@
 package com.github.windchopper.common.fx;
 
-import com.github.windchopper.common.fx.dialog.ActionControlAdapter;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.event.ActionEvent;
@@ -47,9 +46,8 @@ public class Action {
             actionControlAdapter.toolipProperty().setValue(tooltip);
         });
 
-        actionControlAdapter.addEventHandler(ActionEvent.ACTION, actionEvent -> {
-            handlers.forEach(handler -> handler.handle(actionEvent, Action.this));
-        });
+        actionControlAdapter.addEventHandler(ActionEvent.ACTION, actionEvent ->
+            handlers.forEach(handler -> handler.handle(actionEvent, Action.this)));
     }
 
     public void addHandler(EventHandler handler) {

@@ -1,14 +1,10 @@
-package com.github.windchopper.common.fx.dialog;
+package com.github.windchopper.common.fx;
 
-import javafx.beans.property.*;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventTarget;
-import javafx.event.EventType;
+import javafx.beans.property.ObjectPropertyBase;
+import javafx.beans.property.Property;
+import javafx.event.*;
 import javafx.scene.Node;
-import javafx.scene.control.ButtonBase;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 
 public class ActionControlAdapter<T extends EventTarget> {
 
