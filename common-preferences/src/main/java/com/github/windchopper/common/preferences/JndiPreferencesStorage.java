@@ -1,14 +1,8 @@
 package com.github.windchopper.common.preferences;
 
-import com.github.windchopper.common.util.stream.FailableConsumer;
-import com.github.windchopper.common.util.stream.FailableFunction;
-import com.github.windchopper.common.util.stream.FailableRunnable;
-import com.github.windchopper.common.util.stream.FailableSupplier;
+import com.github.windchopper.common.util.stream.*;
 
-import javax.naming.Context;
-import javax.naming.NameClassPair;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
+import javax.naming.*;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -48,7 +42,7 @@ public class JndiPreferencesStorage extends AbstractPreferencesStorage {
     }
 
     private Context traverse(Context context) throws NamingException {
-        for (StringTokenizer tokenizer = new StringTokenizer(path, PATH_NAME_SEPARATOR); tokenizer.hasMoreTokens(); ) {
+        for (var tokenizer = new StringTokenizer(path, PATH_NAME_SEPARATOR); tokenizer.hasMoreTokens(); ) {
             context = context.createSubcontext(tokenizer.nextToken());
         }
 
@@ -56,7 +50,7 @@ public class JndiPreferencesStorage extends AbstractPreferencesStorage {
     }
 
     private void performWithContext(FailableConsumer<Context, NamingException> action) throws NamingException {
-        Context context = contextBuilder.get();
+        var context = contextBuilder.get();
 
         try {
             action.accept(context);
@@ -85,7 +79,7 @@ public class JndiPreferencesStorage extends AbstractPreferencesStorage {
     }
 
     private void continueLoad(Context context) throws NamingException {
-        Map<String, Set<NameClassPair>> separatedBindings = bindingsAsStream(() -> context.list(""))
+        var separatedBindings = bindingsAsStream(() -> context.list(""))
             .collect(Collectors.groupingBy(binding -> binding.getName().startsWith(valuePrefix) ? "values" : binding.getName().startsWith(childPrefix) ? "childs" : "others", Collectors.toSet()));
 
         Optional.ofNullable(separatedBindings.get("values")).ifPresent(bindings -> values.putAll(

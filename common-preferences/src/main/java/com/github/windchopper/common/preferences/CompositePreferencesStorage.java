@@ -47,7 +47,7 @@ public class CompositePreferencesStorage implements PreferencesStorage {
     }
 
     @Override public String value(String name, String defaultValue) {
-        Optional<Pair> mediatorWithValue = mediators.stream()
+        var mediatorWithValue = mediators.stream()
             .filter(loadSelector)
             .sorted(loadComparator)
             .map(mediator -> new Pair(mediator, mediator.value(name, null)))

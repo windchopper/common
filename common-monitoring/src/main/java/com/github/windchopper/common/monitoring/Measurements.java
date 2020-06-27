@@ -22,17 +22,17 @@ public class Measurements {
     private long periodEndTimeSeconds;
 
     private int determineOffset(long timeSeconds) {
-        int offset = (int) (timeSeconds - periodStartTimeSeconds) * SLOT_LENGTH;
+        var offset = (int) (timeSeconds - periodStartTimeSeconds) * SLOT_LENGTH;
 
         if (offset > SLOT_NUMBER) {
             periodStartTimeSeconds = timeSeconds;
             offset = 0;
 
-            for (int i = 0; i < values.length(); i++) {
+            for (var i = 0; i < values.length(); i++) {
                 values.set(i, 0L);
             }
 
-            for (int i = MIN_TIME_INDEX; i < values.length(); i += SLOT_LENGTH) {
+            for (var i = MIN_TIME_INDEX; i < values.length(); i += SLOT_LENGTH) {
                 values.set(i, Long.MAX_VALUE);
             }
         }
@@ -43,13 +43,13 @@ public class Measurements {
     }
 
     public void registerStart() {
-        int offset = determineOffset(currentTimeMillis() / 1000L);
+        var offset = determineOffset(currentTimeMillis() / 1000L);
 
         values.incrementAndGet(offset + STARTED_COUNT_INDEX);
     }
 
     public void registerFinish(int index, long executionTimeMilliseconds) {
-        int offset = determineOffset(currentTimeMillis() / 1000L);
+        var offset = determineOffset(currentTimeMillis() / 1000L);
 
         values.incrementAndGet(offset + index);
         values.addAndGet(offset + TOTAL_TIME_INDEX, executionTimeMilliseconds);
@@ -71,13 +71,13 @@ public class Measurements {
         startTimeSeconds = Math.max(startTimeSeconds, periodStartTimeSeconds);
         endTimeSeconds = Math.min(endTimeSeconds, periodStartTimeSeconds + SLOT_NUMBER);
 
-        Statistics statistics = new Statistics(name, startTimeSeconds, endTimeSeconds);
+        var statistics = new Statistics(name, startTimeSeconds, endTimeSeconds);
 
         if (startTimeSeconds > periodEndTimeSeconds) {
             return statistics;
         }
 
-        for (int i = (int) (startTimeSeconds - periodStartTimeSeconds) * SLOT_LENGTH; i < (int) (endTimeSeconds - periodStartTimeSeconds + 1) * SLOT_LENGTH; i += SLOT_LENGTH) {
+        for (var i = (int) (startTimeSeconds - periodStartTimeSeconds) * SLOT_LENGTH; i < (int) (endTimeSeconds - periodStartTimeSeconds + 1) * SLOT_LENGTH; i += SLOT_LENGTH) {
             statistics.add(
                 values.get(i + STARTED_COUNT_INDEX),
                 values.get(i + SUCCEEDED_COUNT_INDEX),

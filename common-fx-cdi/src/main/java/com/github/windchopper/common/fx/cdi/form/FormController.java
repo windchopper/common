@@ -16,7 +16,7 @@ public abstract class FormController {
     protected void afterLoad(Parent form, Map<String, ?> parameters, Map<String, ?> formNamespace) {
         stream(getClass().getDeclaredFields())
             .filter(field -> field.isAnnotationPresent(FXML.class)).forEach(field -> {
-                Object value = formNamespace.get(field.getName());
+                var value = formNamespace.get(field.getName());
 
                 if (value != null) {
                     try {

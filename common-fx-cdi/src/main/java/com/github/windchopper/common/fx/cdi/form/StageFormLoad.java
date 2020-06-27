@@ -24,7 +24,7 @@ public class StageFormLoad extends FormLoad {
     }
 
     @Override public void afterLoad(Parent form, Object controller, Map<String, ?> parameters, ObservableMap<String, ?> formNamespace) {
-        Stage stage = Pipeliner.of(stageSupplier)
+        var stage = Pipeliner.of(stageSupplier)
             .set(suppliedStage -> suppliedStage::setScene, Pipeliner.of(form)
                 .map(Scene::new)
                 .get())
