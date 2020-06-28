@@ -16,6 +16,7 @@
         <module>common-cdi</module>
         <module>common-fx</module>
         <module>common-fx-cdi</module>
+        <module>common-io</module>
         <module>common-jmx</module>
         <module>common-monitoring</module>
         <module>common-ng</module>
