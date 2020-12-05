@@ -15,7 +15,7 @@ public abstract class StageFormController extends FormController {
     @Override protected void afterLoad(Parent form, Map<String, ?> parameters, Map<String, ?> formNamespace) {
         super.afterLoad(form, parameters, formNamespace);
 
-        new WindowApplyStoredBoundsBehavior(getClass().getName(), this::initializeBounds)
+        new WindowApplyStoredBoundsBehavior(String.format("%s-%d", getClass().getSimpleName(), getClass().getCanonicalName().hashCode()), this::initializeBounds)
             .apply(stage = (Stage) form.getScene().getWindow());
     }
 
