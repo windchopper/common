@@ -4,8 +4,6 @@ import com.github.windchopper.common.preferences.PreferencesEntryType;
 import com.github.windchopper.common.preferences.PreferencesStorage;
 
 import javax.json.*;
-import javax.json.JsonValue.ValueType;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -26,7 +24,7 @@ public class StructuralType<T> implements PreferencesEntryType<T> {
     }
 
     private JsonObjectBuilder load(PreferencesStorage storage) {
-        JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
+        var jsonObjectBuilder = Json.createObjectBuilder();
 
         for (String valueName : storage.valueNames()) {
             jsonObjectBuilder.add(valueName, storage.value(valueName, null));
@@ -46,27 +44,28 @@ public class StructuralType<T> implements PreferencesEntryType<T> {
     }
 
     private void save(PreferencesStorage storage, JsonObject jsonObject) {
-        for (String valueKey : storage.valueNames()) {
+        for (var valueKey : storage.valueNames()) {
             storage.removeValue(valueKey);
         }
 
-        for (String childName : storage.childNames()) {
+        for (var childName : storage.childNames()) {
             storage.removeChild(childName);
         }
 
         if (jsonObject != null)
-            for (Map.Entry<String, JsonValue> entry : jsonObject.entrySet()) {
-                String key = entry.getKey();
-                JsonValue value = entry.getValue();
+            for (var entry : jsonObject.entrySet())
+                switch (entry.getValue().getValueType()) {
+                    case OBJECT:
+                        save(storage.child(entry.getKey()), entry.getValue().asJsonObject());
+                        break;
 
-                if (value.getValueType() == ValueType.OBJECT) {
-                    save(storage.child(key), value.asJsonObject());
-                } else if (value.getValueType() == ValueType.STRING) {
-                    storage.putValue(key, ((JsonString) value).getString());
-                } else {
-                    storage.putValue(key, value.toString());
+                    case STRING:
+                        storage.putValue(entry.getKey(), ((JsonString) entry.getValue()).getString());
+                        break;
+
+                    default:
+                        storage.putValue(entry.getKey(), entry.getValue().toString());
                 }
-            }
     }
 
 }

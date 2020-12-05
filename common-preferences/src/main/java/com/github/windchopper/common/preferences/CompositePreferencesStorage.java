@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toSet;
 
-public class CompositePreferencesStorage implements PreferencesStorage {
+public class CompositePreferencesStorage extends AbstractPreferencesStorage {
 
     public static class Mediator extends PreferencesStorageDecorator {
 
