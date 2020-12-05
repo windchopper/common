@@ -130,7 +130,7 @@ public class ModernCompositePreferencesStorage<K> extends AbstractPreferencesSto
     @Override public PreferencesStorage child(String name) {
         return bufferedChilds.computeIfAbsent(name, missingName -> new ModernCompositePreferencesStorage<>(
             loadOrder.stream()
-                .map(storageKey -> new SimpleEntry<>(storageKey, storages.get(storageKey)))
+                .map(storageKey -> new SimpleEntry<>(storageKey, storages.get(storageKey).child(name)))
                 .collect(toMap(Entry::getKey, Entry::getValue)),
             loadOrder,
             propagationTargets,
