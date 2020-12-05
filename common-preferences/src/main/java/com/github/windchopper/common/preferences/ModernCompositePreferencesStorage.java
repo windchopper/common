@@ -96,7 +96,11 @@ public class ModernCompositePreferencesStorage<K> extends AbstractPreferencesSto
 
         value.ifPresent(presentValue -> propagationTargets.stream()
             .map(storages::get)
-            .forEach(storage -> storage.putValue(name, presentValue)));
+            .forEach(storage -> {
+                if (storage.value(name, null) == null) {
+                    storage.putValue(name, presentValue);
+                }
+            }));
 
         return value.orElse(defaultValue);
     }
