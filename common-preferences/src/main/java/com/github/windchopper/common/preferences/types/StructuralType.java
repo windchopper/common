@@ -27,7 +27,7 @@ public class StructuralType<T> implements PreferencesEntryType<T> {
         var jsonObjectBuilder = Json.createObjectBuilder();
 
         for (String valueName : storage.valueNames()) {
-            jsonObjectBuilder.add(valueName, storage.value(valueName, null));
+            storage.value(valueName).ifPresent(presentValue -> jsonObjectBuilder.add(valueName, presentValue.text()));
         }
 
         for (String childName : storage.childNames()) {
@@ -60,11 +60,11 @@ public class StructuralType<T> implements PreferencesEntryType<T> {
                         break;
 
                     case STRING:
-                        storage.putValue(entry.getKey(), ((JsonString) entry.getValue()).getString());
+                        storage.saveValue(entry.getKey(), ((JsonString) entry.getValue()).getString());
                         break;
 
                     default:
-                        storage.putValue(entry.getKey(), entry.getValue().toString());
+                        storage.saveValue(entry.getKey(), entry.getValue().toString());
                 }
     }
 

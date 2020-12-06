@@ -4,6 +4,6 @@ module windchopper.common.cdi {
 
     opens com.github.windchopper.common.cdi;
 
-    requires jakarta.enterprise.cdi.api;
+    requires jakarta.cdi;
 
 }

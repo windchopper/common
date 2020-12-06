@@ -1,10 +1,9 @@
 package com.github.windchopper.common.preferences;
 
-import com.github.windchopper.common.util.stream.FailableRunnable;
-import com.github.windchopper.common.util.stream.FailableSupplier;
-
-import java.util.Collections;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 public class PlatformPreferencesStorage extends AbstractPreferencesStorage {
@@ -15,44 +14,33 @@ public class PlatformPreferencesStorage extends AbstractPreferencesStorage {
         this.preferences = preferences;
     }
 
-    @Override public String value(String name, String defaultValue) {
-        return preferences.get(name, defaultValue);
+    @Override public Optional<PreferencesEntryText> valueImpl(String name) {
+        return Optional.ofNullable(preferences.get(name, null))
+            .map(encoded -> new PreferencesEntryText().decodeFromString(encoded));
     }
 
-    @Override public void putValue(String name, String value) {
-        preferences.put(name, value);
+    @Override public void saveValueImpl(String name, String text) {
+        preferences.put(name, new PreferencesEntryText(LocalDateTime.now(), text).encodeToString());
     }
 
-    @Override public void removeValue(String name) {
+    @Override public void removeValueImpl(String name) {
         preferences.remove(name);
     }
 
-    @Override public Set<String> valueNames() {
-        return FailableSupplier.failsafeGet(preferences::keys)
-            .onFailure(this::logError)
-            .result()
-            .map(Set::of)
-            .orElseGet(Collections::emptySet);
+    @Override public Set<String> valueNamesImpl() throws BackingStoreException {
+        return Set.of(preferences.keys());
     }
 
-    @Override public Set<String> childNames() {
-        return FailableSupplier.failsafeGet(preferences::childrenNames)
-            .onFailure(this::logError)
-            .result()
-            .map(Set::of)
-            .orElseGet(Collections::emptySet);
+    @Override public Set<String> childNamesImpl() throws BackingStoreException {
+        return Set.of(preferences.childrenNames());
     }
 
-    @Override public PreferencesStorage child(String name) {
-        return FailableSupplier.failsafeGet(() -> new PlatformPreferencesStorage(preferences.node(name)))
-            .onFailure(this::logError)
-            .result()
-            .orElse(null);
+    @Override public PreferencesStorage childImpl(String name) {
+        return new PlatformPreferencesStorage(preferences.node(name));
     }
 
-    @Override public void removeChild(String name) {
-        FailableRunnable.failsafeRun(() -> preferences.node(name).removeNode())
-            .onFailure(this::logError);
+    @Override public void removeChildImpl(String name) throws BackingStoreException {
+        preferences.node(name).removeNode();
     }
 
 }

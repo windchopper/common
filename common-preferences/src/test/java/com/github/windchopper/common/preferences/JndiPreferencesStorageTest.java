@@ -6,12 +6,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.naming.Context;
-import javax.naming.NameClassPair;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
+import javax.naming.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.when;
 
@@ -37,14 +35,20 @@ import static org.mockito.Mockito.when;
             .thenReturn(bindings);
     }
 
-    @Test public void test() {
+    @Test public void test() throws NamingException {
         var storageRoot = new JndiPreferencesStorage(() -> context, "value:", "child:");
 
-        assertEquals("v#1", storageRoot.value("k#1", "k#1 not set"));
-        assertEquals("v#2", storageRoot.value("k#2", "k#2 not set"));
+        var value1st = storageRoot.value("k#1");
+        assertTrue(value1st.isPresent());
+        assertEquals("v#1", value1st.get().text());
 
-        var sample = "oops";
-        assertEquals(sample, storageRoot.value(sample, sample));
+        var value2nd = storageRoot.value("k#2");
+        assertTrue(value2nd.isPresent());
+        assertEquals("v#2", value2nd.get().text());
+
+        var valueOops = storageRoot.value("oops");
+        assertTrue(valueOops.isPresent());
+        assertEquals("oops", valueOops.get().text());
     }
 
 }

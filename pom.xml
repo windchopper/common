@@ -11,6 +11,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
         <javafx.version>12</javafx.version>
+        <javax.json.version>1.1.4</javax.json.version>
+        <jakarta.cdi.version>3.0.0</jakarta.cdi.version>
+        <junit.version>5.7.0</junit.version>
+        <mockito.junit.version>3.3.3</mockito.junit.version>
     </properties>
     <modules>
         <module>common-cdi</module>
@@ -25,46 +29,6 @@
     </modules>
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>com.github.windchopper</groupId>
-                <artifactId>common-cdi</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.windchopper</groupId>
-                <artifactId>common-fx</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.windchopper</groupId>
-                <artifactId>common-fx-cdi</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.windchopper</groupId>
-                <artifactId>common-jmx</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.windchopper</groupId>
-                <artifactId>common-monitoring</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.windchopper</groupId>
-                <artifactId>common-ng</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.windchopper</groupId>
-                <artifactId>common-preferences</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.windchopper</groupId>
-                <artifactId>common-util</artifactId>
-                <version>${project.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-graphics</artifactId>
@@ -83,23 +47,23 @@
             <dependency>
                 <groupId>org.glassfish</groupId>
                 <artifactId>javax.json</artifactId>
-                <version>1.1.4</version>
+                <version>${javax.json.version}</version>
             </dependency>
             <dependency>
                 <groupId>jakarta.enterprise</groupId>
                 <artifactId>jakarta.enterprise.cdi-api</artifactId>
-                <version>3.0.0-M2</version>
+                <version>${jakarta.cdi.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-engine</artifactId>
-                <version>5.7.0-M1</version>
+                <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
-                <version>3.3.3</version>
+                <version>${mockito.junit.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

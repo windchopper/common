@@ -1,21 +1,18 @@
 package com.github.windchopper.common.preferences;
 
+import java.util.Optional;
 import java.util.Set;
 
 public interface PreferencesStorage {
 
-    String PATH_NAME_SEPARATOR = "/";
+    Optional<PreferencesEntryText> value(String name) throws PreferencesException;
+    void saveValue(String name, String text) throws PreferencesException;
+    void removeValue(String name) throws PreferencesException;
 
-    String value(String name, String defaultValue);
+    PreferencesStorage child(String name) throws PreferencesException;
+    void removeChild(String name) throws PreferencesException;
 
-    void putValue(String name, String value);
-    void removeValue(String name);
-
-    Set<String> valueNames();
-    Set<String> childNames();
-
-    PreferencesStorage child(String name);
-
-    void removeChild(String name);
+    Set<String> valueNames() throws PreferencesException;
+    Set<String> childNames() throws PreferencesException;
 
 }

@@ -15,14 +15,17 @@
         <dependency>
             <groupId>com.github.windchopper</groupId>
             <artifactId>common-cdi</artifactId>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>com.github.windchopper</groupId>
             <artifactId>common-fx</artifactId>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>com.github.windchopper</groupId>
             <artifactId>common-util</artifactId>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>jakarta.enterprise</groupId>

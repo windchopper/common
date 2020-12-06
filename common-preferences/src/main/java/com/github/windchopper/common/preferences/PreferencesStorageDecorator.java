@@ -1,5 +1,6 @@
 package com.github.windchopper.common.preferences;
 
+import java.util.Optional;
 import java.util.Set;
 
 public class PreferencesStorageDecorator implements PreferencesStorage {
@@ -10,15 +11,16 @@ public class PreferencesStorageDecorator implements PreferencesStorage {
         this.storage = storage;
     }
 
-    @Override public String value(String name, String defaultValue) {
-        return storage.value(name, defaultValue);
+    @Override public Optional<PreferencesEntryText> value(String name) {
+        return storage.value(name);
     }
 
-    @Override public void putValue(String name, String value) {
-        storage.putValue(name, value);
+    @Override public void saveValue(String name, String text) {
+        storage.saveValue(name, text);
     }
 
-    @Override public void removeValue(String name) {
+    @Override
+    public void removeValue(String name) {
         storage.removeValue(name);
     }
 

@@ -1,13 +1,15 @@
 package com.github.windchopper.common.preferences;
 
-import com.github.windchopper.common.util.stream.*;
+import com.github.windchopper.common.util.stream.FailableConsumer;
+import com.github.windchopper.common.util.stream.FailableSupplier;
 
 import javax.naming.*;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toMap;
+import static java.util.Collections.emptySet;
 
 public class JndiPreferencesStorage extends AbstractPreferencesStorage {
 
@@ -23,26 +25,26 @@ public class JndiPreferencesStorage extends AbstractPreferencesStorage {
     private final Map<String, String> values = new HashMap<>();
     private final Map<String, PreferencesStorage> childs = new HashMap<>();
 
-    public JndiPreferencesStorage(FailableSupplier<Context, NamingException> contextBuilder, String valuePrefix, String childPrefix) {
+    public JndiPreferencesStorage(FailableSupplier<Context, NamingException> contextBuilder, String valuePrefix, String childPrefix) throws NamingException {
         this.contextBuilder = contextBuilder;
         this.valuePrefix = Objects.toString(valuePrefix, DEFAULT_PREFIX__VALUE);
         this.childPrefix = Objects.toString(childPrefix, DEFAULT_PREFIX__CHILD);
         this.name = "";
         this.path = name;
-        load();
+        performWithContext(this::continueLoad);
     }
 
-    public JndiPreferencesStorage(JndiPreferencesStorage parent, String name) {
+    public JndiPreferencesStorage(JndiPreferencesStorage parent, String name) throws NamingException {
         this.contextBuilder = parent.contextBuilder;
         this.valuePrefix = parent.valuePrefix;
         this.childPrefix = parent.childPrefix;
         this.name = name;
-        this.path = parent.path + PATH_NAME_SEPARATOR + name;
-        load();
+        this.path = parent.path + "/" + name;
+        performWithContext(this::continueLoad);
     }
 
     private Context traverse(Context context) throws NamingException {
-        for (var tokenizer = new StringTokenizer(path, PATH_NAME_SEPARATOR); tokenizer.hasMoreTokens(); ) {
+        for (var tokenizer = new StringTokenizer(path, "/"); tokenizer.hasMoreTokens(); ) {
             context = context.createSubcontext(tokenizer.nextToken());
         }
 
@@ -57,12 +59,6 @@ public class JndiPreferencesStorage extends AbstractPreferencesStorage {
         } finally {
             context.close();
         }
-    }
-
-    private void load() {
-        FailableRunnable
-            .failsafeRun(() -> performWithContext(this::continueLoad))
-            .onFailure(this::logError);
     }
 
     private <B extends NameClassPair> Stream<B> bindingsAsStream(FailableSupplier<NamingEnumeration<B>, NamingException> listMethod) throws NamingException {
@@ -82,62 +78,58 @@ public class JndiPreferencesStorage extends AbstractPreferencesStorage {
         var separatedBindings = bindingsAsStream(() -> context.list(""))
             .collect(Collectors.groupingBy(binding -> binding.getName().startsWith(valuePrefix) ? "values" : binding.getName().startsWith(childPrefix) ? "childs" : "others", Collectors.toSet()));
 
-        Optional.ofNullable(separatedBindings.get("values")).ifPresent(bindings -> values.putAll(
-            bindings.stream()
-                .collect(toMap(
-                    binding -> binding.getName().replace(valuePrefix, ""),
-                    FailableFunction.wrap((NameClassPair binding) -> context.lookup(binding.getName()))
-                        .andThen(result -> result.recover((binding, exception) -> null))
-                        .andThen(result -> Objects.toString(result, null))))));
+        for (var binding : separatedBindings.getOrDefault("values", emptySet())) {
+            values.put(binding.getName().replace(valuePrefix, ""), Objects.toString(context.lookup(binding.getName()), null));
+        }
 
-        Optional.ofNullable(separatedBindings.get("childs")).ifPresent(bindings -> childs.putAll(
-            bindings.stream().collect(
-                toMap(
-                    binding -> binding.getName().replace(childPrefix, ""),
-                    binding -> new JndiPreferencesStorage(this, binding.getName().replace(childPrefix, ""))))));
+        for (var binding : separatedBindings.getOrDefault("childs", emptySet())) {
+            childs.put(binding.getName().replace(childPrefix, ""), new JndiPreferencesStorage(this, binding.getName().replace(childPrefix, "")));
+        }
     }
 
-    @Override public String value(String name, String defaultValue) {
-        return values.getOrDefault(name, defaultValue);
+    @Override public Optional<PreferencesEntryText> valueImpl(String name) {
+        return Optional.ofNullable(values.get(name))
+            .map(encoded -> new PreferencesEntryText().decodeFromString(encoded));
     }
 
-    @Override public void putValue(String name, String value) {
-        FailableRunnable
-            .failsafeRun(() -> performWithContext(context -> {
-                traverse(context).rebind(name, value);
-                values.put(name, value);
-            }))
-            .onFailure(this::logError);
+    @Override public void saveValueImpl(String name, String text) throws NamingException {
+        performWithContext(context -> {
+            var encodedValue = new PreferencesEntryText(LocalDateTime.now(), text).encodeToString();
+            traverse(context).rebind(name, encodedValue);
+            values.put(name, encodedValue);
+        });
     }
 
-    @Override public void removeValue(String name) {
-        FailableRunnable
-            .failsafeRun(() -> performWithContext(context -> {
-                traverse(context).unbind(name);
-                values.remove(name);
-            }))
-            .onFailure(this::logError);
+    @Override public void removeValueImpl(String name) throws NamingException {
+        performWithContext(context -> {
+            traverse(context).unbind(name);
+            values.remove(name);
+        });
     }
 
-    @Override public Set<String> valueNames() {
+    @Override public PreferencesStorage childImpl(String name) throws NamingException {
+        var child = childs.get(name);
+
+        if (child == null) {
+            childs.put(name, child = new JndiPreferencesStorage(this, name));
+        }
+
+        return child;
+    }
+
+    @Override public void removeChildImpl(String name) throws NamingException {
+        performWithContext(context -> {
+            traverse(context).destroySubcontext(name);
+            childs.remove(name);
+        });
+    }
+
+    @Override public Set<String> valueNamesImpl() {
         return Collections.unmodifiableSet(values.keySet());
     }
 
-    @Override public Set<String> childNames() {
+    @Override public Set<String> childNamesImpl() {
         return Collections.unmodifiableSet(childs.keySet());
-    }
-
-    @Override public PreferencesStorage child(String name) {
-        return childs.computeIfAbsent(name, key -> new JndiPreferencesStorage(this, key));
-    }
-
-    @Override public void removeChild(String name) {
-        FailableRunnable
-            .failsafeRun(() -> performWithContext(context -> {
-                traverse(context).destroySubcontext(name);
-                childs.remove(name);
-            }))
-            .onFailure(this::logError);
     }
 
 }

@@ -15,10 +15,12 @@
         <dependency>
             <groupId>com.github.windchopper</groupId>
             <artifactId>common-preferences</artifactId>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>com.github.windchopper</groupId>
             <artifactId>common-util</artifactId>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>

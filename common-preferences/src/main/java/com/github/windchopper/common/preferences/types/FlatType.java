@@ -1,10 +1,11 @@
 package com.github.windchopper.common.preferences.types;
 
-import com.github.windchopper.common.preferences.PreferencesEntryType;
-import com.github.windchopper.common.preferences.PreferencesStorage;
+import com.github.windchopper.common.preferences.*;
 
 import java.util.Optional;
 import java.util.function.Function;
+
+import static java.util.function.Predicate.not;
 
 public class FlatType<T> implements PreferencesEntryType<T> {
 
@@ -17,19 +18,17 @@ public class FlatType<T> implements PreferencesEntryType<T> {
     }
 
     @Override public T load(PreferencesStorage storage, String name) {
-        return Optional.ofNullable(storage.value(name, null))
-            .map(transformer).orElse(null);
+        return storage.value(name)
+            .map(PreferencesEntryText::text)
+            .filter(not(String::isBlank))
+            .map(transformer)
+            .orElse(null);
     }
 
     @Override public void save(PreferencesStorage storage, String name, T value) {
-        String valueToStore = Optional.ofNullable(value)
-            .map(reverseTransformer).orElse(null);
-
-        if (valueToStore != null) {
-            storage.putValue(name, valueToStore);
-        } else {
-            storage.removeValue(name);
-        }
+        storage.saveValue(name, Optional.ofNullable(value)
+            .map(reverseTransformer)
+            .orElse(null));
     }
 
 }

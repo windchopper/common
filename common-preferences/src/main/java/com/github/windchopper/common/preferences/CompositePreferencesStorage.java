@@ -1,116 +1,186 @@
 package com.github.windchopper.common.preferences;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
-import java.util.function.Predicate;
+import java.util.Map.Entry;
 
+import static java.util.Comparator.comparing;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
-public class CompositePreferencesStorage extends AbstractPreferencesStorage {
+public class CompositePreferencesStorage<K> extends AbstractPreferencesStorage {
 
-    public static class Mediator extends PreferencesStorageDecorator {
+    public class Configurer {
 
-        final int loadOrder;
-        final int saveOrder;
-        final boolean propagateTarget;
-
-        public Mediator(PreferencesStorage storage, int loadOrder, int saveOrder, boolean propagateTarget) {
-            super(storage);
-            this.loadOrder = loadOrder;
-            this.saveOrder = saveOrder;
-            this.propagateTarget = propagateTarget;
+        public CompositePreferencesStorage<K> enough() {
+            return CompositePreferencesStorage.this;
         }
 
     }
 
-    static class Pair {
+    public class LoadConfigurer extends Configurer {
 
-        final Mediator mediator;
-        final String value;
+        public LoadConfigurer tryStorage(K stogageKey) {
+            loadOrder.add(stogageKey);
+            return this;
+        }
 
-        Pair(Mediator mediator, String value) {
-            this.mediator = mediator;
-            this.value = value;
+        public void loadNewer(boolean loadNewer) {
+            CompositePreferencesStorage.this.loadNewer = loadNewer;
+        }
+
+        public void propagateOlder(boolean propagateOlder) {
+            CompositePreferencesStorage.this.propagateOlder = propagateOlder;
+        }
+
+        public LoadConfigurer propagateToStorage(K storageKey) {
+            propagationTargets.add(storageKey);
+            return this;
         }
 
     }
 
-    private final static Predicate<Mediator> loadSelector = mediator -> mediator.loadOrder > 0;
-    private final static Comparator<Mediator> loadComparator = Comparator.comparingInt(mediator -> mediator.loadOrder);
-    private final static Predicate<Mediator> saveSelector = mediator -> mediator.saveOrder > 0;
-    private final static Comparator<Mediator> saveComparator = Comparator.comparingInt(mediator -> mediator.saveOrder);
+    public class SaveConfigurer extends Configurer {
 
-    private final Set<Mediator> mediators;
+        public SaveConfigurer saveToStorage(K storageKey) {
+            saveOrder.add(storageKey);
+            return this;
+        }
+
+    }
+
+    private final Map<K, PreferencesStorage> storages;
     private final Map<String, PreferencesStorage> bufferedChilds = new HashMap<>();
 
-    public CompositePreferencesStorage(Collection<Mediator> mediators) {
-        this.mediators = new HashSet<>(mediators);
+    private LoadConfigurer loadConfigurer;
+    private SaveConfigurer saveConfigurer;
+
+    private final List<K> loadOrder;
+    private final List<K> propagationTargets;
+    private final List<K> saveOrder;
+
+    private boolean loadNewer;
+    private boolean propagateOlder;
+
+    public CompositePreferencesStorage(Map<K, PreferencesStorage> storages) {
+        this(
+            storages,
+            new LinkedList<>(),
+            new LinkedList<>(),
+            new LinkedList<>(),
+            false,
+            false);
+
+        loadConfigurer = new LoadConfigurer();
+        saveConfigurer = new SaveConfigurer();
     }
 
-    @Override public String value(String name, String defaultValue) {
-        var mediatorWithValue = mediators.stream()
-            .filter(loadSelector)
-            .sorted(loadComparator)
-            .map(mediator -> new Pair(mediator, mediator.value(name, null)))
-            .filter(pair -> pair.value != null)
-            .findFirst();
+    CompositePreferencesStorage(
+        Map<K, PreferencesStorage> storages,
+        List<K> loadOrder,
+        List<K> propagationTargets,
+        List<K> saveOrder,
+        boolean loadNewer,
+        boolean propagateOlder) {
 
-        mediatorWithValue.ifPresent(pair -> mediators.stream()
-            .filter(saveSelector)
-            .filter(mediator -> mediator.propagateTarget)
-            .sorted(saveComparator)
-            .filter(mediator -> mediator != pair.mediator)
-            .forEach(mediator -> mediator.putValue(name, pair.value)));
-
-        return mediatorWithValue.map(pair -> pair.value).orElse(defaultValue);
+        this.storages = storages;
+        this.loadOrder = loadOrder;
+        this.propagationTargets = propagationTargets;
+        this.saveOrder = saveOrder;
+        this.loadNewer = loadNewer;
+        this.propagateOlder = propagateOlder;
     }
 
-    @Override public void putValue(String name, String value) {
-        mediators.stream()
-            .filter(saveSelector)
-            .sorted(saveComparator)
-            .forEach(mediator -> mediator.putValue(name, value));
+    IllegalStateException alreadyConfigured() {
+        return new IllegalStateException("Already configured");
     }
 
-    @Override public void removeValue(String name) {
-        mediators.stream()
-            .filter(saveSelector)
-            .sorted(saveComparator)
-            .forEach(mediator -> mediator.removeValue(name));
+    public LoadConfigurer onLoad() {
+        return Optional.ofNullable(loadConfigurer)
+            .orElseThrow(this::alreadyConfigured);
     }
 
-    @Override public Set<String> valueNames() {
-        return mediators.stream()
-            .filter(loadSelector)
-            .sorted(loadComparator)
-            .flatMap(mediator -> mediator.valueNames().stream())
-            .collect(toSet());
+    public SaveConfigurer onSave() {
+        return Optional.ofNullable(saveConfigurer)
+            .orElseThrow(this::alreadyConfigured);
     }
 
-    @Override public Set<String> childNames() {
-        return mediators.stream()
-            .filter(loadSelector)
-            .sorted(loadComparator)
-            .flatMap(mediator -> mediator.childNames().stream())
-            .collect(toSet());
+    @Override public Optional<PreferencesEntryText> valueImpl(String name) {
+        var presentValues = loadOrder.stream()
+            .map(storages::get)
+            .map(storage -> storage.value(name));
+
+        Optional<PreferencesEntryText> selectedValue;
+
+        if (loadNewer) {
+            selectedValue = presentValues
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .max(comparing(PreferencesEntryText::modificationTime));
+        } else {
+            selectedValue = presentValues
+                .filter(Optional::isPresent)
+                .findFirst()
+                .flatMap(identity());
+        }
+
+        selectedValue.ifPresent(presentValue -> propagationTargets.stream()
+            .map(storages::get)
+            .forEach(storage -> {
+                var existingValue = storage.value(name);
+
+                if (existingValue.isEmpty() || propagateOlder && existingValue.get().modificationTime().isBefore(presentValue.modificationTime())) {
+                    storage.saveValue(name, presentValue.text());
+                }
+            }));
+
+        return selectedValue;
     }
 
-    @Override public PreferencesStorage child(String name) {
-        return bufferedChilds.computeIfAbsent(name, key -> new CompositePreferencesStorage(
-            mediators.stream()
-                .map(mediator -> new Mediator(
-                    mediator.storage.child(name),
-                    mediator.loadOrder,
-                    mediator.saveOrder,
-                    mediator.propagateTarget))
-                .collect(toSet())));
+    @Override public void saveValueImpl(String name, String text) {
+        saveOrder.stream()
+            .map(storages::get)
+            .forEach(storage -> storage.saveValue(name, text));
     }
 
-    @Override public void removeChild(String name) {
+    @Override public void removeValueImpl(String name) {
+        saveOrder.stream()
+            .map(storages::get)
+            .forEach(storage -> storage.removeValue(name));
+    }
+
+    @Override public PreferencesStorage childImpl(String name) {
+        return bufferedChilds.computeIfAbsent(name, missingName -> new CompositePreferencesStorage<>(
+            loadOrder.stream()
+                .map(storageKey -> new SimpleEntry<>(storageKey, storages.get(storageKey).child(name)))
+                .collect(toMap(Entry::getKey, Entry::getValue)),
+            loadOrder,
+            propagationTargets,
+            saveOrder,
+            loadNewer,
+            propagateOlder));
+    }
+
+    @Override public void removeChildImpl(String name) {
         bufferedChilds.remove(name);
-        mediators.stream()
-            .filter(saveSelector)
-            .sorted(saveComparator)
-            .forEach(mediator -> mediator.removeChild(name));
+        saveOrder.stream()
+            .map(storages::get)
+            .forEach(storage -> storage.removeChild(name));
+    }
+
+    @Override public Set<String> valueNamesImpl() {
+        return loadOrder.stream()
+            .map(storages::get)
+            .flatMap(storage -> storage.valueNames().stream())
+            .collect(toSet());
+    }
+
+    @Override public Set<String> childNamesImpl() {
+        return loadOrder.stream()
+            .map(storages::get)
+            .flatMap(storage -> storage.childNames().stream())
+            .collect(toSet());
     }
 
 }

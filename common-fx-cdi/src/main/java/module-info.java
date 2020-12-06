@@ -9,8 +9,8 @@ module windchopper.common.fx.cdi {
     requires java.logging;
     requires javafx.controls;
     requires javafx.fxml;
-    requires jakarta.inject.api;
-    requires jakarta.enterprise.cdi.api;
+    requires jakarta.inject;
+    requires jakarta.cdi;
     requires windchopper.common.cdi;
     requires windchopper.common.fx;
     requires windchopper.common.util;

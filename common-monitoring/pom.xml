@@ -15,6 +15,7 @@
         <dependency>
             <groupId>com.github.windchopper</groupId>
             <artifactId>common-jmx</artifactId>
+            <version>1.1</version>
         </dependency>
     </dependencies>
 </project>

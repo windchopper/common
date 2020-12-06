@@ -1,24 +1,25 @@
 package com.github.windchopper.common.preferences;
 
-import com.github.windchopper.common.preferences.types.FlatCollectionType;
-import com.github.windchopper.common.preferences.types.FlatMapType;
-import com.github.windchopper.common.preferences.types.FlatType;
-import org.junit.jupiter.api.BeforeAll;
+import com.github.windchopper.common.preferences.types.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
+import java.util.*;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
+import static java.util.function.Function.identity;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PlatformPreferencesStorageTest {
+
+    private final FlatType<String> stringType = new FlatType<>(identity(), identity());
+    private final FlatType<Double> doubleType = new FlatType<>(Double::parseDouble, Object::toString);
+
+    private final PreferencesEntryType<Set<String>> stringSetType = new FlatCollectionType<>(HashSet::new, identity(), identity());
+    private final PreferencesEntryType<Map<String, String>> stringMapType = new FlatMapType<>(HashMap::new, identity(), identity());
 
     private PreferencesStorage storage;
 
@@ -37,56 +38,65 @@ public class PlatformPreferencesStorageTest {
     }
 
     @Test public void testFlatString() {
-        var stringType = new FlatType<>(string -> string, string -> string);
-        var stringEntry = new PreferencesEntry<>(storage, "stringEntry", stringType, Duration.ZERO);
-        var value = "testValue";
+        var stringEntry = new PreferencesEntry<>(storage, "stringEntry", stringType);
         assertNull(stringEntry.load());
-        stringEntry.save(value);
-        assertEquals(value, stringEntry.load());
-        assertEquals(value, storage.value("stringEntry", null));
+
+        var stringValue = "testValue";
+
+        stringEntry.save(stringValue);
+        assertEquals(stringValue, stringEntry.load());
+
+        var stringEntryText = storage.value("stringEntry");
+        assertTrue(stringEntryText.isPresent());
+        assertEquals(stringValue, stringEntryText.get().text());
+
         stringEntry.save(null);
         assertNull(stringEntry.load());
-        assertNull(storage.value("stringEntry", null));
+
+        stringEntryText = storage.value("stringEntry");
+        assertTrue(stringEntryText.isPresent());
+        assertNull(stringEntryText.get().text());
     }
 
     @Test public void testFlatDouble() {
-        var doubleType = new FlatType<>(Double::parseDouble, Object::toString);
-        var doubleEntry = new PreferencesEntry<>(storage, "doubleEntry", doubleType, Duration.ofMinutes(1));
-        Double value = 1.1;
+        var doubleEntry = new PreferencesEntry<>(storage, "doubleEntry", doubleType);
         assertNull(doubleEntry.load());
-        doubleEntry.save(value);
-        assertEquals(value, doubleEntry.load());
-        assertEquals(value.toString(), storage.value("doubleEntry", null));
+
+        var doubleValue = Double.valueOf(1.1);
+
+        doubleEntry.save(doubleValue);
+        assertEquals(doubleValue, doubleEntry.load());
+
+        var doubleEntryText = storage.value("doubleEntry");
+        assertTrue(doubleEntryText.isPresent());
+        assertEquals(doubleValue.toString(), doubleEntryText.get().text());
+
         doubleEntry.save(null);
         assertNull(doubleEntry.load());
-        assertNull(storage.value("doubleEntry", null));
+
+        doubleEntryText = storage.value("doubleEntry");
+        assertTrue(doubleEntryText.isPresent());
+        assertNull(doubleEntryText.get().text());
     }
 
     @Test public void testFlatCollection() {
-        PreferencesEntryType<List<String>> stringListType = new FlatCollectionType<>(ArrayList::new, string -> string, string -> string);
-        PreferencesEntry<List<String>> stringListEntry = new PreferencesEntry<>(storage, "stringListEntry", stringListType, Duration.ZERO);
-        List<String> value = List.of("1st", "2nd", "3rd", "4th");
-        assertEquals(List.of(), stringListEntry.load());
-        stringListEntry.save(value);
-        assertTrue(stringListEntry.load().contains("1st"));
-        assertTrue(stringListEntry.load().contains("2nd"));
-        assertTrue(stringListEntry.load().contains("3rd"));
-        assertTrue(stringListEntry.load().contains("4th"));
-        assertEquals(value.size(), storage.child("stringListEntry").valueNames().size());
+        var stringSetEntry = new PreferencesEntry<>(storage, "stringSetEntry", stringSetType);
+        assertEquals(emptySet(), stringSetEntry.load());
+
+        var stringSet = Set.of("1st", "2nd", "3rd", "4th");
+
+        stringSetEntry.save(stringSet);
+        assertEquals(stringSet, stringSetEntry.load());
     }
 
     @Test public void testFlatMap() {
-        PreferencesEntryType<Map<String, String>> stringMapType = new FlatMapType<>(HashMap::new, Function.identity(), Function.identity());
-        PreferencesEntry<Map<String, String>> stringMapEntry = new PreferencesEntry<>(storage, "stringMapEntry", stringMapType, Duration.ZERO);
-        Map<String, String> stringMap = Map.of(
-            "1", "1st",
-            "2", "2nd",
-            "3", "3rd",
-            "4", "4th");
-        assertEquals(Map.of(), stringMapEntry.load());
+        var stringMapEntry = new PreferencesEntry<>(storage, "stringMapEntry", stringMapType);
+        assertEquals(emptyMap(), stringMapEntry.load());
+
+        var stringMap = Map.of("1", "1st", "2", "2nd", "3", "3rd", "4", "4th");
+
         stringMapEntry.save(stringMap);
         assertEquals(stringMap, stringMapEntry.load());
-        assertEquals(stringMap.size(), storage.child("stringMapEntry").valueNames().size());
     }
 
 }

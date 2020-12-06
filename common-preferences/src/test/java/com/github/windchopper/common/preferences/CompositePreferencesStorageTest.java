@@ -5,9 +5,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class) public class CompositePreferencesStorageTest {
@@ -15,39 +18,35 @@ import static org.mockito.Mockito.*;
     @Mock private PreferencesStorage storageNode1st;
     @Mock private PreferencesStorage storageNode2nd;
 
-    @Test public void testLoadValue() {
-        when(storageNode1st.value(eq("key#1"), nullable(String.class))).thenReturn("value#1@1");
-        when(storageNode1st.value(eq("key#2"), nullable(String.class))).thenReturn(null);
-        when(storageNode1st.value(eq("key#3"), nullable(String.class))).thenReturn("value#3@1");
-        when(storageNode2nd.value(eq("key#2"), nullable(String.class))).thenReturn("value#2@2");
+    @Test public void testOrder() {
+        when(storageNode1st.value(eq("key1"))).thenReturn(Optional.of(new PreferencesEntryText("val1")));
+        when(storageNode1st.value(eq("key2"))).thenReturn(Optional.empty());
 
-        var compositeStorageNode = new CompositePreferencesStorage(List.of(
-            new CompositePreferencesStorage.Mediator(storageNode1st, 1, 2, false),
-            new CompositePreferencesStorage.Mediator(storageNode2nd, 2, 1, false)));
+        when(storageNode2nd.value(eq("key1"))).thenReturn(Optional.empty());
+        when(storageNode2nd.value(eq("key2"))).thenReturn(Optional.of(new PreferencesEntryText("val2")));
 
-        assertEquals("value#1@1", compositeStorageNode.value("key#1", null));
-        assertEquals("value#2@2", compositeStorageNode.value("key#2", null));
-        assertEquals("value#3@1", compositeStorageNode.value("key#3", null));
+        var compositeStorageNode = new CompositePreferencesStorage<>(
+            Map.of("1", storageNode1st, "2", storageNode2nd))
+                .onLoad()
+                .tryStorage("1")
+                .tryStorage("2")
+                .propagateToStorage("2")
+                .enough()
+                .onSave()
+                .saveToStorage("1")
+                .saveToStorage("2")
+                .enough();
 
-        assertEquals("value#nonexistent", compositeStorageNode.value("key#nonexistent", "value#nonexistent"));
-    }
+        var value1st = compositeStorageNode.value("key1");
+        var value2nd = compositeStorageNode.value("key2");
 
-    @Test public void testSaveValue() {
-        var compositeStorageNode = new CompositePreferencesStorage(List.of(
-            new CompositePreferencesStorage.Mediator(storageNode1st, 1, 2, false),
-            new CompositePreferencesStorage.Mediator(storageNode2nd, 2, 1, false)));
+        assertTrue(value1st.isPresent());
+        assertEquals("val1", value1st.get().text());
+        assertTrue(value2nd.isPresent());
+        assertEquals("val2", value2nd.get().text());
 
-        compositeStorageNode.putValue("key#new", "value#new");
-
-        var order = inOrder(storageNode2nd, storageNode1st);
-
-        order.verify(storageNode2nd, times(1)).putValue(eq("key#new"), eq("value#new"));
-        order.verify(storageNode1st, times(1)).putValue(eq("key#new"), eq("value#new"));
-
-        compositeStorageNode.removeValue("key#new");
-
-        order.verify(storageNode2nd, times(1)).removeValue(eq("key#new"));
-        order.verify(storageNode1st, times(1)).removeValue(eq("key#new"));
+        verify(storageNode2nd, times(1)).value(eq("key1"));
+        verify(storageNode2nd, times(1)).saveValue(eq("key1"), eq("val1"));
     }
 
 }

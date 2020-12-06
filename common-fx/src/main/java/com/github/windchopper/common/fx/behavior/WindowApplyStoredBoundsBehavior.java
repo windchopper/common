@@ -2,10 +2,7 @@ package com.github.windchopper.common.fx.behavior;
 
 import com.github.windchopper.common.fx.preferences.PointPreferencesEntryType;
 import com.github.windchopper.common.fx.preferences.RectanglePreferencesEntryType;
-import com.github.windchopper.common.preferences.PlatformPreferencesStorage;
-import com.github.windchopper.common.preferences.PreferencesEntry;
-import com.github.windchopper.common.preferences.PreferencesEntryType;
-import com.github.windchopper.common.preferences.PreferencesStorage;
+import com.github.windchopper.common.preferences.*;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Stage;
@@ -66,7 +63,7 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
     }
 
     private void applyNonResizable(Window window) {
-        PreferencesEntry<Point2D> preferencesEntry = new PreferencesEntry<>(
+        PreferencesEntry<Point2D> preferencesEntry = new BufferedPreferencesEntry<>(
             boundsStorage,
             preferencesEntryName,
             pointType,
@@ -95,7 +92,7 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
     }
 
     private void applyResizable(Window window) {
-        var preferencesEntry = new PreferencesEntry<>(
+        var preferencesEntry = new BufferedPreferencesEntry<>(
             boundsStorage,
             preferencesEntryName,
             rectangleType,
