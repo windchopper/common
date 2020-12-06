@@ -26,12 +26,14 @@ public class CompositePreferencesStorage<K> extends AbstractPreferencesStorage {
             return this;
         }
 
-        public void loadNewer(boolean loadNewer) {
+        public LoadConfigurer loadNewer(boolean loadNewer) {
             CompositePreferencesStorage.this.loadNewer = loadNewer;
+            return this;
         }
 
-        public void propagateOlder(boolean propagateOlder) {
+        public LoadConfigurer propagateOlder(boolean propagateOlder) {
             CompositePreferencesStorage.this.propagateOlder = propagateOlder;
+            return this;
         }
 
         public LoadConfigurer propagateToStorage(K storageKey) {
