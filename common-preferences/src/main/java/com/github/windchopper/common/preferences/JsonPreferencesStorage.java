@@ -25,7 +25,7 @@ public class JsonPreferencesStorage extends AbstractPreferencesStorage {
     }
 
     @Override public Optional<PreferencesEntryText> valueImpl(String name) {
-        return Optional.of(jsonObject.getJsonString(name))
+        return Optional.ofNullable(jsonObject.getJsonString(name))
             .map(JsonString::getString)
             .map(encoded -> new PreferencesEntryText(jsonFileModificationTime)
                 .decodeFromString(encoded));
