@@ -15,11 +15,11 @@ public class PointPreferencesEntryType extends StructuralType<Point2D> {
     public PointPreferencesEntryType() {
         super(
             source -> new Point2D(
-                source.getJsonNumber(KEY__X).doubleValue(),
-                source.getJsonNumber(KEY__Y).doubleValue()),
+                Double.parseDouble(source.getString(KEY__X)),
+                Double.parseDouble(source.getString(KEY__Y))),
             source -> Pipeliner.of(Json::createObjectBuilder)
-                .set(target -> value -> target.add(KEY__X, value), source.getX())
-                .set(target -> value -> target.add(KEY__Y, value), source.getY())
+                .set(target -> value -> target.add(KEY__X, value), String.valueOf(source.getX()))
+                .set(target -> value -> target.add(KEY__Y, value), String.valueOf(source.getY()))
                 .map(JsonObjectBuilder::build)
                 .get());
     }

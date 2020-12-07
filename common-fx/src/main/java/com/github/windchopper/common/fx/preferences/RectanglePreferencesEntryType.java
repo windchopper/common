@@ -17,15 +17,15 @@ public class RectanglePreferencesEntryType extends StructuralType<Rectangle2D> {
     public RectanglePreferencesEntryType() {
         super(
             source -> new Rectangle2D(
-                source.getJsonNumber(KEY__X).doubleValue(),
-                source.getJsonNumber(KEY__Y).doubleValue(),
-                source.getJsonNumber(KEY__WIDTH).doubleValue(),
-                source.getJsonNumber(KEY__HEIGHT).doubleValue()),
+                Double.parseDouble(source.getString(KEY__X)),
+                Double.parseDouble(source.getString(KEY__Y)),
+                Double.parseDouble(source.getString(KEY__WIDTH)),
+                Double.parseDouble(source.getString(KEY__HEIGHT))),
             source -> Pipeliner.of(Json::createObjectBuilder)
-                .set(target -> value -> target.add(KEY__X, value), source.getMinX())
-                .set(target -> value -> target.add(KEY__Y, value), source.getMinY())
-                .set(target -> value -> target.add(KEY__WIDTH, value), source.getWidth())
-                .set(target -> value -> target.add(KEY__HEIGHT, value), source.getHeight())
+                .set(target -> value -> target.add(KEY__X, value), String.valueOf(source.getMinX()))
+                .set(target -> value -> target.add(KEY__Y, value), String.valueOf(source.getMinY()))
+                .set(target -> value -> target.add(KEY__WIDTH, value), String.valueOf(source.getWidth()))
+                .set(target -> value -> target.add(KEY__HEIGHT, value), String.valueOf(source.getHeight()))
                 .map(JsonObjectBuilder::build)
                 .get());
     }
