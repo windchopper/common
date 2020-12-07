@@ -17,11 +17,11 @@ public class BufferedPreferencesEntry<T> extends PreferencesEntry<T> {
             super::load);
     }
 
-    @Override public T load() {
+    @Override public T load() throws PreferencesException {
         return storedValue.get();
     }
 
-    @Override public void save(T value) {
+    @Override public void save(T value) throws PreferencesException {
         super.save(value);
         storedValue.invalidate();
     }
