@@ -25,12 +25,15 @@ public class JsonPreferencesStorage extends AbstractPreferencesStorage {
     }
 
     @Override public Optional<PreferencesEntryText> valueImpl(String name) {
-        return Optional.ofNullable(jsonObject.getString(name))
-            .map(encoded -> new PreferencesEntryText(jsonFileModificationTime).decodeFromString(encoded));
+        return Optional.of(jsonObject.getJsonString(name))
+            .map(JsonString::getString)
+            .map(encoded -> new PreferencesEntryText(jsonFileModificationTime)
+                .decodeFromString(encoded));
     }
 
     @Override public void saveValueImpl(String name, String text) {
-        jsonObject.put(name, Json.createValue(new PreferencesEntryText(LocalDateTime.now(), text).encodeToString()));
+        jsonObject.put(name, Json.createValue(new PreferencesEntryText(LocalDateTime.now(), text)
+            .encodeToString()));
     }
 
     @Override public void removeValueImpl(String name) {
