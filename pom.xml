@@ -9,8 +9,8 @@
     <packaging>pom</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>11</java.version>
-        <javafx.version>12</javafx.version>
+        <java.version>15</java.version>
+        <javafx.version>15.0.1</javafx.version>
         <javax.json.version>1.1.4</javax.json.version>
         <jakarta.cdi.version>3.0.0</jakarta.cdi.version>
         <junit.version>5.7.0</junit.version>
@@ -93,7 +93,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.22.2</version>
+                    <version>3.0.0-M5</version>
                     <configuration>
                         <useSystemClassLoader>false</useSystemClassLoader>
                     </configuration>

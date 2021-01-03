@@ -8,8 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.naming.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.when;
 
@@ -47,8 +46,7 @@ import static org.mockito.Mockito.when;
         assertEquals("v#2", value2nd.get().text());
 
         var valueOops = storageRoot.value("oops");
-        assertTrue(valueOops.isPresent());
-        assertEquals("oops", valueOops.get().text());
+        assertFalse(valueOops.isPresent());
     }
 
 }
