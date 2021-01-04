@@ -21,11 +21,12 @@ public class PreferencesEntryStructuralType<T> extends PreferencesEntryType<T, M
         return decoder.apply(storageValue);
     }
 
-    @Override protected Map<String, Object> loadInternal(PreferencesStorage storage) throws Exception {
+    @Override @SuppressWarnings({ "rawtypes", "unchecked" }) protected Map<String, Object> loadValue(PreferencesStorage storage, String name) throws Exception {
         var storageValue = new HashMap<String, Object>();
 
         for (Entry<String, PreferencesEntryType<?, ?>> entry : structure.entrySet()) {
-            storageValue.put(entry.getKey(), entry.getValue().loadInternal(storage, entry.getKey()));
+            var entryType = (PreferencesEntryType) entry.getValue();
+            storageValue.put(entry.getKey(), entryType.decode(entryType.loadValue(storage, entry.getKey())));
         }
 
         return storageValue;
@@ -35,9 +36,10 @@ public class PreferencesEntryStructuralType<T> extends PreferencesEntryType<T, M
         return encoder.apply(value);
     }
 
-    @Override @SuppressWarnings({ "rawtypes", "unchecked" }) protected void saveInternal(PreferencesStorage storage, Map<String, ?> storageValue) throws Exception {
+    @Override @SuppressWarnings({ "rawtypes", "unchecked" }) protected void saveValue(PreferencesStorage storage, String name, Map<String, ?> storageValue) throws Exception {
         for (Entry<String, PreferencesEntryType<?, ?>> entry : structure.entrySet()) {
-            ((PreferencesEntryType) entry.getValue()).saveInternal(storage, storageValue.get(entry.getKey()));
+            var entryType = (PreferencesEntryType) entry.getValue();
+            entryType.saveValue(storage, entry.getKey(), entryType.encode(storageValue.get(entry.getKey())));
         }
     }
 

@@ -12,13 +12,13 @@ public abstract class PreferencesEntryType<ValueType, StorageValueType> {
 
     protected abstract ValueType decode(StorageValueType storageValue) throws Exception;
 
-    protected abstract StorageValueType loadInternal(PreferencesStorage storage) throws Exception;
+    protected abstract StorageValueType loadValue(PreferencesStorage storage, String name) throws Exception;
 
     protected PreferencesEntryValueHolder<ValueType> loadInternal(PreferencesStorage storage, String name) throws Exception {
         var holder = new PreferencesEntryValueHolder<ValueType>();
         var node = storage.child(name);
 
-        holder.setValue(decode(loadInternal(node)));
+        holder.setValue(decode(loadValue(node, "value")));
         holder.setTimestamp(Optional.ofNullable(node.value("timestamp"))
             .filter(not(String::isBlank))
             .map(Instant::parse)
@@ -42,7 +42,7 @@ public abstract class PreferencesEntryType<ValueType, StorageValueType> {
 
     protected abstract StorageValueType encode(ValueType value) throws Exception;
 
-    protected abstract void saveInternal(PreferencesStorage storage, StorageValueType storageValue) throws Exception;
+    protected abstract void saveValue(PreferencesStorage storage, String name, StorageValueType storageValue) throws Exception;
 
     protected void saveInternal(PreferencesStorage storage, String name, ValueType value) throws Exception {
         var node = storage.child(name);
@@ -56,7 +56,7 @@ public abstract class PreferencesEntryType<ValueType, StorageValueType> {
         }
 
         node.saveValue("timestamp", Instant.now().toString());
-        saveInternal(node, encode(value));
+        saveValue(node, "value", encode(value));
     }
 
     public void save(PreferencesStorage storage, String name, ValueType value) throws PreferencesException {

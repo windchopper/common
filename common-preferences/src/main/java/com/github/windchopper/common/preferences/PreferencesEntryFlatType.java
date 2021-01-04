@@ -16,16 +16,16 @@ public class PreferencesEntryFlatType<T> extends PreferencesEntryType<T, String>
         return decoder.apply(storageValue);
     }
 
-    @Override protected String loadInternal(PreferencesStorage storage) throws Exception {
-        return storage.value("value");
+    @Override protected String loadValue(PreferencesStorage storage, String name) throws Exception {
+        return storage.value(name);
     }
 
     @Override protected String encode(T value) throws Exception {
         return encoder.apply(value);
     }
 
-    @Override protected void saveInternal(PreferencesStorage storage, String storageValue) throws Exception {
-        storage.saveValue("value", storageValue);
+    @Override protected void saveValue(PreferencesStorage storage, String name, String storageValue) throws Exception {
+        storage.saveValue(name, storageValue);
     }
 
 }
