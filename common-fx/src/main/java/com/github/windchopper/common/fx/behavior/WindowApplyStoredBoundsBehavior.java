@@ -3,6 +3,9 @@ package com.github.windchopper.common.fx.behavior;
 import com.github.windchopper.common.fx.preferences.PointPreferencesEntryType;
 import com.github.windchopper.common.fx.preferences.RectanglePreferencesEntryType;
 import com.github.windchopper.common.preferences.*;
+import com.github.windchopper.common.preferences.entries.BufferedEntry;
+import com.github.windchopper.common.preferences.entries.StandardEntry;
+import com.github.windchopper.common.preferences.storages.PlatformStorage;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Stage;
@@ -20,11 +23,11 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
         void initialize(Window window, boolean resizable);
     }
 
-    private static final PreferencesStorage boundsStorage = new PlatformPreferencesStorage(
+    private static final PreferencesStorage boundsStorage = new PlatformStorage(
         Preferences.userRoot().node("com/github/windchopper/common/fx/behavior"));
 
-    private static final PreferencesEntryType<Rectangle2D> rectangleType = new RectanglePreferencesEntryType();
-    private static final PreferencesEntryType<Point2D> pointType = new PointPreferencesEntryType();
+    private static final PreferencesEntryStructuralType<Rectangle2D> rectangleType = new RectanglePreferencesEntryType();
+    private static final PreferencesEntryStructuralType<Point2D> pointType = new PointPreferencesEntryType();
 
     private final String preferencesEntryName;
     private final BoundsInitializer boundsInitializer;
@@ -63,13 +66,10 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
     }
 
     private void applyNonResizable(Window window) {
-        PreferencesEntry<Point2D> preferencesEntry = new BufferedPreferencesEntry<>(
-            boundsStorage,
-            preferencesEntryName,
-            pointType,
-            Duration.ofMinutes(1));
+        PreferencesEntry<Point2D> preferencesEntry = new BufferedEntry<>(Duration.ofMinutes(1),
+            new StandardEntry<>(boundsStorage, preferencesEntryName, pointType));
 
-        var location = preferencesEntry.load();
+        var location = preferencesEntry.load().getValue();
 
         if (location != null) {
             window.setX(location.getX());
@@ -92,13 +92,10 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
     }
 
     private void applyResizable(Window window) {
-        var preferencesEntry = new BufferedPreferencesEntry<>(
-            boundsStorage,
-            preferencesEntryName,
-            rectangleType,
-            Duration.ofMinutes(1));
+        var preferencesEntry = new BufferedEntry<>(Duration.ofMinutes(1),
+            new StandardEntry<>(boundsStorage, preferencesEntryName, rectangleType));
 
-        var bounds = preferencesEntry.load();
+        var bounds = preferencesEntry.load().getValue();
 
         if (bounds == null) {
             boundsInitializer.initialize(window, true);

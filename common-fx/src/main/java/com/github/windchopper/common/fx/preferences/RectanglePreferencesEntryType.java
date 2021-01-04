@@ -1,13 +1,12 @@
 package com.github.windchopper.common.fx.preferences;
 
-import com.github.windchopper.common.preferences.types.StructuralType;
-import com.github.windchopper.common.util.Pipeliner;
+import com.github.windchopper.common.preferences.PreferencesEntryStructuralType;
+import com.github.windchopper.common.preferences.types.DoubleType;
 import javafx.geometry.Rectangle2D;
 
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
+import java.util.Map;
 
-public class RectanglePreferencesEntryType extends StructuralType<Rectangle2D> {
+public class RectanglePreferencesEntryType extends PreferencesEntryStructuralType<Rectangle2D> {
 
     private static final String KEY__X = "x";
     private static final String KEY__Y = "y";
@@ -16,18 +15,21 @@ public class RectanglePreferencesEntryType extends StructuralType<Rectangle2D> {
 
     public RectanglePreferencesEntryType() {
         super(
-            source -> new Rectangle2D(
-                Double.parseDouble(source.getString(KEY__X)),
-                Double.parseDouble(source.getString(KEY__Y)),
-                Double.parseDouble(source.getString(KEY__WIDTH)),
-                Double.parseDouble(source.getString(KEY__HEIGHT))),
-            source -> Pipeliner.of(Json::createObjectBuilder)
-                .set(target -> value -> target.add(KEY__X, value), String.valueOf(source.getMinX()))
-                .set(target -> value -> target.add(KEY__Y, value), String.valueOf(source.getMinY()))
-                .set(target -> value -> target.add(KEY__WIDTH, value), String.valueOf(source.getWidth()))
-                .set(target -> value -> target.add(KEY__HEIGHT, value), String.valueOf(source.getHeight()))
-                .map(JsonObjectBuilder::build)
-                .get());
+            Map.of(
+                KEY__X, new DoubleType(),
+                KEY__Y, new DoubleType(),
+                KEY__WIDTH, new DoubleType(),
+                KEY__HEIGHT, new DoubleType()),
+            values -> values.isEmpty() ? null : new Rectangle2D(
+                (Double) values.get(KEY__X),
+                (Double) values.get(KEY__Y),
+                (Double) values.get(KEY__WIDTH),
+                (Double) values.get(KEY__HEIGHT)),
+            rectangle -> Map.of(
+                KEY__X, String.valueOf(rectangle.getMinX()),
+                KEY__Y, String.valueOf(rectangle.getMinY()),
+                KEY__WIDTH, String.valueOf(rectangle.getWidth()),
+                KEY__HEIGHT, String.valueOf(rectangle.getHeight())));
     }
 
 }

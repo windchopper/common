@@ -1,18 +1,25 @@
 package com.github.windchopper.common.preferences;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.Set;
 
 public interface PreferencesStorage {
 
-    Optional<PreferencesEntryText> value(String name) throws PreferencesException;
-    void saveValue(String name, String text) throws PreferencesException;
-    void removeValue(String name) throws PreferencesException;
+    String SEPARATOR = "/";
 
-    PreferencesStorage child(String name) throws PreferencesException;
-    void removeChild(String name) throws PreferencesException;
+    String value(String name) throws Exception;
+    void saveValue(String name, String text) throws Exception;
+    void dropValue(String name) throws Exception;
 
-    Set<String> valueNames() throws PreferencesException;
-    Set<String> childNames() throws PreferencesException;
+    PreferencesStorage child(String name) throws Exception;
+    void dropChild(String name) throws Exception;
+
+    Set<String> valueNames() throws Exception;
+    Set<String> childNames() throws Exception;
+
+    default Optional<Instant> timestamp() {
+        return Optional.empty();
+    }
 
 }
