@@ -1,10 +1,7 @@
 package com.github.windchopper.common.fx.behavior;
 
-import javafx.geometry.BoundingBox;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
+import javafx.geometry.*;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
@@ -356,39 +353,11 @@ public class WindowMoveResizeBehavior implements Behavior<Region> {
      *
      */
 
-    Node lastTarget;
-
     @Override public void apply(Region region) {
         region.setOnMousePressed(this::mousePress);
         region.setOnMouseReleased(this::mouseRelease);
         region.setOnMouseMoved(this::mouseMove);
         region.setOnMouseDragged(this::mouseDrag);
-
-//        EventHandler<MouseEvent> restoreCursorHandler = event -> {
-//            Node target = (Node) event.getTarget();
-//            if (target != lastTarget) {
-//                if (target != region) {
-//                    Cursor cursor = ((Node) event.getTarget()).getCursor();
-//
-//                    if (cursor == null) {
-//                        target.setCursor(Cursor.DEFAULT);
-//                        System.out.println("correction");
-//                    }
-//                }
-//
-//                lastTarget = target;
-//            }
-//        };
-
-//        region.sceneProperty().addListener((property, oldScene, newScene) -> {
-//            if (oldScene != null) {
-//                oldScene.removeEventFilter(MouseEvent.MOUSE_MOVED, restoreCursorHandler);
-//            }
-//
-//            if (newScene != null) {
-//                newScene.addEventFilter(MouseEvent.MOUSE_MOVED, restoreCursorHandler);
-//            }
-//        });
     }
 
 }

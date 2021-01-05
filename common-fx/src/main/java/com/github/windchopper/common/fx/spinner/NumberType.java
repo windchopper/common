@@ -6,6 +6,8 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static java.util.Comparator.comparingInt;
+
 public enum NumberType implements SpinnableType<Number> {
 
     INTEGER(
@@ -14,7 +16,7 @@ public enum NumberType implements SpinnableType<Number> {
         (value1st, value2nd) -> value1st.intValue() - value2nd.intValue(),
         steps -> steps,
         NumberFormat::getIntegerInstance,
-        Comparator.comparingInt(Number::intValue));
+        comparingInt(Number::intValue));
 
     private final Class<? extends Number> valueType;
     private final BinaryOperator<Number> adder;

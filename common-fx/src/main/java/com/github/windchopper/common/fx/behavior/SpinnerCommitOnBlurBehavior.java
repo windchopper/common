@@ -10,9 +10,7 @@ public class SpinnerCommitOnBlurBehavior<T> implements Behavior<Spinner<T>> {
                 if (oldFocused) {
                     target.getValueFactory().setValue(
                         target.getValueFactory().getConverter().fromString(
-                            target.getEditor().getText()
-                        )
-                    );
+                            target.getEditor().getText()));
                 }
             }
         );
