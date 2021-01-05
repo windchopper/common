@@ -4,7 +4,7 @@ import com.github.windchopper.common.preferences.*;
 
 import java.util.*;
 
-import static java.util.Comparator.comparing;
+import static java.util.Comparator.*;
 import static java.util.stream.Collectors.toMap;
 
 public class CompositeEntry<K, T> implements PreferencesEntry<T> {
@@ -29,13 +29,13 @@ public class CompositeEntry<K, T> implements PreferencesEntry<T> {
             return this;
         }
 
-        public StorageComposition<K> loadNewer(boolean loadNewer) {
-            this.loadNewer = loadNewer;
+        public StorageComposition<K> loadNewer() {
+            loadNewer = true;
             return this;
         }
 
-        public StorageComposition<K> propagateOlder(boolean propagateOlder) {
-            this.propagateOlder = propagateOlder;
+        public StorageComposition<K> propagateOlder() {
+            propagateOlder = true;
             return this;
         }
 
@@ -74,9 +74,12 @@ public class CompositeEntry<K, T> implements PreferencesEntry<T> {
 
         Optional<PreferencesEntryValueHolder<T>> selectedHolder;
 
+        Comparator<PreferencesEntryValueHolder<?>> holderComparator = comparing(PreferencesEntryValueHolder::getTimestamp,
+            nullsFirst(naturalOrder()));
+
         if (storageComposition.loadNewer) {
             selectedHolder = nonEmptyHolders.stream()
-                .max(comparing(PreferencesEntryValueHolder::getTimestamp));
+                .max(holderComparator);
         } else {
             selectedHolder = nonEmptyHolders.stream()
                 .findFirst();
@@ -84,9 +87,9 @@ public class CompositeEntry<K, T> implements PreferencesEntry<T> {
 
         selectedHolder.ifPresent(holder -> storageComposition.propagationTargets.stream()
             .map(entries::get).forEach(entry -> {
-                var existingValue = entry.load();
+                var existingHolder = entry.load();
 
-                if (existingValue.getValue() == null || storageComposition.propagateOlder && existingValue.getTimestamp().isBefore(holder.getTimestamp())) {
+                if (existingHolder.isEmpty() || storageComposition.propagateOlder && holderComparator.compare(holder, existingHolder) >= 0) {
                     entry.save(holder.getValue());
                 }
             }));

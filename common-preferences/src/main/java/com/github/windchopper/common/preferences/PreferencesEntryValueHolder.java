@@ -4,7 +4,7 @@ import java.time.Instant;
 
 public class PreferencesEntryValueHolder<T> {
 
-    private Instant timestamp = Instant.MIN;
+    private Instant timestamp;
     private T value;
 
     public Instant getTimestamp() {
@@ -21,6 +21,14 @@ public class PreferencesEntryValueHolder<T> {
 
     public void setValue(T value) {
         this.value = value;
+    }
+
+    public boolean isEmpty() {
+        return value == null || timestamp == null;
+    }
+
+    public boolean isNotEmpty() {
+        return value != null && timestamp != null;
     }
 
 }

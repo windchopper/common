@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.Instant;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,13 +25,15 @@ import static org.mockito.Mockito.*;
         when(storage1st.child(eq("key"))).thenReturn(childStorage1st);
         when(storage2nd.child(eq("key"))).thenReturn(childStorage2nd);
         when(childStorage1st.value(eq("value"))).thenReturn("val1");
-        when(childStorage1st.value(eq("timestamp"))).thenReturn(Instant.now().toString());
+        when(childStorage2nd.value(eq("value"))).thenReturn("val2");
 
         var composition = new CompositeEntry.StorageComposition<>(
             Map.of("1", storage1st, "2", storage2nd))
                 .loadFrom("1")
                 .loadFrom("2")
+                .loadNewer()
                 .propagateTo("2")
+                .propagateOlder()
                 .saveTo("1")
                 .saveTo("2");
 

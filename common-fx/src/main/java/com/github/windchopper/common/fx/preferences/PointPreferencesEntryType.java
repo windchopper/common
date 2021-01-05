@@ -25,8 +25,8 @@ public class PointPreferencesEntryType extends PreferencesEntryStructuralType<Po
                     .map(Double.class::cast)
                     .orElse(0D)),
             point -> Map.of(
-                KEY__X, String.valueOf(point.getX()),
-                KEY__Y, String.valueOf(point.getY())));
+                KEY__X, point.getX(),
+                KEY__Y, point.getY()));
     }
 
 }

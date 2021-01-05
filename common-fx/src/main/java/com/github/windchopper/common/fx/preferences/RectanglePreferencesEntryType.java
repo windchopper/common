@@ -35,10 +35,10 @@ public class RectanglePreferencesEntryType extends PreferencesEntryStructuralTyp
                     .map(Double.class::cast)
                     .orElse(0D)),
             rectangle -> Map.of(
-                KEY__X, String.valueOf(rectangle.getMinX()),
-                KEY__Y, String.valueOf(rectangle.getMinY()),
-                KEY__WIDTH, String.valueOf(rectangle.getWidth()),
-                KEY__HEIGHT, String.valueOf(rectangle.getHeight())));
+                KEY__X, rectangle.getMinX(),
+                KEY__Y, rectangle.getMinY(),
+                KEY__WIDTH, rectangle.getWidth(),
+                KEY__HEIGHT, rectangle.getHeight()));
     }
 
 }

@@ -23,7 +23,7 @@ public abstract class PreferencesEntryType<ValueType, StorageValueType> {
             .filter(not(String::isBlank))
             .map(Instant::parse)
             .or(storage::timestamp)
-            .orElse(Instant.MIN));
+            .orElse(null));
 
         return holder;
     }

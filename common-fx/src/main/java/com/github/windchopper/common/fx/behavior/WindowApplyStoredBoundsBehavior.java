@@ -69,9 +69,11 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
         PreferencesEntry<Point2D> preferencesEntry = new BufferedEntry<>(Duration.ofMinutes(1),
             new StandardEntry<>(boundsStorage, preferencesEntryName, pointType));
 
-        var location = preferencesEntry.load().getValue();
+        var locationEntry = preferencesEntry.load();
 
-        if (location != null) {
+        if (locationEntry.isNotEmpty()) {
+            var location = locationEntry.getValue();
+
             window.setX(location.getX());
             window.setY(location.getY());
         }
@@ -95,11 +97,13 @@ public class WindowApplyStoredBoundsBehavior implements Behavior<Window> {
         var preferencesEntry = new BufferedEntry<>(Duration.ofMinutes(1),
             new StandardEntry<>(boundsStorage, preferencesEntryName, rectangleType));
 
-        var bounds = preferencesEntry.load().getValue();
+        var boundsEntry = preferencesEntry.load();
 
-        if (bounds == null) {
+        if (boundsEntry.isEmpty()) {
             boundsInitializer.initialize(window, true);
         } else {
+            var bounds = boundsEntry.getValue();
+
             window.setX(bounds.getMinX());
             window.setY(bounds.getMinY());
             window.setWidth(bounds.getWidth());
