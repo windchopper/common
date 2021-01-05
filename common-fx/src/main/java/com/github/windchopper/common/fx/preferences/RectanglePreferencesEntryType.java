@@ -5,6 +5,7 @@ import com.github.windchopper.common.preferences.types.DoubleType;
 import javafx.geometry.Rectangle2D;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class RectanglePreferencesEntryType extends PreferencesEntryStructuralType<Rectangle2D> {
 
@@ -20,11 +21,19 @@ public class RectanglePreferencesEntryType extends PreferencesEntryStructuralTyp
                 KEY__Y, new DoubleType(),
                 KEY__WIDTH, new DoubleType(),
                 KEY__HEIGHT, new DoubleType()),
-            values -> values.isEmpty() ? null : new Rectangle2D(
-                (Double) values.get(KEY__X),
-                (Double) values.get(KEY__Y),
-                (Double) values.get(KEY__WIDTH),
-                (Double) values.get(KEY__HEIGHT)),
+            values -> new Rectangle2D(
+                Optional.ofNullable(values.get(KEY__X))
+                    .map(Double.class::cast)
+                    .orElse(0D),
+                Optional.ofNullable(values.get(KEY__Y))
+                    .map(Double.class::cast)
+                    .orElse(0D),
+                Optional.ofNullable(values.get(KEY__WIDTH))
+                    .map(Double.class::cast)
+                    .orElse(0D),
+                Optional.ofNullable(values.get(KEY__HEIGHT))
+                    .map(Double.class::cast)
+                    .orElse(0D)),
             rectangle -> Map.of(
                 KEY__X, String.valueOf(rectangle.getMinX()),
                 KEY__Y, String.valueOf(rectangle.getMinY()),

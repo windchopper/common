@@ -5,6 +5,7 @@ import com.github.windchopper.common.preferences.types.DoubleType;
 import javafx.geometry.Point2D;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class PointPreferencesEntryType extends PreferencesEntryStructuralType<Point2D> {
 
@@ -16,9 +17,13 @@ public class PointPreferencesEntryType extends PreferencesEntryStructuralType<Po
             Map.of(
                 KEY__X, new DoubleType(),
                 KEY__Y, new DoubleType()),
-            values -> values.isEmpty() ? null : new Point2D(
-                (Double) values.get(KEY__X),
-                (Double) values.get(KEY__Y)),
+            values -> new Point2D(
+                Optional.ofNullable(values.get(KEY__X))
+                    .map(Double.class::cast)
+                    .orElse(0D),
+                Optional.ofNullable(values.get(KEY__Y))
+                    .map(Double.class::cast)
+                    .orElse(0D)),
             point -> Map.of(
                 KEY__X, String.valueOf(point.getX()),
                 KEY__Y, String.valueOf(point.getY())));
