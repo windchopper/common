@@ -13,7 +13,7 @@ public class PreferencesEntryFlatType<T> extends PreferencesEntryType<T, String>
     }
 
     @Override protected T decode(String storageValue) throws Exception {
-        return decoder.apply(storageValue);
+        return storageValue == null || storageValue.isBlank() ? null : decoder.apply(storageValue);
     }
 
     @Override protected String loadValue(PreferencesStorage storage, String name) throws Exception {
@@ -21,10 +21,14 @@ public class PreferencesEntryFlatType<T> extends PreferencesEntryType<T, String>
     }
 
     @Override protected String encode(T value) throws Exception {
-        return encoder.apply(value);
+        return value == null ? null : encoder.apply(value);
     }
 
     @Override protected void saveValue(PreferencesStorage storage, String name, String storageValue) throws Exception {
+        if (storageValue == null || storageValue.isBlank()) {
+            return;
+        }
+
         storage.saveValue(name, storageValue);
     }
 

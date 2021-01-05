@@ -18,7 +18,7 @@ public class PreferencesEntryStructuralType<T> extends PreferencesEntryType<T, M
     }
 
     @Override protected T decode(Map<String, ?> storageValue) throws Exception {
-        return decoder.apply(storageValue);
+        return storageValue == null || storageValue.isEmpty() ? null : decoder.apply(storageValue);
     }
 
     @Override @SuppressWarnings({ "rawtypes", "unchecked" }) protected Map<String, Object> loadValue(PreferencesStorage storage, String name) throws Exception {
@@ -33,10 +33,14 @@ public class PreferencesEntryStructuralType<T> extends PreferencesEntryType<T, M
     }
 
     @Override protected Map<String, ?> encode(T value) throws Exception {
-        return encoder.apply(value);
+        return value == null ? null : encoder.apply(value);
     }
 
     @Override @SuppressWarnings({ "rawtypes", "unchecked" }) protected void saveValue(PreferencesStorage storage, String name, Map<String, ?> storageValue) throws Exception {
+        if (storageValue == null || storageValue.isEmpty()) {
+            return;
+        }
+
         for (Entry<String, PreferencesEntryType<?, ?>> entry : structure.entrySet()) {
             var entryType = (PreferencesEntryType) entry.getValue();
             entryType.saveValue(storage, entry.getKey(), entryType.encode(storageValue.get(entry.getKey())));

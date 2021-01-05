@@ -2,12 +2,12 @@ package com.github.windchopper.common.preferences.types;
 
 import com.github.windchopper.common.preferences.PreferencesEntryFlatType;
 
+import static com.github.windchopper.common.util.stream.FailableFunction.identity;
+
 public class StringType extends PreferencesEntryFlatType<String> {
 
     public StringType() {
-        super(
-            stringValue -> stringValue,
-            stringValue -> stringValue);
+        super(identity(), identity());
     }
 
 }

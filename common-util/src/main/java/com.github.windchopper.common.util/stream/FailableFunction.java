@@ -6,6 +6,10 @@ import java.util.function.Function;
 
     O apply(I value) throws E;
 
+    static <T, E extends Throwable> FailableFunction<T, T, E> identity() {
+        return value -> value;
+    }
+
     static <I, O, E extends Throwable> Function<I, FailableFunctionResult<I, O>> wrap(FailableFunction<I, O, E> failableFunction) {
         return value -> failsafeApply(value, failableFunction);
     }
