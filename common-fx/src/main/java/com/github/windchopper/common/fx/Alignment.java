@@ -1,39 +1,40 @@
 package com.github.windchopper.common.fx;
 
-import javafx.geometry.HPos;
-import javafx.geometry.VPos;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 
 public enum Alignment {
 
-    LEFT_BASELINE(HPos.LEFT, VPos.BASELINE),
-    CENTER_BASELINE(HPos.CENTER, VPos.BASELINE),
-    RIGHT_BASELINE(HPos.RIGHT, VPos.BASELINE),
+    LEFT_BASELINE(Pos.BASELINE_LEFT),
+    CENTER_BASELINE(Pos.BASELINE_CENTER),
+    RIGHT_BASELINE(Pos.BASELINE_RIGHT),
 
-    LEFT_TOP(HPos.LEFT, VPos.TOP),
-    CENTER_TOP(HPos.CENTER, VPos.TOP),
-    RIGHT_TOP(HPos.RIGHT, VPos.TOP),
+    LEFT_TOP(Pos.TOP_LEFT),
+    CENTER_TOP(Pos.TOP_CENTER),
+    RIGHT_TOP(Pos.TOP_RIGHT),
 
-    LEFT_CENTER(HPos.LEFT, VPos.CENTER),
-    CENTER_CENTER(HPos.CENTER, VPos.CENTER),
-    RIGHT_CENTER(HPos.RIGHT, VPos.CENTER),
+    LEFT_CENTER(Pos.CENTER_LEFT),
+    CENTER_CENTER(Pos.CENTER),
+    RIGHT_CENTER(Pos.CENTER_RIGHT),
 
-    LEFT_BOTTOM(HPos.LEFT, VPos.BOTTOM),
-    CENTER_BOTTOM(HPos.CENTER, VPos.BOTTOM),
-    RIGHT_BOTTOM(HPos.RIGHT, VPos.BOTTOM);
+    LEFT_BOTTOM(Pos.BOTTOM_LEFT),
+    CENTER_BOTTOM(Pos.BOTTOM_CENTER),
+    RIGHT_BOTTOM(Pos.BOTTOM_RIGHT);
 
-    private final HPos hpos;
-    private final VPos vpos;
+    private final Pos pos;
 
-    Alignment(HPos hpos, VPos vpos) {
-        this.hpos = hpos;
-        this.vpos = vpos;
+    Alignment(Pos pos) {
+        this.pos = pos;
     }
 
     public void apply(Node node) {
-        GridPane.setHalignment(node, hpos);
-        GridPane.setValignment(node, vpos);
+        GridPane.setHalignment(node, pos.getHpos());
+        GridPane.setValignment(node, pos.getVpos());
+
+        BorderPane.setAlignment(node, pos);
+        StackPane.setAlignment(node, pos);
+        TilePane.setAlignment(node, pos);
     }
 
 }
