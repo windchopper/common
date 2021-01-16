@@ -1,9 +1,6 @@
 package com.github.windchopper.common.util.bean;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.util.Objects;
+import java.lang.invoke.*;
 import java.util.Optional;
 
 public abstract class PropertyDescriptor<BeanType, PropertyType> {
@@ -76,8 +73,7 @@ public abstract class PropertyDescriptor<BeanType, PropertyType> {
     }
 
     public void setPropertyState(BeanType bean, PropertyType value) {
-        Objects.requireNonNull(setter, "Setter not defined")
-            .set(bean, value);
+        setter.set(bean, value);
     }
 
 }

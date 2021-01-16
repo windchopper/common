@@ -1,13 +1,7 @@
 package com.github.windchopper.common.util;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.Queue;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.*;
+import java.util.function.*;
 
 public class Builder<T> implements ReinforcedSupplier<T> {
 

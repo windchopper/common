@@ -2,9 +2,7 @@ package com.github.windchopper.common.fx.spinner;
 
 import java.text.NumberFormat;
 import java.util.Comparator;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 import static java.util.Comparator.comparingInt;
 

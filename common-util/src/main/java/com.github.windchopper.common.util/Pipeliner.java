@@ -4,22 +4,18 @@ import com.github.windchopper.common.util.stream.FailableConsumer;
 import com.github.windchopper.common.util.stream.FailableFunction;
 
 import java.util.Collection;
-import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 public class Pipeliner<T> implements ReinforcedSupplier<T> {
 
     private final T target;
 
     private Pipeliner(Supplier<T> supplier) {
-        this(Objects.requireNonNull(supplier).get());
+        this(supplier.get());
     }
 
     private Pipeliner(T value) {
-        target = Objects.requireNonNull(value);
+        target = value;
     }
 
     public static <V> Pipeliner<V> of(V value) {

@@ -4,9 +4,7 @@ import javafx.event.Event;
 import javafx.event.EventType;
 import javafx.scene.Node;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Collections.addAll;
 

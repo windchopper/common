@@ -4,8 +4,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
-import static java.util.Objects.requireNonNull;
-
 public class HierarchyIterator<T> implements Iterator<T> {
 
     private class Node {
@@ -43,8 +41,8 @@ public class HierarchyIterator<T> implements Iterator<T> {
     private Node node;
 
     public HierarchyIterator(T root, Function<T, Iterable<? extends T>> exposer) {
-        this.root = requireNonNull(root);
-        this.exposer = requireNonNull(exposer);
+        this.root = root;
+        this.exposer = exposer;
     }
 
     @Override public boolean hasNext() {

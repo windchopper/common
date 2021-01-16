@@ -6,8 +6,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-import static java.util.Objects.requireNonNull;
-
 public class BufferedReference<T, E extends Throwable> implements Reference<T, E> {
 
     private final Duration lifeTime;
@@ -21,8 +19,8 @@ public class BufferedReference<T, E extends Throwable> implements Reference<T, E
     }
 
     public BufferedReference(Duration lifeTime, FailableSupplier<T, E> valueSupplier) {
-        this.lifeTime = requireNonNull(lifeTime, "lifeTime");
-        this.valueSupplier = requireNonNull(valueSupplier, "valueSupplier");
+        this.lifeTime = lifeTime;
+        this.valueSupplier = valueSupplier;
     }
 
     @Override public T get() throws E {

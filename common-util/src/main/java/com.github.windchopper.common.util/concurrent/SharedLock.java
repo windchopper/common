@@ -2,9 +2,7 @@ package com.github.windchopper.common.util.concurrent;
 
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.AbstractQueuedSynchronizer;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.*;
 
 public class SharedLock implements Lock, Serializable {
 

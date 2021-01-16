@@ -2,9 +2,7 @@ package com.github.windchopper.common.util;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static java.util.Collections.addAll;

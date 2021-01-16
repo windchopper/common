@@ -1,8 +1,6 @@
 package com.github.windchopper.common.monitoring;
 
-import com.github.windchopper.common.jmx.annotations.Description;
-import com.github.windchopper.common.jmx.annotations.Impact;
-import com.github.windchopper.common.jmx.annotations.Name;
+import com.github.windchopper.common.jmx.annotations.*;
 
 import javax.management.MXBean;
 

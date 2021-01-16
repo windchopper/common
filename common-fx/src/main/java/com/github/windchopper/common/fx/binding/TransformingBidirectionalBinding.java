@@ -8,8 +8,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 
-import static java.util.Objects.requireNonNull;
-
 public class TransformingBidirectionalBinding<Type1st, Type2nd> {
 
     private final WeakReference<Property<Type1st>> reference1st;
@@ -24,11 +22,11 @@ public class TransformingBidirectionalBinding<Type1st, Type2nd> {
                                             Property<Type2nd> property2nd,
                                             Function<Type1st, Type2nd> transformer,
                                             Function<Type2nd, Type1st> reverseTransformer) {
-        reference1st = new WeakReference<>(requireNonNull(property1st));
-        reference2nd = new WeakReference<>(requireNonNull(property2nd));
+        reference1st = new WeakReference<>(property1st);
+        reference2nd = new WeakReference<>(property2nd);
 
-        this.transformer = requireNonNull(transformer);
-        this.reverseTransformer = requireNonNull(reverseTransformer);
+        this.transformer = transformer;
+        this.reverseTransformer = reverseTransformer;
 
         property1st.setValue(reverseTransformer.apply(property2nd.getValue()));
 

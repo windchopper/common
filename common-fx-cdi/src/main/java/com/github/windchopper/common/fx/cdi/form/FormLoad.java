@@ -5,7 +5,6 @@ import javafx.collections.ObservableMap;
 import javafx.scene.Parent;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Collections.emptyMap;
@@ -33,8 +32,8 @@ public class FormLoad {
     }
 
     public <T> T findParameter(String name, Class<? extends T> type) {
-        return Optional.ofNullable(parameters.get(Objects.requireNonNull(name)))
-            .filter(Objects.requireNonNull(type)::isInstance)
+        return Optional.ofNullable(parameters.get(name))
+            .filter(type::isInstance)
             .map(type::cast)
             .orElse(null);
     }
