@@ -17,7 +17,6 @@ module windchopper.common.fx {
     requires java.logging;
     requires javafx.graphics;
     requires javafx.controls;
-    requires java.json;
     requires java.prefs;
     requires windchopper.common.preferences;
     requires windchopper.common.util;

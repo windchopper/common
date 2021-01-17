@@ -11,10 +11,13 @@ module windchopper.common.preferences {
     opens com.github.windchopper.common.preferences.storages;
     opens com.github.windchopper.common.preferences.i18n;
 
-    requires java.json;
     requires java.logging;
     requires java.naming;
     requires java.prefs;
+
+    requires com.fasterxml.jackson.core;
+    requires com.fasterxml.jackson.databind;
+
     requires windchopper.common.util;
 
 }

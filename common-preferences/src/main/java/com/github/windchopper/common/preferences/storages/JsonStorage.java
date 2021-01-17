@@ -1,24 +1,25 @@
 package com.github.windchopper.common.preferences.storages;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.github.windchopper.common.preferences.PreferencesStorage;
 import com.github.windchopper.common.util.Resource;
 
-import javax.json.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Supplier;
 
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toSet;
 
 public class JsonStorage implements PreferencesStorage {
 
-    private final static JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
+    public static Supplier<ObjectMapper> objectMapperFactory;
 
     private final Instant timestamp;
-    private final JsonObject storageObject;
+    private final Map<String, Object> storageObject;
 
     public JsonStorage(Resource resource) throws IOException {
         var connection = resource.url()
@@ -26,38 +27,35 @@ public class JsonStorage implements PreferencesStorage {
 
         timestamp = Instant.ofEpochMilli(connection.getLastModified());
 
-        try (InputStream stream = connection.getInputStream(); JsonReader reader = Json.createReader(stream)) {
-            storageObject = reader.readObject();
+        ObjectMapper objectMapper = objectMapperFactory.get();
+        ObjectReader reader = objectMapper.readerFor(objectMapper.getTypeFactory().constructMapType(HashMap.class, String.class, Object.class));
+
+        try (InputStream stream = connection.getInputStream()) {
+            storageObject = reader.readValue(stream);
         }
     }
 
-    public JsonStorage(Instant timestamp, JsonObject storageObject) {
+    public JsonStorage(Instant timestamp, Map<String, Object> storageObject) {
         this.timestamp = timestamp;
         this.storageObject = storageObject;
     }
 
     @Override public String value(String name) {
-        return Optional.ofNullable(storageObject.getJsonString(name))
-            .map(JsonString::getString)
+        return Optional.ofNullable(storageObject.get(name))
+            .map(Objects::toString)
             .orElse(null);
     }
 
     @Override public void saveValue(String name, String text) {
-        storageObject.put(name, Json.createValue(text));
+        storageObject.put(name, text);
     }
 
     @Override public void dropValue(String name) {
         storageObject.remove(name);
     }
 
-    @Override public PreferencesStorage child(String name) {
-        var child = storageObject.getJsonObject(name);
-
-        if (child == null) {
-            storageObject.put(name, child = jsonObjectBuilder.build());
-        }
-
-        return new JsonStorage(timestamp, child);
+    @Override @SuppressWarnings("unchecked") public PreferencesStorage child(String name) {
+        return new JsonStorage(timestamp, (Map<String, Object>) storageObject.computeIfAbsent(name, missingName -> new HashMap<>()));
     }
 
     @Override public void dropChild(String name) {
@@ -66,13 +64,13 @@ public class JsonStorage implements PreferencesStorage {
 
     @Override public Set<String> valueNames() {
         return storageObject.keySet().stream()
-            .filter(not(key -> storageObject.get(key) instanceof JsonStructure))
+            .filter(not(key -> storageObject.get(key) instanceof Map))
             .collect(toSet());
     }
 
     @Override public Set<String> childNames() {
         return storageObject.keySet().stream()
-            .filter(key -> storageObject.get(key) instanceof JsonStructure)
+            .filter(key -> storageObject.get(key) instanceof Map)
             .collect(toSet());
     }
 

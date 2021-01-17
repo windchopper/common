@@ -11,7 +11,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>15</java.version>
         <javafx.version>15.0.1</javafx.version>
-        <javax.json.version>1.1.4</javax.json.version>
+        <jackson.version>2.12.1</jackson.version>
         <jakarta.cdi.version>3.0.0</jakarta.cdi.version>
         <junit.version>5.7.0</junit.version>
         <mockito.junit.version>3.3.3</mockito.junit.version>
@@ -45,9 +45,14 @@
                 <version>${javafx.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.glassfish</groupId>
-                <artifactId>javax.json</artifactId>
-                <version>${javax.json.version}</version>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>jakarta.enterprise</groupId>
