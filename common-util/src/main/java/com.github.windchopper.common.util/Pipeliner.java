@@ -28,8 +28,8 @@ public class Pipeliner<T> implements ReinforcedSupplier<T> {
         return this;
     }
 
-    @Override public <V> Pipeliner<T> add(Function<T, Supplier<Collection<V>>> collectionFunction, Collection<V> values) {
-        collectionFunction.apply(target).get().addAll(values);
+    @Override public <V> Pipeliner<T> add(Function<T, Supplier<Collection<V>>> collectionFunction, Iterable<V> values) {
+        values.forEach(collectionFunction.apply(target).get()::add);
         return this;
     }
 
@@ -37,11 +37,6 @@ public class Pipeliner<T> implements ReinforcedSupplier<T> {
         consumer.accept(target);
         return this;
     }
-
-//    public <E extends Throwable> Pipeliner<T> acceptFailable(FallibleConsumer<T, E> consumer) throws E {
-//        consumer.accept(target);
-//        return this;
-//    }
 
     @Override public <V> Pipeliner<T> accept(BiConsumer<T, V> consumer, V value) {
         consumer.accept(target, value);
@@ -51,10 +46,6 @@ public class Pipeliner<T> implements ReinforcedSupplier<T> {
     @Override public <V> Pipeliner<V> map(Function<T, V> mapper) {
         return new Pipeliner<>(() -> mapper.apply(target));
     }
-
-//    public <V, E extends Throwable> Pipeliner<V> mapFailable(FallibleFunction<T, V, E> mapper) throws E {
-//        return new Pipeliner<>(mapper.apply(target));
-//    }
 
     @Override public T get() {
         return target;

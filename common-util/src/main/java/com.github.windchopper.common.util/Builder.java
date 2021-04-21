@@ -28,8 +28,8 @@ public class Builder<T> implements ReinforcedSupplier<T> {
         return this;
     }
 
-    @Override public <V> Builder<T> add(Function<T, Supplier<Collection<V>>> collectionFunction, Collection<V> values) {
-        consumerQueue.add(target -> collectionFunction.apply(target).get().addAll(values));
+    @Override public <V> Builder<T> add(Function<T, Supplier<Collection<V>>> collectionFunction, Iterable<V> values) {
+        consumerQueue.add(target -> values.forEach(collectionFunction.apply(target).get()::add));
         return this;
     }
 
