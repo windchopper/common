@@ -1,8 +1,5 @@
 package com.github.windchopper.common.util;
 
-import com.github.windchopper.common.util.stream.FailableConsumer;
-import com.github.windchopper.common.util.stream.FailableFunction;
-
 import java.util.Collection;
 import java.util.function.*;
 
@@ -41,10 +38,10 @@ public class Pipeliner<T> implements ReinforcedSupplier<T> {
         return this;
     }
 
-    public <E extends Throwable> Pipeliner<T> acceptFailable(FailableConsumer<T, E> consumer) throws E {
-        consumer.accept(target);
-        return this;
-    }
+//    public <E extends Throwable> Pipeliner<T> acceptFailable(FallibleConsumer<T, E> consumer) throws E {
+//        consumer.accept(target);
+//        return this;
+//    }
 
     @Override public <V> Pipeliner<T> accept(BiConsumer<T, V> consumer, V value) {
         consumer.accept(target, value);
@@ -55,9 +52,9 @@ public class Pipeliner<T> implements ReinforcedSupplier<T> {
         return new Pipeliner<>(() -> mapper.apply(target));
     }
 
-    public <V, E extends Throwable> Pipeliner<V> mapFailable(FailableFunction<T, V, E> mapper) throws E {
-        return new Pipeliner<>(mapper.apply(target));
-    }
+//    public <V, E extends Throwable> Pipeliner<V> mapFailable(FallibleFunction<T, V, E> mapper) throws E {
+//        return new Pipeliner<>(mapper.apply(target));
+//    }
 
     @Override public T get() {
         return target;

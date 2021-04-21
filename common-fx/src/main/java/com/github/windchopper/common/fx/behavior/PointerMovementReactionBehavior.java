@@ -4,9 +4,9 @@ import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 
-public abstract class AbstractPointerMovementReactionBehavior<T extends Node> extends AbstractEventDrivenBehavior<T> {
+public abstract class PointerMovementReactionBehavior<T extends Node> extends EventDrivenBehavior<T> {
 
-    public AbstractPointerMovementReactionBehavior() {
+    public PointerMovementReactionBehavior() {
         super(MouseEvent.MOUSE_ENTERED, MouseEvent.MOUSE_EXITED);
     }
 

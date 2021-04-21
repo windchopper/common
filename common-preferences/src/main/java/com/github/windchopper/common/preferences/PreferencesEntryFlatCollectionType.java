@@ -14,7 +14,7 @@ public class PreferencesEntryFlatCollectionType<T, C extends Collection<T>> exte
         this.elementType = elementType;
     }
 
-    @Override protected C decode(Map<String, T> storageValue) throws Exception {
+    @Override protected C decode(Map<String, T> storageValue) {
         var collection = collectionFactory.get();
 
         storageValue.entrySet().stream()
@@ -25,29 +25,29 @@ public class PreferencesEntryFlatCollectionType<T, C extends Collection<T>> exte
         return collection;
     }
 
-    @Override protected Map<String, T> loadValue(PreferencesStorage storage, String name) throws Exception {
+    @Override protected Map<String, T> loadValue(PreferencesStorage storage, String name) throws Throwable {
         var storageValue = new HashMap<String, T>();
 
-        for (String elementName : storage.valueNames()) {
+        for (var elementName : storage.valueNames()) {
             storageValue.put(elementName, elementType.decode(elementType.loadValue(storage, elementName)));
         }
 
         return storageValue;
     }
 
-    @Override protected Map<String, T> encode(C value) throws Exception {
+    @Override protected Map<String, T> encode(C value) {
         var storageValue = new HashMap<String, T>();
         var index = 0;
 
-        for (T element : value) {
+        for (var element : value) {
             storageValue.put(Objects.toString(++index), element);
         }
 
         return storageValue;
     }
 
-    @Override protected void saveValue(PreferencesStorage storage, String name, Map<String, T> storageValue) throws Exception {
-        for (Entry<String, T> entry : storageValue.entrySet()) {
+    @Override protected void saveValue(PreferencesStorage storage, String name, Map<String, T> storageValue) throws Throwable {
+        for (var entry : storageValue.entrySet()) {
             elementType.saveValue(storage, entry.getKey(), elementType.encode(entry.getValue()));
         }
     }

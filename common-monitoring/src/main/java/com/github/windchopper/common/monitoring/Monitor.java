@@ -4,7 +4,7 @@ import static java.lang.System.currentTimeMillis;
 
 public class Monitor {
 
-    private String name;
+    private final String name;
     private long startTimeMilliseconds;
 
     public Monitor(String name) {

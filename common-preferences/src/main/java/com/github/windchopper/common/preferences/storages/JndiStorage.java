@@ -1,8 +1,7 @@
 package com.github.windchopper.common.preferences.storages;
 
 import com.github.windchopper.common.preferences.PreferencesStorage;
-import com.github.windchopper.common.util.stream.FailableConsumer;
-import com.github.windchopper.common.util.stream.FailableSupplier;
+import com.github.windchopper.common.util.stream.*;
 
 import javax.naming.*;
 import java.util.*;
@@ -12,14 +11,14 @@ import static java.util.stream.Collectors.groupingBy;
 
 public class JndiStorage implements PreferencesStorage {
 
-    private final FailableSupplier<Context, NamingException> contextBuilder;
+    private final FallibleSupplier<Context> contextBuilder;
     private final String name;
     private final String path;
 
     private final Map<String, String> values = new HashMap<>();
     private final Map<String, PreferencesStorage> childs = new HashMap<>();
 
-    public JndiStorage(FailableSupplier<Context, NamingException> contextBuilder) throws NamingException {
+    public JndiStorage(FallibleSupplier<Context> contextBuilder) throws NamingException {
         this.contextBuilder = contextBuilder;
         name = "";
         path = "";
@@ -41,14 +40,16 @@ public class JndiStorage implements PreferencesStorage {
         return context;
     }
 
-    private void performWithContext(FailableConsumer<Context, NamingException> action) throws NamingException {
-        var context = contextBuilder.get();
+    private void performWithContext(FallibleConsumer<Context> action) throws NamingException {
+        Fallible.rethrow(thrown -> (NamingException) new NamingException().initCause(thrown), () -> {
+            var context = contextBuilder.get();
 
-        try {
-            action.accept(context);
-        } finally {
-            context.close();
-        }
+            try {
+                action.accept(context);
+            } finally {
+                context.close();
+            }
+        });
     }
 
     private void continueLoad(Context context) throws NamingException {

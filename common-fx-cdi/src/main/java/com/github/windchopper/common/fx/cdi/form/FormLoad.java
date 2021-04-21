@@ -39,8 +39,8 @@ public class FormLoad {
     }
 
     public void afterLoad(Parent form, Object controller, Map<String, ?> parameters, ObservableMap<String, ?> formNamespace) {
-        if (controller instanceof FormController) {
-            ((FormController) controller).afterLoad(form, parameters, formNamespace);
+        if (controller instanceof FormController formController) {
+            formController.afterLoad(form, parameters, formNamespace);
         }
     }
 

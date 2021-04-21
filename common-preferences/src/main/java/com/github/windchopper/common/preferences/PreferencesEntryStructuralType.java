@@ -2,7 +2,6 @@ package com.github.windchopper.common.preferences;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Function;
 
 public class PreferencesEntryStructuralType<T> extends PreferencesEntryType<T, Map<String, ?>> {
@@ -17,14 +16,14 @@ public class PreferencesEntryStructuralType<T> extends PreferencesEntryType<T, M
         this.encoder = encoder;
     }
 
-    @Override protected T decode(Map<String, ?> storageValue) throws Exception {
+    @Override protected T decode(Map<String, ?> storageValue) {
         return storageValue == null || storageValue.isEmpty() ? null : decoder.apply(storageValue);
     }
 
-    @Override @SuppressWarnings({ "rawtypes", "unchecked" }) protected Map<String, Object> loadValue(PreferencesStorage storage, String name) throws Exception {
+    @Override @SuppressWarnings({ "rawtypes", "unchecked" }) protected Map<String, Object> loadValue(PreferencesStorage storage, String name) throws Throwable {
         var storageValue = new HashMap<String, Object>();
 
-        for (Entry<String, PreferencesEntryType<?, ?>> entry : structure.entrySet()) {
+        for (var entry : structure.entrySet()) {
             var entryType = (PreferencesEntryType) entry.getValue();
             storageValue.put(entry.getKey(), entryType.decode(entryType.loadValue(storage, entry.getKey())));
         }
@@ -32,16 +31,16 @@ public class PreferencesEntryStructuralType<T> extends PreferencesEntryType<T, M
         return storageValue;
     }
 
-    @Override protected Map<String, ?> encode(T value) throws Exception {
+    @Override protected Map<String, ?> encode(T value) {
         return value == null ? null : encoder.apply(value);
     }
 
-    @Override @SuppressWarnings({ "rawtypes", "unchecked" }) protected void saveValue(PreferencesStorage storage, String name, Map<String, ?> storageValue) throws Exception {
+    @Override @SuppressWarnings({ "rawtypes", "unchecked" }) protected void saveValue(PreferencesStorage storage, String name, Map<String, ?> storageValue) throws Throwable {
         if (storageValue == null || storageValue.isEmpty()) {
             return;
         }
 
-        for (Entry<String, PreferencesEntryType<?, ?>> entry : structure.entrySet()) {
+        for (var entry : structure.entrySet()) {
             var entryType = (PreferencesEntryType) entry.getValue();
             entryType.saveValue(storage, entry.getKey(), entryType.encode(storageValue.get(entry.getKey())));
         }

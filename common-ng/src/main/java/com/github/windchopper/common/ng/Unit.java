@@ -84,8 +84,9 @@ public class Unit implements Comparable<Unit> {
             masculine = CapturingGroup.MASCULINE.extract(lineMatcher, String::new);
             form = CapturingGroup.FORM.extract(lineMatcher, UnitCase::valueOf);
             feminine = CapturingGroup.FEMININE.extract(lineMatcher, String::new);
-        } else
+        } else {
             throw new IllegalArgumentException(line);
+        }
     }
 
     public BigInteger limit() {

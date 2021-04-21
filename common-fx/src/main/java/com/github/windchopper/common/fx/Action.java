@@ -9,6 +9,7 @@ import javafx.scene.control.Tooltip;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.BiConsumer;
 
 public class Action {
 
@@ -18,22 +19,18 @@ public class Action {
     private final BooleanProperty externallyDisableProperty = new SimpleBooleanProperty(this, "externallyDisable");
     private final BooleanProperty internallyDisableProperty = new SimpleBooleanProperty(this, "internallyDisable");
 
-    @FunctionalInterface public interface EventHandler {
-        void handle(ActionEvent actionEvent, Action action);
-    }
+    private final List<BiConsumer<ActionEvent, Action>> handlers = new CopyOnWriteArrayList<>();
 
-    private final List<EventHandler> handlers = new CopyOnWriteArrayList<>();
+    public <T extends EventTarget> void bindControl(ActionControlAdapter<T> controlAdapter) {
+        controlAdapter.textProperty().bind(textProperty);
+        controlAdapter.graphicProperty().bind(graphicProperty);
 
-    public <T extends EventTarget> void bindControl(ActionControlAdapter<T> actionControlAdapter) {
-        actionControlAdapter.textProperty().bind(textProperty);
-        actionControlAdapter.graphicProperty().bind(graphicProperty);
-
-        actionControlAdapter.disableProperty().bind(Bindings.createBooleanBinding(
-            () -> externallyDisableProperty.get() || internallyDisableProperty.get(),
-            internallyDisableProperty, internallyDisableProperty));
+        controlAdapter.disableProperty().bind(
+            Bindings.createBooleanBinding(() -> externallyDisableProperty.get() || internallyDisableProperty.get(),
+                internallyDisableProperty, internallyDisableProperty));
 
         longTextProperty.isNotEmpty().addListener((property, oldNotEmptyState, newNotEmptyState) -> {
-            var tooltip = actionControlAdapter.toolipProperty().getValue();
+            var tooltip = controlAdapter.tooltipProperty().getValue();
 
             if (newNotEmptyState) {
                 tooltip = new Tooltip();
@@ -43,14 +40,14 @@ public class Action {
                 tooltip = null;
             }
 
-            actionControlAdapter.toolipProperty().setValue(tooltip);
+            controlAdapter.tooltipProperty().setValue(tooltip);
         });
 
-        actionControlAdapter.addEventHandler(ActionEvent.ACTION, actionEvent ->
-            handlers.forEach(handler -> handler.handle(actionEvent, Action.this)));
+        controlAdapter.addEventHandler(ActionEvent.ACTION, actionEvent ->
+            handlers.forEach(handler -> handler.accept(actionEvent, Action.this)));
     }
 
-    public void addHandler(EventHandler handler) {
+    public void addHandler(BiConsumer<ActionEvent, Action> handler) {
         handlers.add(handler);
     }
 

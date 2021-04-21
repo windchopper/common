@@ -1,8 +1,8 @@
 package com.github.windchopper.common.util;
 
-import com.github.windchopper.common.util.stream.FailableSupplier;
+import com.github.windchopper.common.util.stream.FallibleSupplier;
 
-public interface Reference<T, E extends Throwable> extends FailableSupplier<T, E> {
+public interface Reference<T> extends FallibleSupplier<T> {
 
     void invalidate();
 

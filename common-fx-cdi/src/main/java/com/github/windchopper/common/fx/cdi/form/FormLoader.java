@@ -41,10 +41,14 @@ import java.util.ResourceBundle;
         fxmlLoader.setControllerFactory(controllerType -> new BeanReference<>(controllerType, formLiteral)
             .resolve());
 
-        try (InputStream inputStream = event.resource().stream()) {
-            var form = fxmlLoader.<Parent>load(inputStream);
-            runFxThreadSensitiveAction(() -> event.afterLoad(form, fxmlLoader.getController(), event.parameters(), fxmlLoader.getNamespace()));
+        Parent form;
+
+        try (var inputStream = event.resource().stream()) {
+            form = fxmlLoader.load(inputStream);
         }
+
+        runFxThreadSensitiveAction(() -> event.afterLoad(
+            form, fxmlLoader.getController(), event.parameters(), fxmlLoader.getNamespace()));
     }
 
 }

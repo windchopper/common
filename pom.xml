@@ -9,9 +9,9 @@
     <packaging>pom</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>15</java.version>
-        <javafx.version>15.0.1</javafx.version>
-        <jackson.version>2.12.1</jackson.version>
+        <java.version>16</java.version>
+        <javafx.version>16</javafx.version>
+        <jackson.version>2.12.3</jackson.version>
         <jakarta.cdi.version>3.0.0</jakarta.cdi.version>
         <junit.version>5.7.0</junit.version>
         <mockito.junit.version>3.3.3</mockito.junit.version>

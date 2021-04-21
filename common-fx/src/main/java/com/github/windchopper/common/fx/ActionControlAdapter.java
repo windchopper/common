@@ -6,19 +6,17 @@ import javafx.event.*;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 
+import java.util.function.Function;
+
 public class ActionControlAdapter<T extends EventTarget> {
 
     @FunctionalInterface public interface AddEventHandlerInvoker<T extends EventTarget> {
         <E extends Event> void addEventHandler(T control, EventType<E> eventType, EventHandler<E> eventHandler);
     }
 
-    @FunctionalInterface public interface PropertyAccessor<T extends EventTarget, P> {
-        Property<P> property(T control);
-    }
+    public static class ActionButtonAdapter extends ActionControlAdapter<ButtonBase> {
 
-    public static class ForButtonBase extends ActionControlAdapter<ButtonBase> {
-
-        public ForButtonBase(ButtonBase buttonBase) {
+        public ActionButtonAdapter(ButtonBase buttonBase) {
             super(buttonBase,
                 ButtonBase::addEventHandler,
                 ButtonBase::textProperty,
@@ -29,9 +27,9 @@ public class ActionControlAdapter<T extends EventTarget> {
 
     }
 
-    public static class ForMenuItem extends ActionControlAdapter<MenuItem> {
+    public static class ActionMenuItemAdapter extends ActionControlAdapter<MenuItem> {
 
-        public ForMenuItem(MenuItem menuItem) {
+        public ActionMenuItemAdapter(MenuItem menuItem) {
             super(menuItem,
                 MenuItem::addEventHandler,
                 MenuItem::textProperty,
@@ -72,17 +70,17 @@ public class ActionControlAdapter<T extends EventTarget> {
 
     private final T control;
     private final AddEventHandlerInvoker<T> addEventHandlerInvoker;
-    private final PropertyAccessor<T, String> textPropertyAccessor;
-    private final PropertyAccessor<T, Node> graphicPropertyAccessor;
-    private final PropertyAccessor<T, Boolean> disablePropertyAccessor;
-    private final PropertyAccessor<T, Tooltip> tooltipPropertyAccessor;
+    private final Function<T, Property<String>> textPropertyAccessor;
+    private final Function<T, Property<Node>> graphicPropertyAccessor;
+    private final Function<T, Property<Boolean>> disablePropertyAccessor;
+    private final Function<T, Property<Tooltip>> tooltipPropertyAccessor;
 
     public ActionControlAdapter(T control,
                                 AddEventHandlerInvoker<T> addEventHandlerInvoker,
-                                PropertyAccessor<T, String> textPropertyAccessor,
-                                PropertyAccessor<T, Node> graphicPropertyAccessor,
-                                PropertyAccessor<T, Boolean> disablePropertyAccessor,
-                                PropertyAccessor<T, Tooltip> tooltipPropertyAccessor) {
+                                Function<T, Property<String>> textPropertyAccessor,
+                                Function<T, Property<Node>> graphicPropertyAccessor,
+                                Function<T, Property<Boolean>> disablePropertyAccessor,
+                                Function<T, Property<Tooltip>> tooltipPropertyAccessor) {
         this.control = control;
         this.addEventHandlerInvoker = addEventHandlerInvoker;
         this.textPropertyAccessor = textPropertyAccessor;
@@ -96,19 +94,19 @@ public class ActionControlAdapter<T extends EventTarget> {
     }
 
     public Property<String> textProperty() {
-        return textPropertyAccessor.property(control);
+        return textPropertyAccessor.apply(control);
     }
 
     public Property<Node> graphicProperty() {
-        return graphicPropertyAccessor.property(control);
+        return graphicPropertyAccessor.apply(control);
     }
 
     public Property<Boolean> disableProperty() {
-        return disablePropertyAccessor.property(control);
+        return disablePropertyAccessor.apply(control);
     }
 
-    public Property<Tooltip> toolipProperty() {
-        return tooltipPropertyAccessor.property(control);
+    public Property<Tooltip> tooltipProperty() {
+        return tooltipPropertyAccessor.apply(control);
     }
 
 }

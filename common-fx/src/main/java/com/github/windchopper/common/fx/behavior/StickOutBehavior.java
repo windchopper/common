@@ -6,7 +6,7 @@ import javafx.scene.effect.Effect;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StickOutBehavior extends AbstractPointerMovementReactionBehavior<Node> {
+public class StickOutBehavior extends PointerMovementReactionBehavior<Node> {
 
     private final Map<Node, Effect> savedEffects = new HashMap<>(0);
 

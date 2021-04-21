@@ -2,20 +2,12 @@ package com.github.windchopper.common.fx.behavior;
 
 import javafx.scene.Node;
 
-import java.util.*;
-
-import static java.util.Collections.addAll;
-
 public class CompositeBehavior<T extends Node> implements Behavior<T> {
 
-    private final Set<Behavior<T>> behaviors = new HashSet<>(0);
+    private final Behavior<T>[] behaviors;
 
-    @SafeVarargs public CompositeBehavior(Behavior<T>... behaviorArray) {
-        addAll(behaviors, behaviorArray);
-    }
-
-    public CompositeBehavior(Collection<Behavior<T>> behaviorCollection) {
-        behaviors.addAll(behaviorCollection);
+    @SafeVarargs public CompositeBehavior(Behavior<T>... behaviors) {
+        this.behaviors = behaviors;
     }
 
     @Override public void apply(T target) {

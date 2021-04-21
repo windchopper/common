@@ -8,15 +8,15 @@ import java.util.*;
 
 import static java.util.Collections.addAll;
 
-public abstract class AbstractEventDrivenBehavior<T extends Node> implements Behavior<T> {
+public abstract class EventDrivenBehavior<T extends Node> implements Behavior<T> {
 
-    private final Set<EventType<?>> eventTypes = new HashSet<>(0);
+    private final Set<EventType<?>> eventTypes = new HashSet<>();
 
-    public AbstractEventDrivenBehavior(EventType<?>... eventTypeArray) {
+    public EventDrivenBehavior(EventType<?>... eventTypeArray) {
         addAll(eventTypes, eventTypeArray);
     }
 
-    public AbstractEventDrivenBehavior(Collection<EventType<?>> eventTypeCollection) {
+    public EventDrivenBehavior(Collection<EventType<?>> eventTypeCollection) {
         eventTypes.addAll(eventTypeCollection);
     }
 

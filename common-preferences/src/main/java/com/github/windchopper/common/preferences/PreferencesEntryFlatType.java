@@ -1,18 +1,18 @@
 package com.github.windchopper.common.preferences;
 
-import com.github.windchopper.common.util.stream.FailableFunction;
+import com.github.windchopper.common.util.stream.FallibleFunction;
 
 public class PreferencesEntryFlatType<T> extends PreferencesEntryType<T, String> {
 
-    private final FailableFunction<String, T, ? extends Exception> decoder;
-    private final FailableFunction<T, String, ? extends Exception> encoder;
+    private final FallibleFunction<String, T> decoder;
+    private final FallibleFunction<T, String> encoder;
 
-    public PreferencesEntryFlatType(FailableFunction<String, T, ? extends Exception> decoder, FailableFunction<T, String, ? extends Exception> encoder) {
+    public PreferencesEntryFlatType(FallibleFunction<String, T> decoder, FallibleFunction<T, String> encoder) {
         this.decoder = decoder;
         this.encoder = encoder;
     }
 
-    @Override protected T decode(String storageValue) throws Exception {
+    @Override protected T decode(String storageValue) throws Throwable {
         return storageValue == null || storageValue.isBlank() ? null : decoder.apply(storageValue);
     }
 
@@ -20,7 +20,7 @@ public class PreferencesEntryFlatType<T> extends PreferencesEntryType<T, String>
         return storage.value(name);
     }
 
-    @Override protected String encode(T value) throws Exception {
+    @Override protected String encode(T value) throws Throwable {
         return value == null ? null : encoder.apply(value);
     }
 

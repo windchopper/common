@@ -84,8 +84,9 @@ public class ScaleUnit implements Comparable<ScaleUnit> {
             genitive = CapturingGroup.GENITIVE.extract(lineMatcher, String::new);
             plural = CapturingGroup.PLURAL.extract(lineMatcher, String::new);
             gender = CapturingGroup.GENDER.extract(lineMatcher, ScaleUnitGender::valueOf);
-        } else
+        } else {
             throw new IllegalArgumentException(line);
+        }
     }
 
     public BigInteger power() {

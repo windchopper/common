@@ -1,16 +1,17 @@
 package com.github.windchopper.common.util.concurrent;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.*;
 
 public class SharedLock implements Lock, Serializable {
 
-    private static final long serialVersionUID = 7348524842901561057L;
+    @Serial private static final long serialVersionUID = 7348524842901561057L;
 
-    private static class Sync extends AbstractQueuedSynchronizer {
+    private static class Synchronizer extends AbstractQueuedSynchronizer {
 
-        private static final long serialVersionUID = -7880228059275366427L;
+        @Serial private static final long serialVersionUID = -7880228059275366427L;
 
         protected int tryAcquireShared(int ignored) {
             return compareAndSetState(0, 1) ? +1 : -1;
@@ -30,30 +31,30 @@ public class SharedLock implements Lock, Serializable {
 
     }
 
-    private final Sync sync = new Sync();
+    private final Synchronizer synchronizer = new Synchronizer();
 
     @Override public void lock() {
-        sync.acquireShared(1);
+        synchronizer.acquireShared(1);
     }
 
     @Override public void lockInterruptibly() throws InterruptedException {
-        sync.acquireSharedInterruptibly(1);
+        synchronizer.acquireSharedInterruptibly(1);
     }
 
     @Override public boolean tryLock() {
-        return sync.tryAcquireShared(1) >= 0;
+        return synchronizer.tryAcquireShared(1) >= 0;
     }
 
     @Override public boolean tryLock(long timeout, TimeUnit unit) throws InterruptedException {
-        return sync.tryAcquireSharedNanos(1, unit.toNanos(timeout));
+        return synchronizer.tryAcquireSharedNanos(1, unit.toNanos(timeout));
     }
 
     @Override public void unlock() {
-        sync.releaseShared(1);
+        synchronizer.releaseShared(1);
     }
 
     @Override public Condition newCondition() {
-        return sync.newCondition();
+        return synchronizer.newCondition();
     }
 
 }
