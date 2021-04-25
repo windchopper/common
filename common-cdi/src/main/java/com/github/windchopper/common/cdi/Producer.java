@@ -7,14 +7,13 @@ import java.util.Optional;
 
 public abstract class Producer {
 
-    protected <A extends Annotation> A findQualifier(InjectionPoint injectionPoint, Class<A> qualifierType) {
+    protected <A extends Annotation> Optional<A> findQualifier(InjectionPoint injectionPoint, Class<A> qualifierType) {
         return Optional.ofNullable(injectionPoint.getAnnotated())
             .map(annotated -> annotated.getAnnotation(qualifierType))
-            .orElse(injectionPoint.getQualifiers().stream()
+            .or(() -> injectionPoint.getQualifiers().stream()
                 .filter(qualifierType::isInstance)
                 .map(qualifierType::cast)
-                .findAny()
-                .orElse(null));
+                .findAny());
     }
 
 }

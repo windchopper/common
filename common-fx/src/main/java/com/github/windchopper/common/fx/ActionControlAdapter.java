@@ -11,12 +11,14 @@ import java.util.function.Function;
 public class ActionControlAdapter<T extends EventTarget> {
 
     @FunctionalInterface public interface AddEventHandlerInvoker<T extends EventTarget> {
+
         <E extends Event> void addEventHandler(T control, EventType<E> eventType, EventHandler<E> eventHandler);
+
     }
 
-    public static class ActionButtonAdapter extends ActionControlAdapter<ButtonBase> {
+    public static class ButtonAdapter extends ActionControlAdapter<ButtonBase> {
 
-        public ActionButtonAdapter(ButtonBase buttonBase) {
+        public ButtonAdapter(ButtonBase buttonBase) {
             super(buttonBase,
                 ButtonBase::addEventHandler,
                 ButtonBase::textProperty,
@@ -27,9 +29,9 @@ public class ActionControlAdapter<T extends EventTarget> {
 
     }
 
-    public static class ActionMenuItemAdapter extends ActionControlAdapter<MenuItem> {
+    public static class MenuItemAdapter extends ActionControlAdapter<MenuItem> {
 
-        public ActionMenuItemAdapter(MenuItem menuItem) {
+        public MenuItemAdapter(MenuItem menuItem) {
             super(menuItem,
                 MenuItem::addEventHandler,
                 MenuItem::textProperty,
