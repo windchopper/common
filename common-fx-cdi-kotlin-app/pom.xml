@@ -120,17 +120,27 @@
         </dependency>
         <dependency>
             <groupId>com.github.windchopper</groupId>
+            <artifactId>common-cdi</artifactId>
+            <version>${commons.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.windchopper</groupId>
+            <artifactId>common-fx</artifactId>
+            <version>${commons.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.windchopper</groupId>
+            <artifactId>common-fx-cdi</artifactId>
+            <version>${commons.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.windchopper</groupId>
             <artifactId>common-preferences</artifactId>
             <version>${commons.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.windchopper</groupId>
             <artifactId>common-util</artifactId>
-            <version>${commons.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.windchopper</groupId>
-            <artifactId>common-fx-cdi</artifactId>
             <version>${commons.version}</version>
         </dependency>
         <dependency>
