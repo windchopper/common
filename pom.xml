@@ -26,6 +26,7 @@
         <module>common-ng</module>
         <module>common-preferences</module>
         <module>common-util</module>
+        <module>common-fx-cdi-kotlin-app</module>
     </modules>
     <dependencyManagement>
         <dependencies>
