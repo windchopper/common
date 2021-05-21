@@ -15,7 +15,7 @@
         <kotlin.ext.version>1.5.0-RC</kotlin.ext.version>
         <kotlin.ext.artifacts>kotlinx-coroutines-core, kotlinx-coroutines-core-jvm</kotlin.ext.artifacts>
         <javafx.version>16</javafx.version>
-        <javafx.artifacts>javafx-base, javafx-controls, javafx-fxml, javafx-graphics</javafx.artifacts>
+        <javafx.artifacts>javafx-base, javafx-controls, javafx-fxml, javafx-graphics, javafx-swing</javafx.artifacts>
         <jandex.version>2.2.3.Final</jandex.version>
         <weld.version>4.0.1.Final</weld.version>
         <commons.version>1.1</commons.version>
@@ -62,6 +62,12 @@
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>win</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
             <artifactId>javafx-base</artifactId>
             <version>${javafx.version}</version>
             <classifier>linux</classifier>
@@ -86,6 +92,12 @@
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>linux</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
             <artifactId>javafx-base</artifactId>
             <version>${javafx.version}</version>
             <classifier>mac</classifier>
@@ -105,6 +117,12 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>mac</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
             <version>${javafx.version}</version>
             <classifier>mac</classifier>
         </dependency>
