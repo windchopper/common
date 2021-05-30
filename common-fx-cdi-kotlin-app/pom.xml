@@ -11,11 +11,28 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>16</java.version>
         <kotlin.version>1.5.0</kotlin.version>
-        <kotlin.artifacts>kotlin-stdlib, kotlin-stdlib-common, annotations, kotlin-reflect</kotlin.artifacts>
+        <kotlin.artifacts>
+            annotations,
+            kotlin-reflect,
+            kotlin-stdlib,
+            kotlin-stdlib-common,
+            kotlin-stdlib-jdk7,
+            kotlin-stdlib-jdk8
+        </kotlin.artifacts>
         <kotlin.ext.version>1.5.0</kotlin.ext.version>
-        <kotlin.ext.artifacts>kotlinx-coroutines-core, kotlinx-coroutines-core-jvm, kotlinx-coroutines-javafx</kotlin.ext.artifacts>
+        <kotlin.ext.artifacts>
+            kotlinx-coroutines-core,
+            kotlinx-coroutines-core-jvm,
+            kotlinx-coroutines-javafx
+        </kotlin.ext.artifacts>
         <javafx.version>16</javafx.version>
-        <javafx.artifacts>javafx-base, javafx-controls, javafx-fxml, javafx-graphics, javafx-swing</javafx.artifacts>
+        <javafx.artifacts>
+            javafx-base,
+            javafx-controls,
+            javafx-fxml,
+            javafx-graphics,
+            javafx-swing
+        </javafx.artifacts>
         <jandex.version>2.2.3.Final</jandex.version>
         <weld.version>4.0.1.Final</weld.version>
         <commons.version>1.1</commons.version>
